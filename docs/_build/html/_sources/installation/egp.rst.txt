@@ -96,7 +96,7 @@ Setting Up and Running PostgreSQL Database Server
       sudo adduser postgres
       sudo passwd -d postgres
 
-3. Set the created database owner user account to own the postgres directories.
+3. Set the created database server owner user account to own the postgres directories.
 
   * The server owner will own the postgres/data, postgres/temp and postgres/logs directories to ensure that the server is initialised and run correctly.
   * If the paths of the created postgres directories from step 1 are changed, replace the default locations in the following commands with your chosen paths.

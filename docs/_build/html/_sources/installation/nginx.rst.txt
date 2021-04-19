@@ -38,7 +38,7 @@ To run the container, the user first needs to set up the sub-folder in their own
 * The directory structure needs to be set up on the host machine. To do this, you can use the docker image by using the following command:
 
   ::
-    
+
     sudo docker run --rm -v $HOME/local_enterobase_home/nginx/:/home/nginx_user/:z localenterobase/nginx:1.0 setup
 
 * NOTE: The above command will create the folder in the home directory in the local machine. If you wish to install it in a specific location change $HOME to the directory you wish to set up the nginx files in.
@@ -67,18 +67,18 @@ To run the container, the user first needs to set up the sub-folder in their own
 
 	mv /path/to/downloaded/nginx.conf $HOME/local_enterobase_home/nginx/nginx.conf
 
-* If you wish you can use the default conf if you replace the 'replaced_by_your_server_uri' with your server ip, but it is strongly recommended to use the one downloaded when setting up your account with enterobase.
+* If you wish, you can use the default "nginx.conf" file if you replace the 'replaced_by_your_server_uri' with your server IP, but it is strongly recommended to use the one downloaded when setting up your account with enterobase.
   ::
 
     vi $HOME/local_enterobase_home/nginx/nginx.conf
 
-* You will need to provide a valid ssl certificate which should be saved inside the certs folder inside the user's home folder set up in the step above.
-* In case your server does not have a valid ssl certificate, you can temporarily create a self-signed certificate using the following link. Please rename the created certificate and key so that they match those stored in the above directory structure:
+* You will need to provide a valid SSL certificate which should be saved inside the "certs" folder inside the user's home folder set up in the step above.
+* In case your server does not have a valid SSL certificate, you can temporarily create a self-signed certificate using the following link. Please rename the created certificate and key so that they match those stored in the above directory structure, replacing the existing files:
 
   * https://linuxize.com/post/creating-a-self-signed-ssl-certificate/
 
-* Alternatively, you can use the default certs inside the docker container (no modification is needed).
-* This should be temporary, as it is important to get a valid ssl certificate from a trusted Certificate Authority.
+* Alternatively, you can use the default existing certificate and key files within the docker container (no modification is needed).
+* This should be temporary, as it is important to get a valid SSL certificate from a trusted Certificate Authority.
 
 
 * Use the following command to validate the configuration of the server. Change the 'nginx.conf' if there is any error message.
@@ -139,4 +139,3 @@ Restarting the Container
 	sudo docker restart nginx_local_enterobase
 
 Please note this was developed on Ubuntu 20.04, and tested on Ubuntu 20.04, and Debian 9.
-

@@ -8,7 +8,7 @@ NGINX acts as a reverse proxy and load balancer for Local EnteroBase. It will se
 Important Notice
 `````````````````
 
-All ports mentioned in this section are the default values in the "nginx.conf" file, however, in the following sections you may opt to change these via the NGINX config page. So please be aware that the port numbers are not final.
+All ports mentioned in this section are the default values for NGINX, however, in the following sections you may opt to change these via the NGINX config page. So please be aware that the port numbers are not final.
 
 Because NGINX is running as a server, you need to make sure you allow the relevant ports to be forwarded in order to access it from an external browser using the public IP or URL. If your institution or server (or both) uses a proxy or a firewall, you need to make sure both 443 (https) and 80 (http) ports are open. In addition to this, if your web server is located on a different machine to the EGP singularity container you need to ensure that port 8000 is open. If not, you may run into issues like in Fig. 1 (below).
 
@@ -21,7 +21,7 @@ Because NGINX is running as a server, you need to make sure you allow the releva
 
 An example of allowing NGINX to run with an enabled "Uncomplicated Firewall (ufw)", which is default on most Ubunut installations, is as follows:
 
-1. Check if ufw is enabled using the below command. If it isn't, you don't have to worry.
+1. Check if ufw is enabled using the below command. If it isn't, then this firewall should not be an issue and you can skip the next step.
 	::
 
 		sudo ufw status
@@ -33,7 +33,7 @@ An example of allowing NGINX to run with an enabled "Uncomplicated Firewall (ufw
 NGINX Resources
 ````````````````
 
-This section guides you through the creation of the resources required to install and configure NGINX. It is important to have these resources ready before continuing with the installation process, especially if you choose the "Automatic Installation" option. During the installation you will be prompted to copy your resources into the relevant directories, so there is no need to formulate the exact directory (shown below) required by NGINX (just make sure you have the "nginx.conf" and cert files ready).
+This section guides you through the creation of the resources required to install and configure NGINX. It is important to have these resources ready before continuing with the installation process, especially if you choose the "Automatic Installation" option. During the installation you will be prompted to copy your resources into the relevant directories, so there is no need to formulate the exact directory (shown below) required by NGINX - **just make sure you have the "nginx.conf" and certs ready**.
 
 NGINX Resource Directory Structure
 ==================================
@@ -78,7 +78,7 @@ For more information on these values please visit the NGINX documentation, avail
 "certs"
 =======
 
-A valid SSL certificate is required to run Local EnteroBase using HTTPS. A self-signed certificate can be generated using the OpenSSL tutorial at: https://linuxize.com/post/creating-a-self-signed-ssl-certificate. Please ensure that you rename the generated files to match the filenames shown in Fig. 2. Alternatively, you can use the certificates provided in the Docker container by default. These should be copied into the "$HOME/nginx/certs" file before running NGINX. NOTE: copying your own certs in requires a restart of the NGINX server; if you are using the automatic installer you must copy the "key.pem" and "cert.pem" files into "$HOME/nginx/certs" folder after the installation is completed, and then restart the server (this can be done using the "run_all.sh" script in the "local_enterobase_home" folder).
+A valid SSL certificate is required to run Local EnteroBase using HTTPS. A self-signed certificate can be generated using the OpenSSL tutorial at: https://linuxize.com/post/creating-a-self-signed-ssl-certificate. Please ensure that you rename the generated files to match the filenames shown in the directory structure above ("key.pem" and "cert.pem"). Alternatively, you can use the certificates provided in the Docker container by default. NOTE: copying your own certs in requires a restart of the NGINX server; if you are using the automatic installer you must copy the "key.pem" and "cert.pem" files into "$HOME/nginx/certs" folder after the installation is completed, and then restart the server (this can be done using the "run_all.sh" script in the "local_enterobase_home" folder).
 
 
 "logs"

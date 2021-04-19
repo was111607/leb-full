@@ -44,7 +44,7 @@
             
   <div class="section" id="singularity-installation">
 <span id="singularity-installation-label"></span><h1>Singularity Installation<a class="headerlink" href="#singularity-installation" title="Permalink to this headline">¶</a></h1>
-<p>Firstly, the user needs to install the Singularity software using the following steps described in “<a class="reference external" href="https://sylabs.io/guides/3.5/user-guide/quick_start.html">https://sylabs.io/guides/3.5/user-guide/quick_start.html</a>”.</p>
+<p>Firstly, the user needs to install the Singularity software, the following steps use the official documentaton: “<a class="reference external" href="https://sylabs.io/guides/3.5/user-guide/quick_start.html">https://sylabs.io/guides/3.5/user-guide/quick_start.html</a>”.</p>
 <p>Note: Some installations require the user to have sudo privileges. If you do not have any, please ask your system administrator to install them for you.</p>
 <div class="section" id="install-the-required-packages">
 <h2>Install the Required Packages<a class="headerlink" href="#install-the-required-packages" title="Permalink to this headline">¶</a></h2>
@@ -92,7 +92,6 @@ sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
 <li><p>The following commands are used to download the code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export VERSION=3.5.2 &amp;&amp; wget  https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
 tar -xzf singularity-${VERSION}.tar.gz
-cd singularity
 </pre></div>
 </div>
 </li>
@@ -102,7 +101,8 @@ cd singularity
 <h2>Compile the Singularity Source Code<a class="headerlink" href="#compile-the-singularity-source-code" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>The code is compiled using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">mconfig</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">singularity</span>
+<span class="o">./</span><span class="n">mconfig</span>
 <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">builddir</span>
 <span class="n">sudo</span> <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">builddir</span> <span class="n">install</span>
 </pre></div>

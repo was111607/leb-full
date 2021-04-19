@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Developer Environment &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Testing" href="testing.html" />
+    <link rel="prev" title="Developer Operations" href="developer_operations.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="testing.html" title="Testing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="developer_operations.html" title="Developer Operations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" accesskey="U">Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="developer-environment">
+<h1>Developer Environment<a class="headerlink" href="#developer-environment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>To set up the developer environment, first either complete the manual or
+automatic installation. This step should set up the postgres server, redis
+server, and nginx server.
+* <a class="reference internal" href="../../installation/automatic.html#automatic-installation-label"><span class="std std-ref">Automatic Installation</span></a>
+* <a class="reference internal" href="../../installation/manual.html#manual-installation-label"><span class="std std-ref">Manual Installation</span></a></p>
+<p>You will also need to download the bitbucket repository. Preferrably store this in a
+separate directory to where the Local EnteroBase installation files are stored, to
+help avoid confusion. e.g. store it in $HOME/local_enterobase_repo.</p>
+<p>After the installation has finished, run the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ singularity instance stop egp
+</pre></div>
+</div>
+</div></blockquote>
+<p>This stops the server running with the code already inside the container and frees
+up the port to be used for development.</p>
+</div>
+<div class="section" id="running-the-application">
+<h2>Running the Application<a class="headerlink" href="#running-the-application" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="entering-the-container">
+<h3>Entering the Container<a class="headerlink" href="#entering-the-container" title="Permalink to this headline">¶</a></h3>
+<p>To develop the app and run it within the correct environment, you will need to
+enter the container, binding your Local EnteroBase repository code to override
+what the container stores. This allows you to avoid having to rebuild the container
+each time you make changes to the codebase.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ singularity shell /replace/with/path/to/local_enterobase_repo:/var/www/local_enterobase $HOME/local_enterobase_home/local_enterobase/EGP.sif
+$ cd /var/www/local_enterobase
+$ source /venvs/gunicorn-env/bin/activate
+</pre></div>
+</div>
+</div></blockquote>
+<p>What the above commands do is enter the shell, cd to the correct directory, and
+source the python virtual environment.</p>
+</div>
+<div class="section" id="development">
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h3>
+<p>To run the application in development mode, set STAGING=”development” in manage.py.
+This is done to make sure the celery worker is connected to the same database as the
+server.</p>
+<p><strong>The following commands are to be run inside the container after following the
+“Entering the Container” stage</strong></p>
+<dl>
+<dt>Run Dev Server:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 manage.py run_app
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>Run Celery Worker:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ celery -A manage worker  --loglevel=debug --pidfile=$HOME/celerybeat_myapp_2.pid
+</pre></div>
+</div>
+</div></blockquote>
+<p>Run Celery Beat:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ celery -A manage beat --loglevel=debug --pidfile=$HOME/celerybeat_myapp.pid -s $HOME/celerybeat-schedule:
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="production">
+<h3>Production<a class="headerlink" href="#production" title="Permalink to this headline">¶</a></h3>
+<p>To run the application in production mode, set STAGING=”production” in manage.py.
+This is done to make sure the celery worker is connected to the same database as the
+server.</p>
+<p><strong>The following commands are to be run inside the container after following the
+“Entering the Container” stage</strong></p>
+<dl>
+<dt>Run Dev Server:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gunicorn -b 0.0.0.0:8000 --timeout 300 --name &quot;local_entero&quot; --log-file=$HOME/logs/gunilog.log --bind=unix:$HOME/sock &quot;manage:create_app_production()&quot;
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>Run Celery Worker:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ celery -A manage worker  --loglevel=debug --pidfile=$HOME/celerybeat_myapp_2.pid
+</pre></div>
+</div>
+</div></blockquote>
+<p>Run Celery Beat:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ celery -A manage beat --loglevel=debug --pidfile=$HOME/celerybeat_myapp.pid -s $HOME/celerybeat-schedule:
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="additional-info">
+<h2>Additional Info<a class="headerlink" href="#additional-info" title="Permalink to this headline">¶</a></h2>
+<p>Every time you change the code, the dev server will auto-reload, but the Celery Worker, Celery Beat will need to be restarted. If you are running it in production mode you will need to manually restart the gunicorn server as well.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developer Environment</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#running-the-application">Running the Application</a><ul>
+<li><a class="reference internal" href="#entering-the-container">Entering the Container</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
+<li><a class="reference internal" href="#production">Production</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-info">Additional Info</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="developer_operations.html"
+                        title="previous chapter">Developer Operations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="testing.html"
+                        title="next chapter">Testing</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/developer_operations/developer_environment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="testing.html" title="Testing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="developer_operations.html" title="Developer Operations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" >Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
