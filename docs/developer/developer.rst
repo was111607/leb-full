@@ -9,8 +9,7 @@ This section provides documentation to support future developers of Local Entero
 
 **Fig. 1 - Local EnteroBase Directory Structure**
 
-Directory Structure Descriptions
---------------------------------
+**Directory Structure Descriptions**
 
 - **Docker_Images** - stores the Docker container and related files such as certs, configuration etc.
 - **docs** - where the development documentation is found.
