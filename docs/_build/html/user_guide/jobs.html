@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Viewing Jobs &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developing Local EnteroBase" href="../developer/developer.html" />
+    <link rel="prev" title="Uploading Strains" href="upload_strains.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../developer/developer.html" title="Developing Local EnteroBase"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="upload_strains.html" title="Uploading Strains"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user_guide.html" accesskey="U">User Guide</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="viewing-jobs">
+<h1>Viewing Jobs<a class="headerlink" href="#viewing-jobs" title="Permalink to this headline">¶</a></h1>
+<p>This webpage allows viewing of all jobs that have been produced for the current user, generated from submitted strains and metadata, in a table. Each job is displayed with column headings as identifying metadata, such as the job ID and submission date, and one of the following statuses:</p>
+<ul class="simple">
+<li><p>Received - The job has been queued to be processed.</p></li>
+<li><p>Processing - The job is currently being processed.</p></li>
+<li><p>Completed - The job has been processed.</p></li>
+<li><p>Failed - Processing of the job has failed.</p>
+<ul>
+<li><p><strong>Note:</strong> We intend for the job to be able to be re-generated, although this is currently non-functional in the beta version.</p></li>
+</ul>
+</li>
+<li><p>Uploaded - The job results have been submitted to Central EnteroBase.</p></li>
+<li><p>Upload Failed - An attempt to submit the job results to Central EnteroBase has failed, the job can be re-uploaded by the user.</p></li>
+</ul>
+<p>When a job has been successfully processed, 2 blue icons will appear in the table cells under the “Upload to Warwick EnteroBase” and “Download” columns for the job row. These icons can be clicked to upload the results of the job to the Central EnteroBase at Warwick and download the results to local storage respectively.</p>
+<p>Note: The page must be refreshed to update the statuses, we intend to implement a live-updating callback in the future.</p>
+<div class="figure align-center" id="id1">
+<img alt="Jobs Page" src="../_images/jobs.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 1 - Jobs Page</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="uploading">
+<h2>Uploading<a class="headerlink" href="#uploading" title="Permalink to this headline">¶</a></h2>
+<p>The metadata of the submitted strain and the FASTA and FASTQ result files of the assembly are uploaded to Warwick EnteroBase. The FASTA and FASTQ files stores the reference sequence and sequence reads (and quality scores) respectively. This operation can only be performed once (if successful) to avoid duplicate data being uploaded and subsequently stored. A successful upload is indicated by a green check tick icon in place of the original blue upload icon, which is displayed in figure 1.</p>
+</div>
+<div class="section" id="downloading">
+<h2>Downloading<a class="headerlink" href="#downloading" title="Permalink to this headline">¶</a></h2>
+<p>The metadata of the submitted strain and the FASTA and FASTQ result files of the assembly are downloaded to the default download directory of the web browser. You can redownload the results at any time by clicking the blue download icon, which is displayed in figure 1.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Viewing Jobs</a><ul>
+<li><a class="reference internal" href="#uploading">Uploading</a></li>
+<li><a class="reference internal" href="#downloading">Downloading</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="upload_strains.html"
+                        title="previous chapter">Uploading Strains</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../developer/developer.html"
+                        title="next chapter">Developing Local EnteroBase</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/jobs.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../developer/developer.html" title="Developing Local EnteroBase"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="upload_strains.html" title="Uploading Strains"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user_guide.html" >User Guide</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

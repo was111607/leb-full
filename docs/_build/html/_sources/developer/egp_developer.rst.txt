@@ -1,0 +1,506 @@
+EToKi, PostgreSQL and Gunicorn (EGP) Container Installation
+------------------------------------------------------------
+
+Firstly, the user needs to follow the previous instructions within the sections for installing/running Singularity and the NGINX web server.
+
+* :ref:`Singularity <singularity-installation-label>`
+* :ref:`NGINX <nginx-installation-label>`
+
+Building the recipe files for some installations require the sudo command, if this is not owned, please ask the system administrator to install it.
+
+The recipes have been combined to form a single Singularity recipe that will construct 2 images, a base and its application, from the original 3 containers storing each of EToKi, PostgreSQL and Gunicorn individually. This is to provide a single image to the user
+to work with, retaining the original functionalities, instead of multiple images that they would need to pull from the Singularity cloud library individually.
+
+Required files and folders
+==========================
+
+In "local_enterobase/Singularity_Images/EGP" sub-folder
+
+* Recipe file for the base image: **EGP_base.def**
+* Recipe file for the application image : **EGP.def**
+
+Content of the recipe files
+===========================
+
+* This image is built in two stages:
+
+  * The first stage is building the base image which contains the dependency packages
+  * The second is based on the parent image, which is generated from the first stage, and adding the container entry points and more regularly updated packages.
+
+
+* The reason for using two stages is to reduce the total buld time
+
+  * The base image stores packages which are not updated often, removing the need to rebuild them as constantly as the recipes are updated.
+  * Rebuilding the second image will occur as a result of changing the Local EnteroBase code which happens frequently.
+
+The first image is built using **"EGP_base.def"** recipe file.
+
+* The first two lines in the recipe files pull the a singularity image which is based on ubuntu 18.04
+
+  ::
+
+    Bootstrap:library
+    From: ubuntu:18.04
+
+* The %post section initially ensures the locale is set to permit the database server to initialise and start in the event that the ubuntu singularity image does not have a default set locale.
+* Then, common dependency packages that are used by EToKi, PostgreSQL and Gunicorn are installed.
+* To conclude %post, virtual environments are created for each of EToKi, PostgreSQL and Gunicorn, being initially configured to permit successful installation of later dependencies. Their paths are
+
+  * /venvs/etoki-env
+  * /venvs/gunicorn-env
+  * /venvs/postgres-env
+
+* Each of EToKi, PostgreSQL and Gunicorn has their own %appinstall section which modularises the different dependency packages that are installed within. These provide transparency in the recipe (which dependency package belongs to which application) and separation of the installations and metadata.
+
+The second image is built using **"EGP.def"** recipe file
+
+* The first two lines instruct that the image is built based on the parent image, then sets the child image name:
+
+  ::
+
+     Bootstrap:localimage
+     From : EGP_base.sif
+
+* Sets the container paths for accessing the EToKi and Local EnteroBase source code directories:
+
+  ::
+
+     %environment
+       ETOKI_APP_PATH="/code/EToKi/"
+       LE_APP_PATH="/var/www/local_enterobase/"
+       export ETOKI_APP_PATH LE_APP_PATH
+
+* Installs the most recent source code for Local EnteroBase from bitbucket master branch:
+
+  ::
+
+    %post
+      mkdir /var/www/
+      git clone https://bitbucket.org/enterobase/local_enterobase.git
+      mv local_enterobase /var/www/
+
+** Virtual Environments **
+
+* All individual %appinstall and %apprun scripts for each of EToKi, Gunicorn and PostgreSQL are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.
+* Each script begins with the corresponding virtual environment being activated and concludes with their deativation as follows.
+
+  ::
+    . /venvs/<env-name>/bin/activate
+    <running the script functionality>
+    deactivate
+
+  * <env-name> represents one of 'etoki-env', 'gunicorn-env' or 'postgres-env'.
+  * All scripts run using #!/bin/sh, so '.' is the equivalent of 'source' in #!/bin/bash which reads and executes the contents at a provided filepath.
+  * deactivate ensures other scripts can successfully run within their respetive virtual environment.
+
+**EToKi Recipe Section**
+
+* Clones the EToKi source code and save it inside the image.
+* Also installs every Python dependency package stored inside the EToKi requirements.txt file:
+
+  ::
+
+    %appinstall etoki
+      . /venvs/etoki-env/bin/activate
+      yes w|python3 -m pip install psutil
+      mkdir /code
+      cd /code
+      git clone https://github.com/zheminzhou/EToKi.git
+      python3 -m pip install -r /code/EToKi/requirement.txt
+      cd /code/EToKi/
+      python3 EToKi.py configure --install
+      ldconfig
+      apt-get clean
+      deactivate
+
+* Creates an entrypoint to copy configure.ini file to the user home folder:
+
+  ::
+
+    %apprun cp_configure
+      . /venvs/etoki-env/bin/activate
+      cp /code/EToKi/modules/configure.ini $HOME
+      deactivate
+
+* Creates an entry point that runs EToKi with the different options as a Singularity instance:
+
+  ::
+
+    %apprun run_etoki
+      . /venvs/etoki-env/bin/activate
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/code/EToKi/externals/SPAdes-3.13.0-Linux/bin
+      #APP_PATH="/code/EToKi/"
+      PYTHONPATH=$ETOKI_APP_PATH:$PYTHONPATH
+      SPDPATH=SPAdes-3.13.0-Linux/bin
+      PYTHONPATH=$SPDPATH:$PYTHONPATH
+      echo $PYTHONPATH
+      cd /code/EToKi
+      python3 /code/EToKi/EToKi.py "$@"
+      deactivate
+
+**Gunicorn and Application Image**
+
+* Clones the Gunicorn source code and save it inside the image.
+* Also installs Python dependency packages stored inside the Local EnteroBase requirements.txt file:
+
+  ::
+
+    %appinstall gunicorn
+      . /venvs/gunicorn-env/bin/activate
+      python3.7 -m pip install -r /var/www/local_enterobase/requirements.txt
+      python3.7 -m pip install Flask-Uploads --upgrade
+      apt-get -y remove gunicorn
+      python3.7 -m pip uninstall -y gunicorn
+      python3.7 -m pip install git+https://github.com/benoitc/gunicorn.git
+      python3.7 -m pip uninstall --y werkzeug
+      python3.7 -m pip install werkzeug==0.16.1
+      python3.7 -m pip install celery --upgrade # Forced update to ensure correct libraries for setting user/password
+      deactivate
+
+* This instructs the development server to be run:
+
+  ::
+
+    %apprun run_flask
+      . /venvs/gunicorn-env/bin/activate
+      python3.7 /var/www/local_enterobase/manage.py run_app
+      deactivate
+
+* Instructs the celery beat periodic task scheduler to be run on tasks to be executed by nodes in the cluster:
+
+  ::
+
+    %apprun celery_beat
+      . /venvs/gunicorn-env/bin/activate
+      cd /var/www/local_enterobase/local_entero/tasks/assembler
+      celery -A  assembly_runner.celery beat --loglevel=debug --pidfile=$HOME/celerybeat_myapp.pid -s $HOME/celerybeat-schedule:
+      deactivate
+
+* Instructs a process to be created to manage running tasks
+
+  ::
+
+    %apprun celery_worker
+      . /venvs/gunicorn-env/bin/activate
+      cd /var/www/local_enterobase/local_entero/tasks/assembler
+    	celery -A  assembly_runner.celery worker  --loglevel=debug --pidfile=$HOME/celerybeat_myapp_2.pid
+      deactivate
+
+* This entrypoint takes two argument which is a username and a password to set up an administrator account to log into the Local EnteroBase app:
+
+  ::
+
+    %apprun set_user
+      . /venvs/gunicorn-env/bin/activate
+      python3 /var/www/local_enterobase/manage.py set_local_user "$@"
+      deactivate
+
+**PostgreSQL Image**
+
+* This entrypoint runs the pg_ctl wrapper from PostgreSQL to initialise the database cluster.
+* To complete the initialisation for local enterobase, a default database user for the flask application is added with the default select, insert, update and delete permissions.
+* The user's self-made directory storing the databases must be bound to /usr/local/pgsql/data, /usr/local/pgsql/bin/psql and /usr/local/pgsql/logs/ when running the command within the terminal so that the files are copied to the user's home directory.
+* This script should only be run when creating and running the database server for the first time on the user's system.
+* The above functionality is wrapped in an if statement that checks the boolean value of EMPTY_DIR, which is set to false if the database data directory inside the container is empty, meaning that the cluster initialisation can occur, or vice versa.
+
+  ::
+
+    %apprun init_db
+      . /venvs/postgres-env/bin/activate
+      [ "$(ls -A /usr/local/pgsql/data)" ] && EMPTY_DIR=false || EMPTY_DIR=true
+      if [ "$EMPTY_DIR" = true ]; then
+        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -U postgres initdb
+        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log start -o '"$@"'
+        /usr/local/pgsql/bin/psql -c "CREATE USER flask_user WITH PASSWORD 'flask_password';"
+        /usr/local/pgsql/bin/psql -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO flask_user;"
+        /usr/local/pgsql/bin/psql -c "ALTER DEFAULT PRIVILEGES FOR USER flask_user IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO flask_user;"
+        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log stop
+      else
+        echo "Database cluster initialisation failed"
+        echo "Database cluster seems to have been previously initialised since the data directory is non-empty"
+      fi
+      deactivate
+
+* This instructs the database server to start and run in the background using the pg_ctl wrapper from PostgreSQL.
+* The user's directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user's home directory.
+* Options for the server can be passed in through the user input, e.g. the port to run the database server off.
+
+  ::
+
+    %apprun start_server
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log start -o '"$@"' &
+      deactivate
+
+* This instructs the running database server to stop using the pg_ctl wrapper from PostgreSQL.
+* The user's directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user's home directory.
+
+  ::
+
+    %apprun stop_server
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log stop
+      deactivate
+
+* This instructs the running database server to restart using the pg_ctl wrapper from PostgreSQL.
+* This function may be required in the event a configuration change must be applied.
+* The user's directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user's home directory.
+* Options for the server can be passed in through the user input, e.g. the port to run the database server off.
+
+  ::
+
+    %apprun restart_server
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log restart -o '"$@"' &
+      deactivate
+
+* This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to create an additional database user with default select, insert, update and delete permissions.
+* This script can only be run whilst the database server is running.
+* The above functionality is wrapped in an if statement that checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If not equal to 1, the user can be created as it does not exist.
+* There are also 2 preliminary checks on the user input to ensure correct formatting. Failing any of these checks will gracefully exit the script without creating an account.
+
+  * The first check is to ensure that there are 4 separate arguments being passed in, which should be the -u and -p flags along with a username and password.
+  * The second check ensures that the format of the 4 arguments are correct, with -u and -p being the 1st and 3rd arguments (in either order) as this means that their arguments follow.
+
+  ::
+
+    %apprun create_dbuser
+      . /venvs/postgres-env/bin/activate
+      usage () { echo "Required input flags and arguments:";
+                 echo "-u <username>";
+                 echo "-p <new password to set>";
+               }
+
+      if [ $# -ne 4 ]; then
+        usage
+        exit 1
+      fi
+
+      if [ "$1" = "-u" ] && [ "$3" = "-p" ]; then
+        UNAME="$2"
+        PASSWORD="$4"
+      elif [ "$1" = "-p" ] && [ "$3" = "-u" ]; then
+        PASSWORD="$2"
+        UNAME="$4"
+      else
+        usage
+        exit 1
+      fi
+
+      EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c "SELECT 1 FROM pg_user WHERE usename = '$UNAME'")
+      if [ "$EXISTS" != "1" ]; then
+        /usr/local/pgsql/bin/psql -c "CREATE USER $UNAME WITH PASSWORD '$PASSWORD';"
+        /usr/local/pgsql/bin/psql -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $UNAME;"
+        /usr/local/pgsql/bin/psql -c "ALTER DEFAULT PRIVILEGES FOR USER $UNAME IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $UNAME;"
+      else
+        echo "User already exists, no changes have been made"
+        exit 0
+      fi
+      deactivate
+
+* This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to change an existing database user's password.
+* This script can only be run whilst the database server is running.
+* The above functionality is wrapped in an if statement that checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If equal to 1, the password can be changed as the user exists.
+* There are also 2 preliminary checks on the user input to ensure correct formatting. Failing any of these checks will gracefully exit the script without creating an account.
+
+  * The first check is to ensure that there are 4 separate arguments being passed in, which should be the -u and -p flags along with a username and password.
+  * The second check ensures that the format of the 4 arguments are correct, with -u and -p being the 1st and 3rd arguments (in either order) as this means that their arguments follow.
+
+  ::
+
+    %apprun change_dbuser_password
+      . /venvs/postgres-env/bin/activate
+      usage () { echo "Required input flags and arguments:";
+                 echo "-u <username>";
+                 echo "-p <new password to set>";
+               }
+
+      if [ $# -ne 4 ]; then
+        usage
+        exit 1
+      fi
+
+      if [ "$1" = "-u" ] && [ "$3" = "-p" ]; then
+        UNAME="$2"
+        PASSWORD="$4"
+      elif [ "$1" = "-p" ] && [ "$3" = "-u" ]; then
+        PASSWORD="$2"
+        UNAME="$4"
+      else
+        usage
+        exit 1
+      fi
+
+      EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c "SELECT 1 FROM pg_user WHERE usename = '$UNAME'")
+      if [ "$EXISTS" = "1" ]; then
+        /usr/local/pgsql/bin/psql -c "ALTER USER $UNAME WITH PASSWORD '$PASSWORD';"
+      else
+        echo "User does not exist, no changes have been made"
+        exit 0
+      fi
+      deactivate
+
+* This entrypoint passes in a user input of a database user to modify, then locates and passes in a database username, password and running port from the configuration file .local_configuration_file.yml to update user's credentials and server running port.
+* This script can only be run whilst the database server is running.
+* The database server must be restarted to apply the configuration changes correctly, specifically setting the port number.
+* The above functionality is wrapped in nested if statements that check that the user-passed arguments are correct, by ensuring there are 2 of them and the 1st is the -u flag, meaning that the 2nd is the supplied username.
+* An additional if statement checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If equal to 1, the full configuration change can be applied as the required user exists.
+
+  ::
+
+    %apprun set_from_config
+      . /venvs/postgres-env/bin/activate
+      usage () { echo "Required input flags and arguments:";
+                 echo "-u <username to modify>";
+                 exit 1;
+               }
+
+      if [ $# -eq 2 ]; then
+        if [ "$1" = "-u" ]; then
+          OLD_DB_UNAME="$2"
+          EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c "SELECT 1 FROM pg_user WHERE usename = '$OLD_DB_UNAME'")
+          if [ "$EXISTS" = "1" ]; then
+            NEW_DB_UNAME="$(grep 'DATABASE_USER : ' .local_configuration_file.yml | cut -c 17-)"
+            NEW_DB_PWORD="$(grep 'DATABASE_PASSWORD : ' .local_configuration_file.yml | cut -c 21-)"
+            NEW_PORT="$(grep 'DATABASE_PORT : ' .local_configuration_file.yml | cut -c 17-)"
+            /usr/local/pgsql/bin/psql -c "ALTER USER $OLD_DB_UNAME RENAME TO $NEW_DB_UNAME;"
+            /usr/local/pgsql/bin/psql -c "ALTER USER $NEW_DB_UNAME WITH PASSWORD '$NEW_DB_PWORD';"
+            sed -i "s/#\?port =.*/port = $NEW_PORT/" /usr/local/pgsql/data/postgresql.conf
+          else
+            echo "User does not exist, no changes have been made"
+            exit 0
+          fi
+        else
+          usage
+        fi
+      else
+        usage
+      fi
+      deactivate
+
+**Container Run and Start Scripts**
+
+* Prepares for and runs the gunicorn app enabling access to the Local EnteroBase pages through the browser.
+* The gunicorn app runs the given app module (local_entero:create_app('production')) and is configured against a user input of options to the command, such as the server sockets.
+
+  ::
+
+    %startscript
+      . /venvs/gunicorn-env/bin/activate
+      cd /var/www/local_enterobase/
+      PYTHONPATH=$LE_APP_PATH:$PYTHONPATH
+      gunicorn "$@" "local_entero:create_app('production')"
+      deactivate
+
+  * This instructs for the database server to be started given the user inputs and that Gunicorn runs Local Enterobase, listens to port 8000 and sets timeout to be 300 seconds.
+
+Building the base and application images
+========================================
+
+* The local_enterobase repository can be saved wherever the user feels suitable on the local system. For the following examples, it is assumed that the local_enterobase repository is saved in the sub-folder "local_enterobase" from the current working folder
+* The default build location is off of the home directory referenced below. If you wish to build it in a different location, you can also replace this with a location of your choosing.
+* Run the following command to build a singularity image named as "local_base_image.sif", the local_base_image is built using the following command.
+* The file MUST be named EGP_base.sif as this is the name the application image EGP.sif will attempt to find to build.
+
+  ::
+
+    sudo singularity build $HOME/local_enterobase_home/local_enterobase/EGP_base.sif local_enterobase/Singularity_Images/EGP/EGP_base.def
+
+* The following command is used to build the second image, where the current working directory (default $HOME) must also store the base image "EGP_base.sif":
+
+  ::
+
+    sudo singularity build EGP.sif local_enterobase/Singularity_Images/EGP/EGP.def
+
+* Error messages may appear whilst building either image, for example:
+
+  ::
+
+    E: You don't have enough free space in /var/cache/apt/archives/.
+    FATAL:   failed to execute %post proc: exit status 100
+    FATAL:   While performing build: while running engine: while running /usr/local/libexec/singularity/bin/starter: exit status 255
+
+  * If you have the previous error messages, you may not have enough disk space to build the images, you should clear space from your disk and also attempt the following commands before building.
+  * These commands clear the system package and Singularity caches. Autoremove removes installed packages that are no longer required as dependencies for other packages in the system, and are therefore redundant.
+
+  ::
+
+     sudo apt-get clean
+     sudo apt-get autoremove
+     singularity cache clean
+
+Pushing the container image
+=============================
+
+Any updates to the recipe file for the application image necessitates the image to be rebuilt and pushed to the Singularity cloud library as follows to provide users with the most recent version of the container.
+
+The user must first generate an access token if not available to verify themselves with the Singularity container services:
+
+* Go to: https://cloud.sylabs.io/
+* Click “Sign in to Sylabs” and follow the sign in steps.
+* Select “Access Tokens” from the drop down menu.
+* Enter a name for your new access token, such as “test token”
+* Click the “Create a New Access Token” button.
+* Click “Copy token to Clipboard” from the “New API Token” page, download it as well if it is required to keep a record.
+* Run the following command and paste the access token at the prompt.
+
+  ::
+
+    singularity remote login
+
+The user must then be authorised to push containers to the cloud library, this typically involves generating a PGP keypair under the account that owns the Singularity cloud storage for the image:
+
+* The generated keys are used to sign the image before pushing, allowing it to be stored into the cloud library and verify the image has not been tampered with when it is pulled by the user.
+* The following command will generate a new keypair:
+
+  ::
+
+    singularity key newpair
+
+* The following output to the above command requires the user input. The user must include the email of the account that owns the Singularity cloud repository where the image is stored to provide sufficient permissions to push.
+* The key must be pushed to the public keystore in case other users wish to verify the pulled image.
+
+  ::
+
+    Enter your name (e.g., John Doe) : David Trudgian
+    Enter your email address (e.g., john.doe@example.com) : david.trudgian@sylabs.io
+    Enter optional comment (e.g., development keys) : demo
+    Enter a passphrase :
+    Retype your passphrase :
+    Would you like to push it to the keystore? [Y,n] Y
+
+Once the keys have been successfully generated and pushed, the image container can be signed.
+
+* EGP.sif is the default name for the unified application image, this can be changed if required.
+* To enable successful signing, there will be a prompt for the passphrase inputted during key generation.
+* The following command will sign an image.
+* If the default build directory was changed previously for EGP_base.sif and EGP.sif, replace it in the following command with the correct installation directory.
+
+  ::
+
+    singularity sign $HOME/local_enterobase_home/local_enterobase/EGP.sif
+
+After successful signing, the image can be pushed to the cloud library.
+
+* EGP.sif is the default name for the unified application image, this can be changed if required.
+* The following command will push an image.
+* If the default build directory was changed previously for EGP_base.sif and EGP.sif, replace it in the following command with the correct installation directory.
+* "0.1" Is the default image tag for which the users will download as they will reference this when pulling the image. This can be changed, with the associated image pulled using the new tag.
+
+  ::
+
+    singularity push $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.1
+
+The access token may occasionally expire after a particular time period. Before signing and pushing new containers, it is required to generate another token and key by following the above corresponding steps.
+
+* It may also be useful to remove the old associated public key as follows:
+
+  ::
+
+    singularity key remove <fingerprint>
+
+  * <fingerprint> refers to the sequence of characters under the 'F:' heading for the desired key after inputting the following to display all keys.
+
+    ::
+
+      singularity key list

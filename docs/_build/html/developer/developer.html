@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Developing Local EnteroBase &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Application Components" href="components/components.html" />
+    <link rel="prev" title="Viewing Jobs" href="../user_guide/jobs.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="components/components.html" title="Application Components"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../user_guide/jobs.html" title="Viewing Jobs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="developing-local-enterobase">
+<h1>Developing Local EnteroBase<a class="headerlink" href="#developing-local-enterobase" title="Permalink to this headline">¶</a></h1>
+<p>This section provides documentation to support future developers of Local EnteroBase.</p>
+<div class="figure align-center">
+<img alt="Local EnteroBase Directory Structure" src="../_images/folder_structure.png" />
+</div>
+<p><strong>Fig. 1 - Local EnteroBase Directory Structure</strong></p>
+<div class="section" id="directory-structure-descriptions">
+<h2>Directory Structure Descriptions<a class="headerlink" href="#directory-structure-descriptions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Docker_Images</strong> - stores the Docker container and related files such as certs, configuration etc.</p></li>
+<li><p><strong>docs</strong> - where the development documentation is found.</p></li>
+<li><p><strong>installer</strong> - where the automatic installation script and information is found.</p></li>
+<li><dl class="simple">
+<dt><strong>local_entero</strong> - the Local EnteroBase flask application code and files.</dt><dd><ul>
+<li><p><strong>app_test</strong> - stores JSON Warwick EnteroBase request files (in the child directory <strong>Warwick_EnteroBase_requests_data</strong>).</p></li>
+<li><p><strong>auth</strong> - contains the authorisation routes and utility methods.</p></li>
+<li><p><strong>configuration</strong> - contains the configuration routes and utility methods.</p></li>
+<li><p><strong>Databases</strong> - contains the database models and utility methods.</p></li>
+<li><p><strong>forms</strong> - contains form related methods, such as validation checks for the configuration steps.</p></li>
+<li><p><strong>jobs</strong> - contains the job routes and utility methods.</p></li>
+<li><p><strong>resources</strong> - contains resources such as a list of countries and continents.</p></li>
+<li><p><strong>routes</strong> - contains the application routes and utility methods.</p></li>
+<li><p><strong>static</strong> - contains all the static files (files that aren’t server-generated, but must be sent to the browser when requested) such as JavaScript, images etc.</p></li>
+<li><p><strong>tasks</strong> - contains all the celery tasks for performing assemblies.</p></li>
+<li><p><strong>templates</strong> - stores the HTML template files.</p></li>
+<li><p><strong>utils</strong> - contains various utility methods.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> - the main function for the flask app, containing the initialisation code and builds the routes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Singularity_Images</strong> - stores the parent and child recipe files (in the child directory <strong>EGP</strong>) for the unified EToKi, Gunicorn and PostgreSQL container.</p></li>
+<li><dl class="simple">
+<dt><strong>tests</strong></dt><dd><ul>
+<li><p><strong>functional</strong> - contains the functional tests that have been written.</p></li>
+<li><p><strong>integration</strong> - contains the integration tests that have been written.</p></li>
+<li><p><strong>test_reads</strong> - contains the short read files for testing the assembly functions.</p></li>
+<li><p><strong>unit</strong> - contains the unit tests that have been written.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> - contains the test setup and teardown code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_data.py</span></code> - contains test data to populate the database with.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> -  the files/folders that git will ignore in the project.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.local_configuration_file.yml</span></code> - contains configuration settings for Local EnteroBase.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitbucket-pipelines.yml</span></code> - the pipeline instructions for CI.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_assembly_requirements.sh</span></code> - script to check system meets minimum requirements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.py</span></code> - contains the config settings for the flask app. Distinguishes between development/testing/production.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manage.py</span></code> - contains the manager functions of the application.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - stores configuration settings for building and installing the project system (PEP 518).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code> - stores configuration settings for performing system testing using Pytest.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> - stores metadata regarding Local EnteroBase.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirement_check.py</span></code> - script to check system meets minimum requirements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> - specifies the python libraries and their version numbers that are required to run the application.</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="components/components.html">Application Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="components/front-end_technologies.html">Front-End Technologies Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/configuration_steps.html">Configuration Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/configuration_test.html">Configuration Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/strain_upload.html">Strain Upload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/job_viewer.html">Job Viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/future_developments.html">Future Developments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="containers/containers.html">Containers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="containers/nginx.html">NGINX Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers/egp.html">EToKi, PostgreSQL and Gunicorn (EGP) Container</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="central_integrations/integrations_in_central_enterobase.html">Integrations in Central EnteroBase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/nginx_config.html">NGINX Configuration Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/register_local_enterobase.html">Register Local EnteroBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/administration.html">Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/oauth2_server.html">OAuth2 Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer_operations/developer_operations.html">Developer Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer_operations/testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_operations/pipeline.html">Bitbucket Pipelines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developing Local EnteroBase</a><ul>
+<li><a class="reference internal" href="#directory-structure-descriptions">Directory Structure Descriptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../user_guide/jobs.html"
+                        title="previous chapter">Viewing Jobs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="components/components.html"
+                        title="next chapter">Application Components</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer/developer.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="components/components.html" title="Application Components"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../user_guide/jobs.html" title="Viewing Jobs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

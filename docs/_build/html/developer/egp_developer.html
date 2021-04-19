@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bitbucket Pipelines" href="pipeline.html" />
+    <link rel="prev" title="NGINX Image" href="nginx.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Image"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" accesskey="U">Developing Local EnteroBase</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">EToKi, PostgreSQL and Gunicorn (EGP) Container Installation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="etoki-postgresql-and-gunicorn-egp-container-installation">
+<h1>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation<a class="headerlink" href="#etoki-postgresql-and-gunicorn-egp-container-installation" title="Permalink to this headline">¶</a></h1>
+<p>Firstly, the user needs to follow the previous instructions within the sections for installing/running Singularity and the NGINX web server.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../installation/singularity.html#singularity-installation-label"><span class="std std-ref">Singularity</span></a></p></li>
+<li><p><a class="reference internal" href="../installation/nginx.html#nginx-installation-label"><span class="std std-ref">NGINX</span></a></p></li>
+</ul>
+<p>Building the recipe files for some installations require the sudo command, if this is not owned, please ask the system administrator to install it.</p>
+<p>The recipes have been combined to form a single Singularity recipe that will construct 2 images, a base and its application, from the original 3 containers storing each of EToKi, PostgreSQL and Gunicorn individually. This is to provide a single image to the user
+to work with, retaining the original functionalities, instead of multiple images that they would need to pull from the Singularity cloud library individually.</p>
+<div class="section" id="required-files-and-folders">
+<h2>Required files and folders<a class="headerlink" href="#required-files-and-folders" title="Permalink to this headline">¶</a></h2>
+<p>In “local_enterobase/Singularity_Images/EGP” sub-folder</p>
+<ul class="simple">
+<li><p>Recipe file for the base image: <strong>EGP_base.def</strong></p></li>
+<li><p>Recipe file for the application image : <strong>EGP.def</strong></p></li>
+</ul>
+</div>
+<div class="section" id="content-of-the-recipe-files">
+<h2>Content of the recipe files<a class="headerlink" href="#content-of-the-recipe-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>This image is built in two stages:</p>
+<ul>
+<li><p>The first stage is building the base image which contains the dependency packages</p></li>
+<li><p>The second is based on the parent image, which is generated from the first stage, and adding the container entry points and more regularly updated packages.</p></li>
+</ul>
+</li>
+<li><p>The reason for using two stages is to reduce the total buld time</p>
+<ul>
+<li><p>The base image stores packages which are not updated often, removing the need to rebuild them as constantly as the recipes are updated.</p></li>
+<li><p>Rebuilding the second image will occur as a result of changing the Local EnteroBase code which happens frequently.</p></li>
+</ul>
+</li>
+</ul>
+<p>The first image is built using <strong>“EGP_base.def”</strong> recipe file.</p>
+<ul>
+<li><p>The first two lines in the recipe files pull the a singularity image which is based on ubuntu 18.04</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bootstrap</span><span class="p">:</span><span class="n">library</span>
+<span class="n">From</span><span class="p">:</span> <span class="n">ubuntu</span><span class="p">:</span><span class="mf">18.04</span>
+</pre></div>
+</div>
+</li>
+<li><p>The %post section initially ensures the locale is set to permit the database server to initialise and start in the event that the ubuntu singularity image does not have a default set locale.</p></li>
+<li><p>Then, common dependency packages that are used by EToKi, PostgreSQL and Gunicorn are installed.</p></li>
+<li><p>To conclude %post, virtual environments are created for each of EToKi, PostgreSQL and Gunicorn, being initially configured to permit successful installation of later dependencies. Their paths are</p>
+<ul class="simple">
+<li><p>/venvs/etoki-env</p></li>
+<li><p>/venvs/gunicorn-env</p></li>
+<li><p>/venvs/postgres-env</p></li>
+</ul>
+</li>
+<li><p>Each of EToKi, PostgreSQL and Gunicorn has their own %appinstall section which modularises the different dependency packages that are installed within. These provide transparency in the recipe (which dependency package belongs to which application) and separation of the installations and metadata.</p></li>
+</ul>
+<p>The second image is built using <strong>“EGP.def”</strong> recipe file</p>
+<ul>
+<li><p>The first two lines instruct that the image is built based on the parent image, then sets the child image name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bootstrap</span><span class="p">:</span><span class="n">localimage</span>
+<span class="n">From</span> <span class="p">:</span> <span class="n">EGP_base</span><span class="o">.</span><span class="n">sif</span>
+</pre></div>
+</div>
+</li>
+<li><p>Sets the container paths for accessing the EToKi and Local EnteroBase source code directories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">environment</span>
+  <span class="n">ETOKI_APP_PATH</span><span class="o">=</span><span class="s2">&quot;/code/EToKi/&quot;</span>
+  <span class="n">LE_APP_PATH</span><span class="o">=</span><span class="s2">&quot;/var/www/local_enterobase/&quot;</span>
+  <span class="n">export</span> <span class="n">ETOKI_APP_PATH</span> <span class="n">LE_APP_PATH</span>
+</pre></div>
+</div>
+</li>
+<li><p>Installs the most recent source code for Local EnteroBase from bitbucket master branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">post</span>
+  <span class="n">mkdir</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span>
+  <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bitbucket</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">enterobase</span><span class="o">/</span><span class="n">local_enterobase</span><span class="o">.</span><span class="n">git</span>
+  <span class="n">mv</span> <span class="n">local_enterobase</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>** Virtual Environments **</p>
+<ul>
+<li><p>All individual %appinstall and %apprun scripts for each of EToKi, Gunicorn and PostgreSQL are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.</p></li>
+<li><p>Each script begins with the corresponding virtual environment being activated and concludes with their deativation as follows.</p>
+<dl class="simple">
+<dt>::</dt><dd><p>. /venvs/&lt;env-name&gt;/bin/activate
+&lt;running the script functionality&gt;
+deactivate</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>&lt;env-name&gt; represents one of ‘etoki-env’, ‘gunicorn-env’ or ‘postgres-env’.</p></li>
+<li><p>All scripts run using #!/bin/sh, so ‘.’ is the equivalent of ‘source’ in #!/bin/bash which reads and executes the contents at a provided filepath.</p></li>
+<li><p>deactivate ensures other scripts can successfully run within their respetive virtual environment.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>EToKi Recipe Section</strong></p>
+<ul>
+<li><p>Clones the EToKi source code and save it inside the image.</p></li>
+<li><p>Also installs every Python dependency package stored inside the EToKi requirements.txt file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">appinstall</span> <span class="n">etoki</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">etoki</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="n">yes</span> <span class="n">w</span><span class="o">|</span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">psutil</span>
+  <span class="n">mkdir</span> <span class="o">/</span><span class="n">code</span>
+  <span class="n">cd</span> <span class="o">/</span><span class="n">code</span>
+  <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">zheminzhou</span><span class="o">/</span><span class="n">EToKi</span><span class="o">.</span><span class="n">git</span>
+  <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">EToKi</span><span class="o">/</span><span class="n">requirement</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">cd</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">EToKi</span><span class="o">/</span>
+  <span class="n">python3</span> <span class="n">EToKi</span><span class="o">.</span><span class="n">py</span> <span class="n">configure</span> <span class="o">--</span><span class="n">install</span>
+  <span class="n">ldconfig</span>
+  <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">clean</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>Creates an entrypoint to copy configure.ini file to the user home folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun cp_configure
+  . /venvs/etoki-env/bin/activate
+  cp /code/EToKi/modules/configure.ini $HOME
+  deactivate
+</pre></div>
+</div>
+</li>
+<li><p>Creates an entry point that runs EToKi with the different options as a Singularity instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun run_etoki
+  . /venvs/etoki-env/bin/activate
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/code/EToKi/externals/SPAdes-3.13.0-Linux/bin
+  #APP_PATH=&quot;/code/EToKi/&quot;
+  PYTHONPATH=$ETOKI_APP_PATH:$PYTHONPATH
+  SPDPATH=SPAdes-3.13.0-Linux/bin
+  PYTHONPATH=$SPDPATH:$PYTHONPATH
+  echo $PYTHONPATH
+  cd /code/EToKi
+  python3 /code/EToKi/EToKi.py &quot;$@&quot;
+  deactivate
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>Gunicorn and Application Image</strong></p>
+<ul>
+<li><p>Clones the Gunicorn source code and save it inside the image.</p></li>
+<li><p>Also installs Python dependency packages stored inside the Local EnteroBase requirements.txt file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">appinstall</span> <span class="n">gunicorn</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">gunicorn</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">local_enterobase</span><span class="o">/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">Flask</span><span class="o">-</span><span class="n">Uploads</span> <span class="o">--</span><span class="n">upgrade</span>
+  <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">y</span> <span class="n">remove</span> <span class="n">gunicorn</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="o">-</span><span class="n">y</span> <span class="n">gunicorn</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">benoitc</span><span class="o">/</span><span class="n">gunicorn</span><span class="o">.</span><span class="n">git</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="o">--</span><span class="n">y</span> <span class="n">werkzeug</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">werkzeug</span><span class="o">==</span><span class="mf">0.16</span><span class="o">.</span><span class="mi">1</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">celery</span> <span class="o">--</span><span class="n">upgrade</span> <span class="c1"># Forced update to ensure correct libraries for setting user/password</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>This instructs the development server to be run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">run_flask</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">gunicorn</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">local_enterobase</span><span class="o">/</span><span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">run_app</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>Instructs the celery beat periodic task scheduler to be run on tasks to be executed by nodes in the cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun celery_beat
+  . /venvs/gunicorn-env/bin/activate
+  cd /var/www/local_enterobase/local_entero/tasks/assembler
+  celery -A  assembly_runner.celery beat --loglevel=debug --pidfile=$HOME/celerybeat_myapp.pid -s $HOME/celerybeat-schedule:
+  deactivate
+</pre></div>
+</div>
+</li>
+<li><p>Instructs a process to be created to manage running tasks</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun celery_worker
+  . /venvs/gunicorn-env/bin/activate
+  cd /var/www/local_enterobase/local_entero/tasks/assembler
+    celery -A  assembly_runner.celery worker  --loglevel=debug --pidfile=$HOME/celerybeat_myapp_2.pid
+  deactivate
+</pre></div>
+</div>
+</li>
+<li><p>This entrypoint takes two argument which is a username and a password to set up an administrator account to log into the Local EnteroBase app:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">set_user</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">gunicorn</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="n">python3</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">local_enterobase</span><span class="o">/</span><span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">set_local_user</span> <span class="s2">&quot;$@&quot;</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>PostgreSQL Image</strong></p>
+<ul>
+<li><p>This entrypoint runs the pg_ctl wrapper from PostgreSQL to initialise the database cluster.</p></li>
+<li><p>To complete the initialisation for local enterobase, a default database user for the flask application is added with the default select, insert, update and delete permissions.</p></li>
+<li><p>The user’s self-made directory storing the databases must be bound to /usr/local/pgsql/data, /usr/local/pgsql/bin/psql and /usr/local/pgsql/logs/ when running the command within the terminal so that the files are copied to the user’s home directory.</p></li>
+<li><p>This script should only be run when creating and running the database server for the first time on the user’s system.</p></li>
+<li><p>The above functionality is wrapped in an if statement that checks the boolean value of EMPTY_DIR, which is set to false if the database data directory inside the container is empty, meaning that the cluster initialisation can occur, or vice versa.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">init_db</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">postgres</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="p">[</span> <span class="s2">&quot;$(ls -A /usr/local/pgsql/data)&quot;</span> <span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">EMPTY_DIR</span><span class="o">=</span><span class="n">false</span> <span class="o">||</span> <span class="n">EMPTY_DIR</span><span class="o">=</span><span class="n">true</span>
+  <span class="k">if</span> <span class="p">[</span> <span class="s2">&quot;$EMPTY_DIR&quot;</span> <span class="o">=</span> <span class="n">true</span> <span class="p">];</span> <span class="n">then</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span> <span class="n">initdb</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">log</span> <span class="n">start</span> <span class="o">-</span><span class="n">o</span> <span class="s1">&#39;&quot;$@&quot;&#39;</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;CREATE USER flask_user WITH PASSWORD &#39;flask_password&#39;;&quot;</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO flask_user;&quot;</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">psql</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;ALTER DEFAULT PRIVILEGES FOR USER flask_user IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO flask_user;&quot;</span>
+    <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">log</span> <span class="n">stop</span>
+  <span class="k">else</span>
+    <span class="n">echo</span> <span class="s2">&quot;Database cluster initialisation failed&quot;</span>
+    <span class="n">echo</span> <span class="s2">&quot;Database cluster seems to have been previously initialised since the data directory is non-empty&quot;</span>
+  <span class="n">fi</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>This instructs the database server to start and run in the background using the pg_ctl wrapper from PostgreSQL.</p></li>
+<li><p>The user’s directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user’s home directory.</p></li>
+<li><p>Options for the server can be passed in through the user input, e.g. the port to run the database server off.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">start_server</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">postgres</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">log</span> <span class="n">start</span> <span class="o">-</span><span class="n">o</span> <span class="s1">&#39;&quot;$@&quot;&#39;</span> <span class="o">&amp;</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>This instructs the running database server to stop using the pg_ctl wrapper from PostgreSQL.</p></li>
+<li><p>The user’s directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user’s home directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">stop_server</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">postgres</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">log</span> <span class="n">stop</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>This instructs the running database server to restart using the pg_ctl wrapper from PostgreSQL.</p></li>
+<li><p>This function may be required in the event a configuration change must be applied.</p></li>
+<li><p>The user’s directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user’s home directory.</p></li>
+<li><p>Options for the server can be passed in through the user input, e.g. the port to run the database server off.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">apprun</span> <span class="n">restart_server</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/</span><span class="n">postgres</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">data</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">pgsql</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">log</span> <span class="n">restart</span> <span class="o">-</span><span class="n">o</span> <span class="s1">&#39;&quot;$@&quot;&#39;</span> <span class="o">&amp;</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
+</li>
+<li><p>This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to create an additional database user with default select, insert, update and delete permissions.</p></li>
+<li><p>This script can only be run whilst the database server is running.</p></li>
+<li><p>The above functionality is wrapped in an if statement that checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If not equal to 1, the user can be created as it does not exist.</p></li>
+<li><p>There are also 2 preliminary checks on the user input to ensure correct formatting. Failing any of these checks will gracefully exit the script without creating an account.</p>
+<ul class="simple">
+<li><p>The first check is to ensure that there are 4 separate arguments being passed in, which should be the -u and -p flags along with a username and password.</p></li>
+<li><p>The second check ensures that the format of the 4 arguments are correct, with -u and -p being the 1st and 3rd arguments (in either order) as this means that their arguments follow.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun create_dbuser
+  . /venvs/postgres-env/bin/activate
+  usage () { echo &quot;Required input flags and arguments:&quot;;
+             echo &quot;-u &lt;username&gt;&quot;;
+             echo &quot;-p &lt;new password to set&gt;&quot;;
+           }
+
+  if [ $# -ne 4 ]; then
+    usage
+    exit 1
+  fi
+
+  if [ &quot;$1&quot; = &quot;-u&quot; ] &amp;&amp; [ &quot;$3&quot; = &quot;-p&quot; ]; then
+    UNAME=&quot;$2&quot;
+    PASSWORD=&quot;$4&quot;
+  elif [ &quot;$1&quot; = &quot;-p&quot; ] &amp;&amp; [ &quot;$3&quot; = &quot;-u&quot; ]; then
+    PASSWORD=&quot;$2&quot;
+    UNAME=&quot;$4&quot;
+  else
+    usage
+    exit 1
+  fi
+
+  EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c &quot;SELECT 1 FROM pg_user WHERE usename = &#39;$UNAME&#39;&quot;)
+  if [ &quot;$EXISTS&quot; != &quot;1&quot; ]; then
+    /usr/local/pgsql/bin/psql -c &quot;CREATE USER $UNAME WITH PASSWORD &#39;$PASSWORD&#39;;&quot;
+    /usr/local/pgsql/bin/psql -c &quot;GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $UNAME;&quot;
+    /usr/local/pgsql/bin/psql -c &quot;ALTER DEFAULT PRIVILEGES FOR USER $UNAME IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO $UNAME;&quot;
+  else
+    echo &quot;User already exists, no changes have been made&quot;
+    exit 0
+  fi
+  deactivate
+</pre></div>
+</div>
+</li>
+<li><p>This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to change an existing database user’s password.</p></li>
+<li><p>This script can only be run whilst the database server is running.</p></li>
+<li><p>The above functionality is wrapped in an if statement that checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If equal to 1, the password can be changed as the user exists.</p></li>
+<li><p>There are also 2 preliminary checks on the user input to ensure correct formatting. Failing any of these checks will gracefully exit the script without creating an account.</p>
+<ul class="simple">
+<li><p>The first check is to ensure that there are 4 separate arguments being passed in, which should be the -u and -p flags along with a username and password.</p></li>
+<li><p>The second check ensures that the format of the 4 arguments are correct, with -u and -p being the 1st and 3rd arguments (in either order) as this means that their arguments follow.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun change_dbuser_password
+  . /venvs/postgres-env/bin/activate
+  usage () { echo &quot;Required input flags and arguments:&quot;;
+             echo &quot;-u &lt;username&gt;&quot;;
+             echo &quot;-p &lt;new password to set&gt;&quot;;
+           }
+
+  if [ $# -ne 4 ]; then
+    usage
+    exit 1
+  fi
+
+  if [ &quot;$1&quot; = &quot;-u&quot; ] &amp;&amp; [ &quot;$3&quot; = &quot;-p&quot; ]; then
+    UNAME=&quot;$2&quot;
+    PASSWORD=&quot;$4&quot;
+  elif [ &quot;$1&quot; = &quot;-p&quot; ] &amp;&amp; [ &quot;$3&quot; = &quot;-u&quot; ]; then
+    PASSWORD=&quot;$2&quot;
+    UNAME=&quot;$4&quot;
+  else
+    usage
+    exit 1
+  fi
+
+  EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c &quot;SELECT 1 FROM pg_user WHERE usename = &#39;$UNAME&#39;&quot;)
+  if [ &quot;$EXISTS&quot; = &quot;1&quot; ]; then
+    /usr/local/pgsql/bin/psql -c &quot;ALTER USER $UNAME WITH PASSWORD &#39;$PASSWORD&#39;;&quot;
+  else
+    echo &quot;User does not exist, no changes have been made&quot;
+    exit 0
+  fi
+  deactivate
+</pre></div>
+</div>
+</li>
+<li><p>This entrypoint passes in a user input of a database user to modify, then locates and passes in a database username, password and running port from the configuration file .local_configuration_file.yml to update user’s credentials and server running port.</p></li>
+<li><p>This script can only be run whilst the database server is running.</p></li>
+<li><p>The database server must be restarted to apply the configuration changes correctly, specifically setting the port number.</p></li>
+<li><p>The above functionality is wrapped in nested if statements that check that the user-passed arguments are correct, by ensuring there are 2 of them and the 1st is the -u flag, meaning that the 2nd is the supplied username.</p></li>
+<li><p>An additional if statement checks the value of a variable, which is set to 1 or null based on if the inputted username exists or not respectively. If equal to 1, the full configuration change can be applied as the required user exists.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%apprun set_from_config
+  . /venvs/postgres-env/bin/activate
+  usage () { echo &quot;Required input flags and arguments:&quot;;
+             echo &quot;-u &lt;username to modify&gt;&quot;;
+             exit 1;
+           }
+
+  if [ $# -eq 2 ]; then
+    if [ &quot;$1&quot; = &quot;-u&quot; ]; then
+      OLD_DB_UNAME=&quot;$2&quot;
+      EXISTS=$(/usr/local/pgsql/bin/psql -X -A -t -c &quot;SELECT 1 FROM pg_user WHERE usename = &#39;$OLD_DB_UNAME&#39;&quot;)
+      if [ &quot;$EXISTS&quot; = &quot;1&quot; ]; then
+        NEW_DB_UNAME=&quot;$(grep &#39;DATABASE_USER : &#39; .local_configuration_file.yml | cut -c 17-)&quot;
+        NEW_DB_PWORD=&quot;$(grep &#39;DATABASE_PASSWORD : &#39; .local_configuration_file.yml | cut -c 21-)&quot;
+        NEW_PORT=&quot;$(grep &#39;DATABASE_PORT : &#39; .local_configuration_file.yml | cut -c 17-)&quot;
+        /usr/local/pgsql/bin/psql -c &quot;ALTER USER $OLD_DB_UNAME RENAME TO $NEW_DB_UNAME;&quot;
+        /usr/local/pgsql/bin/psql -c &quot;ALTER USER $NEW_DB_UNAME WITH PASSWORD &#39;$NEW_DB_PWORD&#39;;&quot;
+        sed -i &quot;s/#\?port =.*/port = $NEW_PORT/&quot; /usr/local/pgsql/data/postgresql.conf
+      else
+        echo &quot;User does not exist, no changes have been made&quot;
+        exit 0
+      fi
+    else
+      usage
+    fi
+  else
+    usage
+  fi
+  deactivate
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>Container Run and Start Scripts</strong></p>
+<ul>
+<li><p>Prepares for and runs the gunicorn app enabling access to the Local EnteroBase pages through the browser.</p></li>
+<li><p>The gunicorn app runs the given app module (local_entero:create_app(‘production’)) and is configured against a user input of options to the command, such as the server sockets.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%startscript
+  . /venvs/gunicorn-env/bin/activate
+  cd /var/www/local_enterobase/
+  PYTHONPATH=$LE_APP_PATH:$PYTHONPATH
+  gunicorn &quot;$@&quot; &quot;local_entero:create_app(&#39;production&#39;)&quot;
+  deactivate
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This instructs for the database server to be started given the user inputs and that Gunicorn runs Local Enterobase, listens to port 8000 and sets timeout to be 300 seconds.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="building-the-base-and-application-images">
+<h2>Building the base and application images<a class="headerlink" href="#building-the-base-and-application-images" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The local_enterobase repository can be saved wherever the user feels suitable on the local system. For the following examples, it is assumed that the local_enterobase repository is saved in the sub-folder “local_enterobase” from the current working folder</p></li>
+<li><p>The default build location is off of the home directory referenced below. If you wish to build it in a different location, you can also replace this with a location of your choosing.</p></li>
+<li><p>Run the following command to build a singularity image named as “local_base_image.sif”, the local_base_image is built using the following command.</p></li>
+<li><p>The file MUST be named EGP_base.sif as this is the name the application image EGP.sif will attempt to find to build.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo singularity build $HOME/local_enterobase_home/local_enterobase/EGP_base.sif local_enterobase/Singularity_Images/EGP/EGP_base.def
+</pre></div>
+</div>
+</li>
+<li><p>The following command is used to build the second image, where the current working directory (default $HOME) must also store the base image “EGP_base.sif”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">singularity</span> <span class="n">build</span> <span class="n">EGP</span><span class="o">.</span><span class="n">sif</span> <span class="n">local_enterobase</span><span class="o">/</span><span class="n">Singularity_Images</span><span class="o">/</span><span class="n">EGP</span><span class="o">/</span><span class="n">EGP</span><span class="o">.</span><span class="k">def</span>
+</pre></div>
+</div>
+</li>
+<li><p>Error messages may appear whilst building either image, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">:</span> <span class="n">You</span> <span class="n">don</span><span class="s1">&#39;t have enough free space in /var/cache/apt/archives/.</span>
+<span class="n">FATAL</span><span class="p">:</span>   <span class="n">failed</span> <span class="n">to</span> <span class="n">execute</span> <span class="o">%</span><span class="n">post</span> <span class="n">proc</span><span class="p">:</span> <span class="n">exit</span> <span class="n">status</span> <span class="mi">100</span>
+<span class="n">FATAL</span><span class="p">:</span>   <span class="n">While</span> <span class="n">performing</span> <span class="n">build</span><span class="p">:</span> <span class="k">while</span> <span class="n">running</span> <span class="n">engine</span><span class="p">:</span> <span class="k">while</span> <span class="n">running</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">singularity</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">starter</span><span class="p">:</span> <span class="n">exit</span> <span class="n">status</span> <span class="mi">255</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If you have the previous error messages, you may not have enough disk space to build the images, you should clear space from your disk and also attempt the following commands before building.</p></li>
+<li><p>These commands clear the system package and Singularity caches. Autoremove removes installed packages that are no longer required as dependencies for other packages in the system, and are therefore redundant.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">clean</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">autoremove</span>
+<span class="n">singularity</span> <span class="n">cache</span> <span class="n">clean</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="pushing-the-container-image">
+<h2>Pushing the container image<a class="headerlink" href="#pushing-the-container-image" title="Permalink to this headline">¶</a></h2>
+<p>Any updates to the recipe file for the application image necessitates the image to be rebuilt and pushed to the Singularity cloud library as follows to provide users with the most recent version of the container.</p>
+<p>The user must first generate an access token if not available to verify themselves with the Singularity container services:</p>
+<ul>
+<li><p>Go to: <a class="reference external" href="https://cloud.sylabs.io/">https://cloud.sylabs.io/</a></p></li>
+<li><p>Click “Sign in to Sylabs” and follow the sign in steps.</p></li>
+<li><p>Select “Access Tokens” from the drop down menu.</p></li>
+<li><p>Enter a name for your new access token, such as “test token”</p></li>
+<li><p>Click the “Create a New Access Token” button.</p></li>
+<li><p>Click “Copy token to Clipboard” from the “New API Token” page, download it as well if it is required to keep a record.</p></li>
+<li><p>Run the following command and paste the access token at the prompt.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">remote</span> <span class="n">login</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The user must then be authorised to push containers to the cloud library, this typically involves generating a PGP keypair under the account that owns the Singularity cloud storage for the image:</p>
+<ul>
+<li><p>The generated keys are used to sign the image before pushing, allowing it to be stored into the cloud library and verify the image has not been tampered with when it is pulled by the user.</p></li>
+<li><p>The following command will generate a new keypair:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">key</span> <span class="n">newpair</span>
+</pre></div>
+</div>
+</li>
+<li><p>The following output to the above command requires the user input. The user must include the email of the account that owns the Singularity cloud repository where the image is stored to provide sufficient permissions to push.</p></li>
+<li><p>The key must be pushed to the public keystore in case other users wish to verify the pulled image.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Enter your name (e.g., John Doe) : David Trudgian
+Enter your email address (e.g., john.doe@example.com) : david.trudgian@sylabs.io
+Enter optional comment (e.g., development keys) : demo
+Enter a passphrase :
+Retype your passphrase :
+Would you like to push it to the keystore? [Y,n] Y
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Once the keys have been successfully generated and pushed, the image container can be signed.</p>
+<ul>
+<li><p>EGP.sif is the default name for the unified application image, this can be changed if required.</p></li>
+<li><p>To enable successful signing, there will be a prompt for the passphrase inputted during key generation.</p></li>
+<li><p>The following command will sign an image.</p></li>
+<li><p>If the default build directory was changed previously for EGP_base.sif and EGP.sif, replace it in the following command with the correct installation directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity sign $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+</li>
+</ul>
+<p>After successful signing, the image can be pushed to the cloud library.</p>
+<ul>
+<li><p>EGP.sif is the default name for the unified application image, this can be changed if required.</p></li>
+<li><p>The following command will push an image.</p></li>
+<li><p>If the default build directory was changed previously for EGP_base.sif and EGP.sif, replace it in the following command with the correct installation directory.</p></li>
+<li><p>“0.1” Is the default image tag for which the users will download as they will reference this when pulling the image. This can be changed, with the associated image pulled using the new tag.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity push $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.1
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The access token may occasionally expire after a particular time period. Before signing and pushing new containers, it is required to generate another token and key by following the above corresponding steps.</p>
+<ul>
+<li><p>It may also be useful to remove the old associated public key as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">key</span> <span class="n">remove</span> <span class="o">&lt;</span><span class="n">fingerprint</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul>
+<li><p>&lt;fingerprint&gt; refers to the sequence of characters under the ‘F:’ heading for the desired key after inputting the following to display all keys.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">key</span> <span class="nb">list</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">EToKi, PostgreSQL and Gunicorn (EGP) Container Installation</a><ul>
+<li><a class="reference internal" href="#required-files-and-folders">Required files and folders</a></li>
+<li><a class="reference internal" href="#content-of-the-recipe-files">Content of the recipe files</a></li>
+<li><a class="reference internal" href="#building-the-base-and-application-images">Building the base and application images</a></li>
+<li><a class="reference internal" href="#pushing-the-container-image">Pushing the container image</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nginx.html"
+                        title="previous chapter">NGINX Image</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pipeline.html"
+                        title="next chapter">Bitbucket Pipelines</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer/egp_developer.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Image"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" >Developing Local EnteroBase</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">EToKi, PostgreSQL and Gunicorn (EGP) Container Installation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

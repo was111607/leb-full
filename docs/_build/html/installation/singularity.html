@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Singularity Installation &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NGINX Web Server" href="nginx.html" />
+    <link rel="prev" title="Docker installation" href="docker.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Web Server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="docker.html" title="Docker installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="manual.html" accesskey="U">Manual Installation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="singularity-installation">
+<span id="singularity-installation-label"></span><h1>Singularity Installation<a class="headerlink" href="#singularity-installation" title="Permalink to this headline">¶</a></h1>
+<p>Firstly, the user needs to install the Singularity software using the following steps described in “<a class="reference external" href="https://sylabs.io/guides/3.5/user-guide/quick_start.html">https://sylabs.io/guides/3.5/user-guide/quick_start.html</a>”.</p>
+<p>Note: Some installations require the user to have sudo privileges. If you do not have any, please ask your system administrator to install them for you.</p>
+<div class="section" id="install-the-required-packages">
+<h2>Install the Required Packages<a class="headerlink" href="#install-the-required-packages" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>You need to use the following 2 commands to install the dependency packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> \
+<span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
+<span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">uuid</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">libgpgme11</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">squashfs</span><span class="o">-</span><span class="n">tools</span> \
+<span class="n">libseccomp</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">wget</span> \
+<span class="n">pkg</span><span class="o">-</span><span class="n">config</span> \
+<span class="n">git</span> \
+<span class="n">cryptsetup</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="install-go">
+<h2>Install Go<a class="headerlink" href="#install-go" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>This is used by the Singularity container:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export VERSION=1.13 OS=linux ARCH=amd64
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz
+rm go$VERSION.$OS-$ARCH.tar.gz
+sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
+</pre></div>
+</div>
+</li>
+<li><p>You can test your download by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">go</span> <span class="n">help</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="download-singularity-from-a-release">
+<h2>Download Singularity From a Release<a class="headerlink" href="#download-singularity-from-a-release" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The following commands are used to download the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export VERSION=3.5.2 &amp;&amp; wget  https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
+tar -xzf singularity-${VERSION}.tar.gz
+cd singularity
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="compile-the-singularity-source-code">
+<h2>Compile the Singularity Source Code<a class="headerlink" href="#compile-the-singularity-source-code" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The code is compiled using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">mconfig</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">builddir</span>
+<span class="n">sudo</span> <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="n">builddir</span> <span class="n">install</span>
+</pre></div>
+</div>
+</li>
+<li><p>You can test the installation by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">h</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Singularity Installation</a><ul>
+<li><a class="reference internal" href="#install-the-required-packages">Install the Required Packages</a></li>
+<li><a class="reference internal" href="#install-go">Install Go</a></li>
+<li><a class="reference internal" href="#download-singularity-from-a-release">Download Singularity From a Release</a></li>
+<li><a class="reference internal" href="#compile-the-singularity-source-code">Compile the Singularity Source Code</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="docker.html"
+                        title="previous chapter">Docker installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nginx.html"
+                        title="next chapter">NGINX Web Server</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/singularity.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Web Server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="docker.html" title="Docker installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="manual.html" >Manual Installation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

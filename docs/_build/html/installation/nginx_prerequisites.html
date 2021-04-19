@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>NGINX Prerequisites &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Automatic Installation" href="automatic.html" />
+    <link rel="prev" title="Installation Requirements" href="requirements.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="automatic.html" title="Automatic Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="requirements.html" title="Installation Requirements"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" accesskey="U">Installation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nginx-prerequisites">
+<span id="nginx-prerequisites-label"></span><h1>NGINX Prerequisites<a class="headerlink" href="#nginx-prerequisites" title="Permalink to this headline">¶</a></h1>
+<p>NGINX acts as a reverse proxy and load balancer for Local EnteroBase. It will serve requests from the website to all the servers it is installed on.</p>
+<div class="section" id="important-notice">
+<h2>Important Notice<a class="headerlink" href="#important-notice" title="Permalink to this headline">¶</a></h2>
+<p>All ports mentioned in this section are the default values in the “nginx.conf” file, however, in the following sections you may opt to change these via the NGINX config page. So please be aware that the port numbers are not final.</p>
+<p>Because NGINX is running as a server, you need to make sure you allow the relevant ports to be forwarded in order to access it from an external browser using the public IP or URL. If your institution or server (or both) uses a proxy or a firewall, you need to make sure both 443 (https) and 80 (http) ports are open. In addition to this, if your web server is located on a different machine to the EGP singularity container you need to ensure that port 8000 is open. If not, you may run into issues like in Fig. 1 (below).</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/nginx_502_bad_gateway.png"><img alt="Screenshot of 502 Bad Gateway Error" src="../_images/nginx_502_bad_gateway.png" style="width: 400px;" /></a>
+</div>
+<p><strong>Fig. 1 - NGINX 502 Bad Gateway Error</strong></p>
+<p>An example of allowing NGINX to run with an enabled “Uncomplicated Firewall (ufw)”, which is default on most Ubunut installations, is as follows:</p>
+<ol class="arabic">
+<li><dl>
+<dt>Check if ufw is enabled using the below command. If it isn’t, you don’t have to worry.</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ufw</span> <span class="n">status</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>If it is enabled, you need to run the command below.</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ufw</span> <span class="n">allow</span> <span class="s1">&#39;Nginx Full&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="nginx-resources">
+<h2>NGINX Resources<a class="headerlink" href="#nginx-resources" title="Permalink to this headline">¶</a></h2>
+<p>This section guides you through the creation of the resources required to install and configure NGINX. It is important to have these resources ready before continuing with the installation process, especially if you choose the “Automatic Installation” option. During the installation you will be prompted to copy your resources into the relevant directories, so there is no need to formulate the exact directory (shown below) required by NGINX (just make sure you have the “nginx.conf” and cert files ready).</p>
+<div class="section" id="nginx-resource-directory-structure">
+<h3>NGINX Resource Directory Structure<a class="headerlink" href="#nginx-resource-directory-structure" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nginx</span>
+    <span class="o">|--</span> <span class="n">nginx</span><span class="o">.</span><span class="n">conf</span>
+    <span class="o">|--</span> <span class="n">certs</span>
+    <span class="o">|</span> <span class="o">|--</span> <span class="n">cert</span><span class="o">.</span><span class="n">pem</span>
+    <span class="o">|</span> <span class="o">|--</span> <span class="n">key</span><span class="o">.</span><span class="n">pem</span>
+    <span class="o">|--</span> <span class="n">logs</span>
+      <span class="o">|--</span> <span class="n">local_enteroBase_access</span><span class="o">.</span><span class="n">log</span>
+      <span class="o">|--</span> <span class="n">local_enteroBase_error</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="nginx-conf">
+<h3>“nginx.conf”<a class="headerlink" href="#nginx-conf" title="Permalink to this headline">¶</a></h3>
+<p>The “nginx.conf” file is the configuration file used by NGINX. It defines a number of features of the web server, most importantly the URL or IP address it receives requests from and the URL or IP address it forwards them to. You can learn more about the nuances of this file on the NGINX “Beginner’s Guide”, available at: <a class="reference external" href="http://nginx.org/en/docs/beginners_guide.html">http://nginx.org/en/docs/beginners_guide.html</a>. In order to make the task of creating this file a bit easier, we have provided a webpage which takes some inputs and generates the “nginx.conf” file for you. This webpage is available at: <a class="reference external" href="https://enterobase.warwick.ac.uk/local_enterobase/nginx_config">https://enterobase.warwick.ac.uk/local_enterobase/nginx_config</a>.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/nginx_config_page.png"><img alt="Local EnteroBase Registration Form" src="../_images/nginx_config_page.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 2 - NGINX Configuration Form</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The above figure shows the form that is used to generate the “nginx.conf” file. All fields in the form are mandatory. However, most come with default values which you should not modify. The values that are unique to your installation are the “Web Server URL/IP” and “Local Enterobase Server URL/IP” values. Below are some short descriptions of the required variables:</p>
+<ul class="simple">
+<li><p><strong>Web Server URL/IP</strong>: URL or IP address for the NGINX server hosting your local EnteroBase instance. This value usually represents the IP address of your server, which you can find by running the command: <code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">https://ipinfo.io/ip</span></code>.</p></li>
+<li><p>HTTP Port: Port number for HTTP access to your Local EnteroBase instance. The default value is 80.</p></li>
+<li><p>HTTPS Port: Port number for HTTPS access to your Local EnteroBase instance. The default value is 443.</p></li>
+<li><p>Worker Connections: The maximum number of parallel connections that the Local EnteroBase instance can handle. The default value is 1024.</p></li>
+<li><p>Send File Max Chunk (k): The maximum amount of data that can be sent with a single send_file() call in kilobytes. The default value is 1024.</p></li>
+<li><p>Client Max Body Size (M): The maximum upload file size that the Local EnteroBase instance can handle in megabytes. The default value is 4000.</p></li>
+<li><p>Keep Alive Timeout (s): How long the TCP connection between the client and the server stays open after an HTTP transaction has been completed in seconds. The default value is 1500.</p></li>
+<li><p><strong>Local EnteroBase Server URL/IP</strong>: The URL or IP address of the server facilitating the assembly of short-read files. This value will be 127.0.0.1 (localhost) if you will be installing it on the same server as the nginx container.</p></li>
+<li><p>Local EnteroBase Server Port: The port of the server facilitating the assembly of short-read files. The default value is 8000.</p></li>
+</ul>
+<p>For more information on these values please visit the NGINX documentation, available at: <a class="reference external" href="http://nginx.org/en/docs/http/ngx_http_core_module.html">http://nginx.org/en/docs/http/ngx_http_core_module.html</a>.</p>
+</div>
+<div class="section" id="certs">
+<h3>“certs”<a class="headerlink" href="#certs" title="Permalink to this headline">¶</a></h3>
+<p>A valid SSL certificate is required to run Local EnteroBase using HTTPS. A self-signed certificate can be generated using the OpenSSL tutorial at: <a class="reference external" href="https://linuxize.com/post/creating-a-self-signed-ssl-certificate">https://linuxize.com/post/creating-a-self-signed-ssl-certificate</a>. Please ensure that you rename the generated files to match the filenames shown in Fig. 2. Alternatively, you can use the certificates provided in the Docker container by default. These should be copied into the “$HOME/nginx/certs” file before running NGINX. NOTE: copying your own certs in requires a restart of the NGINX server; if you are using the automatic installer you must copy the “key.pem” and “cert.pem” files into “$HOME/nginx/certs” folder after the installation is completed, and then restart the server (this can be done using the “run_all.sh” script in the “local_enterobase_home” folder).</p>
+</div>
+<div class="section" id="logs">
+<h3>“logs”<a class="headerlink" href="#logs" title="Permalink to this headline">¶</a></h3>
+<p>The files in the “logs” folder maintain logs output by NGINX, and start off as empty files. These should be generated automatically so it’s not necessary to make these beforehand.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">NGINX Prerequisites</a><ul>
+<li><a class="reference internal" href="#important-notice">Important Notice</a></li>
+<li><a class="reference internal" href="#nginx-resources">NGINX Resources</a><ul>
+<li><a class="reference internal" href="#nginx-resource-directory-structure">NGINX Resource Directory Structure</a></li>
+<li><a class="reference internal" href="#nginx-conf">“nginx.conf”</a></li>
+<li><a class="reference internal" href="#certs">“certs”</a></li>
+<li><a class="reference internal" href="#logs">“logs”</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="requirements.html"
+                        title="previous chapter">Installation Requirements</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="automatic.html"
+                        title="next chapter">Automatic Installation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/nginx_prerequisites.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="automatic.html" title="Automatic Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="requirements.html" title="Installation Requirements"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

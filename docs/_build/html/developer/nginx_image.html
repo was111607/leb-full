@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NGINX Image &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bitbucket Pipelines" href="pipeline.html" />
+    <link rel="prev" title="Developing Local EnteroBase" href="developer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="developer.html" title="Developing Local EnteroBase"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" accesskey="U">Developing Local EnteroBase</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">NGINX Image</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nginx-image">
+<h1>NGINX Image<a class="headerlink" href="#nginx-image" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="required-software">
+<h2>Required Software<a class="headerlink" href="#required-software" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Please make sure Docker is installed. Reference this doc to get set up if necessary: <a class="reference internal" href="../installation/docker.html#docker-installation-label"><span class="std std-ref">Docker installation</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="required-files-and-folders">
+<h2>Required files and folders<a class="headerlink" href="#required-files-and-folders" title="Permalink to this headline">¶</a></h2>
+<p>In “local_enterobase/Docker_Images/NGINX” sub-folder</p>
+<ul class="simple">
+<li><p>image file: Dockerfile</p></li>
+<li><p>Interact with the container: docker-entrypoint.sh</p></li>
+<li><p>Default settings for nginx: <strong>nginx.conf</strong></p></li>
+<li><p>temporary ssl certificate: <strong>“certs” folder</strong></p></li>
+</ul>
+</div>
+<div class="section" id="content-of-the-image-file-dockerfile">
+<h2>Content of the image file: Dockerfile<a class="headerlink" href="#content-of-the-image-file-dockerfile" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The first line in the Dockerfile pulls the base docker nginx image, fixed at the version 1.15.8 to avoid any compatability issues by setting it to latest.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">nginx</span><span class="p">:</span><span class="mf">1.15</span><span class="o">.</span><span class="mi">8</span>
+</pre></div>
+</div>
+</li>
+<li><p>The next 3 COPY commands are used to load in a default nginx.conf file, as well as a “certs” folder which contains temporary ssl certificates to a sub-folder inside the container. Finally it copies in the docker-entrypoint.sh script to allow multiple ways to interact with the image.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COPY</span> <span class="n">certs</span><span class="o">/</span> <span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">certs</span>
+<span class="n">COPY</span> <span class="n">nginx</span><span class="o">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">nginx</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">COPY</span> <span class="n">docker</span><span class="o">-</span><span class="n">entrpoint</span><span class="o">.</span><span class="n">sh</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span>
+</pre></div>
+</div>
+</li>
+<li><p>The RUN command is then used to create a symlink to the entrypoint script so it can be used to interact with the container.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RUN</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">entrypoint</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>The final line contains the ENTRYPOINT command which takes in the arg “docker-entrypoint.sh”. By using ENTRYPOINT, any args passed in when executing docker run will be fed to the docker-entrypoint.sh script.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&quot;docker-entrypoint.sh&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="content-of-the-docker-entrypoint-sh-script">
+<h2>Content of the docker-entrypoint.sh script<a class="headerlink" href="#content-of-the-docker-entrypoint-sh-script" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The docker-entrypoint.sh script is setup so the user only needs to submit one of three arguments. It has been designed to setup the local directory structure which the user is able to modify to suit their needs. The test and run commands have to be used after the structure is set up as it relies on the correct directory structure and files being in place for Nginx to run correctly.</p></li>
+<li><p>There are three args which can be passed in when interacting with the container: <em>setup, test, and run.</em></p></li>
+<li><p><strong>setup</strong></p>
+<ul>
+<li><p>This is used to set up the directory structure on the local machine so the user is able to configure their settings appropriately.</p></li>
+<li><p>When running this command it is important the volume is mounted correctly between the local machine and docker container. The local container can be anywhere the user wants but the docker path should be /home/nginx_user/nginx.</p></li>
+</ul>
+</li>
+<li><p><strong>test</strong></p>
+<ul>
+<li><p>This command should be ran after the setup commannd. It’s important to mount the folder set up using the setup command. It is used to verify the nginx.conf file does not contain any syntax errors.</p></li>
+</ul>
+</li>
+<li><p><strong>run</strong></p>
+<ul>
+<li><p>This command should be ran after the setup command. It’s important to mount the folder set up using the setup command. It is used to run the Nginx server.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="build-nginx-image">
+<h2>Build NGINX Image<a class="headerlink" href="#build-nginx-image" title="Permalink to this headline">¶</a></h2>
+<p>To build the image, you need to run docker build and point to the directory storing the Dockerfile. You can also optionally tag the image to give it a more specific name (This is highly recommended). This is important when trying To upload it to Docker Hub under the localenterobase account you need to name it “localenterobase/nginx:&lt;version_number&gt;”. Please note that the text before the ‘/’ is the account name.</p>
+<ul>
+<li><p>Use the following command to build the image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker build -t localenterobase/nginx:1.0 /path/to/Dockerfile
+</pre></div>
+</div>
+</li>
+<li><p>The build command is used to instruct Docker to build an image.</p>
+<ul class="simple">
+<li><p>-t: give the image a name.</p></li>
+<li><p>/path/to/Dockerfile: points to directory Dockerfile is in.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pushing-nginx-image">
+<h2>Pushing NGINX Image<a class="headerlink" href="#pushing-nginx-image" title="Permalink to this headline">¶</a></h2>
+<p>To push the image to Docker Hub you are first required to log into a Docker account. If you are a developer working on this project and need access to the Docker account, please contact a developer on the team.</p>
+<ul>
+<li><p>To log in to a Docker account use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker login
+</pre></div>
+</div>
+</li>
+<li><p>To push the image use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker push localenterobase/nginx:1.0
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Please note that this was developed on Ubuntu 20.04, and tested on Ubuntu 20.04, and Debian 9.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">NGINX Image</a><ul>
+<li><a class="reference internal" href="#required-software">Required Software</a></li>
+<li><a class="reference internal" href="#required-files-and-folders">Required files and folders</a></li>
+<li><a class="reference internal" href="#content-of-the-image-file-dockerfile">Content of the image file: Dockerfile</a></li>
+<li><a class="reference internal" href="#content-of-the-docker-entrypoint-sh-script">Content of the docker-entrypoint.sh script</a></li>
+<li><a class="reference internal" href="#build-nginx-image">Build NGINX Image</a></li>
+<li><a class="reference internal" href="#pushing-nginx-image">Pushing NGINX Image</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="developer.html"
+                        title="previous chapter">Developing Local EnteroBase</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pipeline.html"
+                        title="next chapter">Bitbucket Pipelines</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer/nginx_image.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="developer.html" title="Developing Local EnteroBase"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" >Developing Local EnteroBase</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">NGINX Image</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developer.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

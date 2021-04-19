@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Uploading Strains &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Viewing Jobs" href="jobs.html" />
+    <link rel="prev" title="Using the Homepage" href="homepage.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="jobs.html" title="Viewing Jobs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="homepage.html" title="Using the Homepage"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user_guide.html" accesskey="U">User Guide</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="uploading-strains">
+<h1>Uploading Strains<a class="headerlink" href="#uploading-strains" title="Permalink to this headline">¶</a></h1>
+<p>This webpage, for uploading a strain for the chosen genera, displays an empty, large, grid. Rows can be added to the grid for each strain that you wish to upload, where you must also fill in the required cells corresponding to metadata attributes expressed by the column headings. The individual column headings belong to a primary group in the very first row of the grid.
+A grid toolbar is displayed above the grid, which is a row of buttons performing different functions.</p>
+<div class="figure align-center" id="id1">
+<img alt="Grid for Salmonella Strain Uploads with 2 Newly Added Rows" src="../_images/grid_add_rows.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 1 - Grid for Salmonella Strain Uploads with 2 Newly Added Rows</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="section" id="adding-rows">
+<h2>Adding Rows<a class="headerlink" href="#adding-rows" title="Permalink to this headline">¶</a></h2>
+<p>Clicking the “Add row” button adds an empty row to the grid. You can manually add data by double-clicking each cell in the row.</p>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>If the browser window is shrunk, the “Add Row” button can be located by clicking the blue “Edit” button which will display a drop-down menu of grid functions.</p></li>
+<li><p>It is mandatory to add data to the cells highlighted in red, otherwise the data cannot be submitted.</p></li>
+<li><p>You cannot have 2 rows with the same strain name as this avoids storing potentially duplicate data.</p></li>
+</ul>
+</div>
+<div class="section" id="adding-read-files">
+<h2>Adding Read Files<a class="headerlink" href="#adding-read-files" title="Permalink to this headline">¶</a></h2>
+<p>Clicking the cell underneath the “Read Files” column, which is annotated with a “Click to Add” label, displays a pop-up menu where you can select a pair of read files from storage to upload for assembly.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/read_file.png"><img alt="Pop-up Menu For Selecting Short-read Files" src="../_images/read_file.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 2 - Pop-up Menu For Selecting Short-read Files</strong></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>Read files must be in the format with the file extension “.fastq.gz”, otherwise the row will be rejected during submission of the grid.</p></li>
+<li><p>You cannot use the same read file twice.</p></li>
+<li><p>You cannot use the same read file that is already present in a different row in the grid.</p></li>
+</ul>
+</div>
+<div class="section" id="adding-source-details">
+<h2>Adding Source Details<a class="headerlink" href="#adding-source-details" title="Permalink to this headline">¶</a></h2>
+<p>Clicking the “Click to add” cell underneath the “Source Details” column displays a pop-up menu where you can enter the source details for the strain. The source niche and source type are automatically predicted for your input, although you can amend these in the provided dropdown menus. When the source details are correct, clicking the “save” button completes the cell.</p>
+<div class="figure align-center" id="id3">
+<img alt="Visual Guide For Adding Source Details" src="../_images/add_source_details.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 3 - Visual Guide For Adding Source Details</strong></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="adding-collection-date">
+<h2>Adding Collection Date<a class="headerlink" href="#adding-collection-date" title="Permalink to this headline">¶</a></h2>
+<p>Clicking the cell underneath the “Collection Date” column displays a pop-up menu where you can enter the collection date of the strain. The grid accepts dates in the following formats:</p>
+<ul class="simple">
+<li><p>YYYY Format.</p></li>
+<li><p>MM/YYYY Format.</p></li>
+<li><p>DD/MM/YYYY Format.</p></li>
+<li><p>A date selected by clicking the calendar icon in the cell to select a date using the embedded widget.</p></li>
+</ul>
+<div class="figure align-center" id="id4">
+<img alt="Visual Guide For Adding Date Details" src="../_images/add_date_details.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 4 - Visual Guide For Adding the Collection Date</strong></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="simultaneously-filling-data-across-multiple-rows">
+<h2>Simultaneously Filling Data across Multiple Rows<a class="headerlink" href="#simultaneously-filling-data-across-multiple-rows" title="Permalink to this headline">¶</a></h2>
+<p>To save time performing data entry for columns likely to store the same data across multiple rows, you can select multiple rows and fill all the cells for a certain column at the same time.
+You can select the rows that you wish to fill data for in multiple ways:</p>
+<ul class="simple">
+<li><p>Clicking the individual checkbox, located in the column after ID column, for each desired row.</p></li>
+<li><p>ctrl+click a cell anywhere in each desired row, which will select the row.</p></li>
+<li><p>Select a single “source” row and shift-click a cell in a “destination” row, which selects all rows in between and including the starting and destination rows.</p></li>
+</ul>
+<p>When you have selected the required rows, you can right-click on any cell, belonging to one of the selected rows, underneath the column you want to add data for, a dropdown menu of options will appear where you can delete rows or fill the specific column of selected rows. Clicking the fill option opens an additional dropdown menu where you can input data that you want the cells to be filled with.</p>
+<p>Note: Only the following columns are available for multi-filling: “Lab Contact”, “Serovar”, “Antigenic Formulas” and “Comment”.</p>
+<div class="figure align-center" id="id5">
+<img alt="Visual Guide For Filling Multiple Rows" src="../_images/fill_multi_rows.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 5 - Visual Guide For Adding the Collection Date</strong></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="pre-filling-metadata">
+<h2>Pre-filling Metadata<a class="headerlink" href="#pre-filling-metadata" title="Permalink to this headline">¶</a></h2>
+<p>To save time adding metadata details when submitting your strains, we provide a downloadable template of the grid. This allows you to add any known metadata details ahead of time. When you re-upload the completed template file, it creates and fills the rows according to the file. This reduces the amount of data required to be added to the rows in the webpage, where you can then simply select the short-read files to upload and fill in any remaining cells per row to make the grid submittable.</p>
+<p><strong>Exporting the Template</strong></p>
+<p>Clicking the blue “Export Template” in the grid toolbar downloads the template as a text file (.txt extension) that can be saved appropriately and then opened for editing.</p>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>The grid must be empty of rows to correctly export the template file.</p></li>
+<li><p>If the browser window is shrunk, you can export using the “Export Template” button which is located by clicking the blue “Data” button. This displays a drop-down menu of the template importing and exporting functions.</p></li>
+</ul>
+<div class="figure align-center" id="id6">
+<img alt="Visual Guide For Exporting and Saving the Grid Template (Ubuntu)" src="../_images/fill_multi_rows.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 6 - Visual Guide For Exporting and Saving the Grid Template (Ubuntu)</strong></span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<p><strong>Filling in the Template</strong></p>
+<p>The template can be opened with text editors that are able to treat the template as a “tab-separated variables” file, where the initial column labels can be divided according to the tabbed whitespace that separates them. The filled template must be saved as a text file (.txt extension), with data separated by tabbed whitespaces, to be successfully imported back into the grid.</p>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>You do not have to fill in every cell as this is intended to save time on the webpage where possible.</p></li>
+<li><p>When filling in the template, the initial column labels and their ordering must be preserved to correctly import it back.</p></li>
+</ul>
+<div class="figure align-center" id="id7">
+<img alt="Visual Guide For Exporting and Saving the Grid Template (Ubuntu)" src="../_images/fill_multi_rows.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 7 - Visual Guide For Opening and Filling in the Template (Ubuntu)</strong></span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<p><strong>Importing the Template</strong></p>
+<p>You can upload the filled template file in 2 ways:</p>
+<ul class="simple">
+<li><p>Clicking the blue “Import Data” function in the grid toolbar, where a popup modal window is displayed. Clicking the cloud icon opens up your file explorer where you can select the template file to upload.</p></li>
+<li><p>Dragging the file from your file explorer to the grid, where the popup modal window automatically displays. Dropping the file within the window will select it for upload.</p></li>
+</ul>
+<p>When the file has been uploaded, provided it is in the correct format, a blue “Import to Grid” button appears that will import the data to the grid when clicked, creating rows of the provided strain metadata automatically.</p>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>The grid must be empty of rows to correctly export the template file.</p></li>
+<li><p>If there are any issues with the template file format, such as changes in the column order, an import error message will be displayed.</p></li>
+<li><p>If the browser window is shrunk, you can import using the “Import from Text File” button which is located by clicking the blue “Data” button. This displays a drop-down menu of the template importing and exporting functions.</p></li>
+</ul>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="../_images/import_template.png"><img alt="Modal Window for Uploading a Filled Template File" src="../_images/import_template.png" style="width: 65%;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 8 - Modal Window for Uploading a Filled Template File</strong></span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-center" id="id9">
+<img alt="A Grid With Cells Filled Using an Imported Template File" src="../_images/filled_grid.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 9 - A Grid With Cells Filled Using an Imported Template File</strong></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="submitting-the-metadata">
+<h2>Submitting the Metadata<a class="headerlink" href="#submitting-the-metadata" title="Permalink to this headline">¶</a></h2>
+<p>When the grid is complete to your satisfaction, clicking the green “Submit” button uploads your short-read files and metadata, creating and queueing “jobs” to assemble them in the background.
+All successfully uploaded rows will disappear from the grid. Any rows that cause issues, such as containing a short-read file that was previously uploaded for assembly, stays in the grid. An appropriate error message is displayed that identifies the failed rows and their reason for failure.
+As a result, you can attempt to amend these problems or delete the row from the grid.</p>
+<p><strong>Please do not exit the page or close any notifications whilst the strains are being submitted. Hidden errors may occur and you will also need to resubmit the strain information</strong></p>
+<div class="figure align-center" id="id10">
+<a class="reference internal image-reference" href="../_images/strain_upload_success.png"><img alt="Displayed Message When All Rows Pass Submission" src="../_images/strain_upload_success.png" style="width: 70%;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 10 - Displayed Message When All Rows Pass Submission</strong></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-center" id="id11">
+<img alt="Displayed Message When a Row Fails Submission" src="../_images/strain_upload_partial_failure.png" />
+<p class="caption"><span class="caption-text"><strong>Fig. 11 - Displayed Message When a Row Fails Submission</strong></span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="tooltips">
+<h2>Tooltips<a class="headerlink" href="#tooltips" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Shrinking your browser window compresses the grid toolbar:</p>
+<ul>
+<li><p>Several functions are moved into a dropdown menu that can be accessed using the blue “edit” button on the left-hand side.</p></li>
+<li><p>The “Import Data” and “Export Template” functions are moved into an additional dropdown menu accessible using the blue “data” button on the right-hand side.</p></li>
+</ul>
+</li>
+<li><p>The cells with the names of the primary column groups can be clicked on to expand showing the entire column group, which by default hides read-only cells that store the results of your inputs to the mandatory cells.</p></li>
+<li><p>Single-clicking a cell selects its entire row.</p></li>
+<li><p>Double-clicking a cell opens up its respective editor menu for you to input data.</p></li>
+<li><p>The blue “Show/Hide Columns” button allows you to show and hide specific individual columns. This is useful if you need to focus on viewing specific features of the data. Note: it is not recommended to hide mandatory columns.</p></li>
+<li><p>The blue “Undo” and “Redo” buttons allow the undoing and redoing of your actions in the grid. Warning: They behave temperamentally.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Uploading Strains</a><ul>
+<li><a class="reference internal" href="#adding-rows">Adding Rows</a></li>
+<li><a class="reference internal" href="#adding-read-files">Adding Read Files</a></li>
+<li><a class="reference internal" href="#adding-source-details">Adding Source Details</a></li>
+<li><a class="reference internal" href="#adding-collection-date">Adding Collection Date</a></li>
+<li><a class="reference internal" href="#simultaneously-filling-data-across-multiple-rows">Simultaneously Filling Data across Multiple Rows</a></li>
+<li><a class="reference internal" href="#pre-filling-metadata">Pre-filling Metadata</a></li>
+<li><a class="reference internal" href="#submitting-the-metadata">Submitting the Metadata</a></li>
+<li><a class="reference internal" href="#tooltips">Tooltips</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="homepage.html"
+                        title="previous chapter">Using the Homepage</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="jobs.html"
+                        title="next chapter">Viewing Jobs</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/upload_strains.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="jobs.html" title="Viewing Jobs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="homepage.html" title="Using the Homepage"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user_guide.html" >User Guide</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

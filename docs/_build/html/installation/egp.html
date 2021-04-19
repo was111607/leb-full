@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Registration and Configuration" href="../configure/configure.html" />
+    <link rel="prev" title="NGINX Web Server" href="nginx.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../configure/configure.html" title="Registration and Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Web Server"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="manual.html" accesskey="U">Manual Installation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="etoki-postgresql-and-gunicorn-egp-container-installation">
+<h1>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation<a class="headerlink" href="#etoki-postgresql-and-gunicorn-egp-container-installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Please follow the previous instructions to install and run Singularity and the NGINX web server before proceeding with the installation:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="singularity.html#singularity-installation-label"><span class="std std-ref">Singularity</span></a></p></li>
+<li><p><a class="reference internal" href="nginx.html#nginx-installation-label"><span class="std std-ref">NGINX</span></a></p></li>
+</ul>
+</li>
+<li><p>If you are installing on Debian 9 or CentOS 7, please follow the instructions to set matching locale before proceeding with the installation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LC_ALL</span><span class="o">=</span><span class="n">en_GB</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">LANG</span><span class="o">=</span><span class="n">en_GB</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+</div>
+</li>
+<li><p>The documentation assumes that Local Enterobase will be installed at the default home path: “$HOME/local_enterobase_home”.</p></li>
+<li><p>The container itself will be stored in a subdirectory at the default path “$HOME/local_enterobase_home/local_enterobase”, which can be created using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home/local_enterobase
+</pre></div>
+</div>
+</li>
+<li><p>The command examples below will use these paths by default, although these can be changed if you desire a different location.</p></li>
+</ul>
+<p>Note: Please follow the installation instructions in the order presented by this document, else the installation may fail.</p>
+</div>
+<div class="section" id="pulling-the-container-image">
+<h2>Pulling the Container Image<a class="headerlink" href="#pulling-the-container-image" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>There is a single container image (EGP.sif) that stores the installations for EnteroBase Toolkit (EToKi), PostgreSQL and Gunicorn. This needs to be pulled from the Singularity cloud library as follows.</p></li>
+<li><p>If you wish to install it in a different location from the default, you can replace this with a location of your choosing.</p></li>
+<li><p>EGP.sif is the default name for the image, this can be changed by replacing it with &lt;desired_name&gt;.sif.</p></li>
+<li><p>“0.3” is the tag for the default (and current) container image version to pull, this can be changed to a different tag to pull the required image version.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity pull --arch amd64 $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.3
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="setting-up-and-running-postgresql-database-server">
+<h2>Setting Up and Running PostgreSQL Database Server<a class="headerlink" href="#setting-up-and-running-postgresql-database-server" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Create a folder and subfolders inside the home directory (by default).</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>The folders will be bound to related folders inside the container at runtime for the server to function.</p></li>
+<li><p>The following are commands to create the required directories. Example directory names (postgres, postgres/data, postgres/temp and postgres/logs) have been used that will be referenced by future commands.</p></li>
+<li><p>If different folder names are used, all ocurrences of these directory names need to be replaced with your chosen directory names accordingly in future commands.</p></li>
+<li><p>If you wish to store the postgres data in a different location to the default, you can also replace these with locations of your choosing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home/postgres
+mkdir $HOME/local_enterobase_home/postgres/data
+mkdir $HOME/local_enterobase_home/postgres/temp
+mkdir $HOME/local_enterobase_home/postgres/logs
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The “data” folder is used for saving the database data.</p></li>
+<li><p>The “temp” folder is used by the postgres server for temporary files.</p></li>
+<li><p>The “logs” folder is used for saving the database server log files.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Create a postgres database server owner account (by default).</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>The server owner account is called “postgres” by default and does not have a password, it is not recommended to change this as the database server may expect this account name and fail step 3 if changed.</p></li>
+<li><p>If you wish to change the server owner account name from “postgres”, replace this account name in the following commands with your chosen name.</p></li>
+<li><p>By default, the postgres account has an empty password. If you wish to set a login password, remove the ‘–disabled-password’ and ‘–gecos “”’ from the first line (for Ubuntu / Debian) and do not perform the ‘sudo passwd -d postgres’ line.</p></li>
+<li><p>2 sets of commands have been produced for the distributions that we have tested.</p></li>
+</ul>
+<p><strong>Run these commands if you are using Ubuntu 18.04/20.04 or Debian 9/10</strong></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">adduser</span> <span class="o">--</span><span class="n">disabled</span><span class="o">-</span><span class="n">password</span> <span class="o">--</span><span class="n">gecos</span> <span class="s2">&quot;&quot;</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="n">passwd</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>–disabled-password: Ensures the user is created without a password sign in.</p>
+<ul>
+<li><p>Here, the password is disabled to ensure</p></li>
+</ul>
+</li>
+<li><p>–gecos: Records meta-information about the account being created e.g. phone number.</p>
+<ul>
+<li><p>Here, no user information is passed as it is not required for the account creation process.</p></li>
+</ul>
+</li>
+<li><p>-d: Makes the user password empty.</p>
+<ul>
+<li><p>–disabled-password makes it not possible to switch to the user account, so it can be set to an empty string using this flag.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Run these commands if you are using Fedora 32/33 or CentOS 7/8</strong></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">adduser</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="n">passwd</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Set the created database owner user account to own the postgres directories.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>The server owner will own the postgres/data, postgres/temp and postgres/logs directories to ensure that the server is initialised and run correctly.</p></li>
+<li><p>If the paths of the created postgres directories from step 1 are changed, replace the default locations in the following commands with your chosen paths.</p></li>
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following commands with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo chown postgres $HOME/local_enterobase_home/postgres
+sudo chown postgres $HOME/local_enterobase_home/postgres/data
+sudo chown postgres $HOME/local_enterobase_home/postgres/temp
+sudo chown postgres $HOME/local_enterobase_home/postgres/logs
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>If the database server is being run for the <strong>first time</strong>, you must first initialise it.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>The data folder from step 1 (e.g. $HOME/local_enterobase_home/postgres/data) must be empty for this step to succeed.</p></li>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or the postgres folders, replace them accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p></li>
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app init_db $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<ul>
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul class="simple">
+<li><p>-u: Runs a command as another system user</p>
+<ul>
+<li><p>Here, postgresql database server-related commands must be performed by the owner account.</p></li>
+</ul>
+</li>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the respective data, temporary files and log directories are bound to initialise the database cluster folders and files, store temporary running files and database server running logs respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘init_db’ script is called to initialise the database cluster and set up a database user for the flask app to interact with.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>The following error message regarding locale settings may appear when running this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">initdb</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">locale</span> <span class="n">settings</span><span class="p">;</span> <span class="n">check</span> <span class="n">LANG</span> <span class="ow">and</span> <span class="n">LC_</span><span class="o">*</span> <span class="n">environment</span> <span class="n">vairables</span>
+<span class="n">pg_ctl</span><span class="p">:</span> <span class="n">database</span> <span class="n">sustem</span> <span class="n">initialization</span> <span class="n">failed</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Please refer to and carry out the commands for setting matching locale in the ‘Prerequisites’ section if the above error occurs, and rerun the original initialisation command.</p></li>
+</ul>
+</li>
+<li><p>If the created database server data folder is not empty, it is assumed that the database cluster has been initialised and the process will fail with the following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Database</span> <span class="n">cluster</span> <span class="n">initialisation</span> <span class="n">failed</span>
+<span class="n">Database</span> <span class="n">cluster</span> <span class="n">seems</span> <span class="n">to</span> <span class="n">have</span> <span class="n">been</span> <span class="n">previously</span> <span class="n">initialised</span> <span class="n">since</span> <span class="n">the</span> <span class="n">data</span> <span class="n">directory</span> <span class="ow">is</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Please ensure that a new database cluster is to be initialised first, and empty the data folder before rerunning the original initialisation command.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Start up the database server.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>“flask_password” is the default database user password for the flask app. If this is changed during the local instance configuration then this must also be changed in the command to match.</p></li>
+<li><p>The default port number for the database server is 5432. If this is changed in the local configuration, then you must replace 5432 with the new port number</p></li>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or the postgres folders, replace them accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p></li>
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following command with your chosen name.</p></li>
+<li><p>Do not stop the database server immediately after setup as it is required to complete the installation and configuration of Local EnteroBase.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+</pre></div>
+</div>
+<ul>
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul class="simple">
+<li><p>-u: Runs a command as another system user</p>
+<ul>
+<li><p>Here, postgresql database server-related commands must be performed by the owner account.</p></li>
+</ul>
+</li>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the respective data, temporary files and log directories are bound to initialise the database cluster folders and files, store temporary running files and database server running logs respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘start_server’ script is called to begin running the database server.</p></li>
+</ul>
+</li>
+<li><p>-p:</p>
+<ul>
+<li><p>The port number for the database server to run on, this can be changed depending on the local configuration although 5432 is the default value.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>The output may ‘hang’ when the command is entered i.e. become seemingly stuck on the output as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">waiting</span> <span class="k">for</span> <span class="n">server</span> <span class="n">to</span> <span class="n">start</span><span class="o">....</span> <span class="n">done</span>
+<span class="n">server</span> <span class="n">started</span>
+<span class="o">|</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Press the return/enter key to restore the normal running terminal state where inputs can be entered.</p></li>
+<li><p>The database server is set to run as a background process thus will continue to do so when the potential hang is cleared.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Usage Tooltips</strong></p>
+<ul>
+<li><p>Stop the database server:</p>
+<ul>
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following command with your chosen name.</p></li>
+<li><p>Stopping the running instance of the Singularity image will not stop the running of the database server.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>To apply a system configuration change, the database server and application must be restarted using the following commands:</p>
+<ul class="simple">
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following commands with your chosen name.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity instance stop egp
+SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
+SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+singularity instance start $HOME/local_enterobase_home/local_enterobase/EGP.sif egp
+</pre></div>
+</div>
+</li>
+<li><p>To apply a database configuration change, the database server must be restarted using the following command:</p>
+<ul class="simple">
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following command with your chosen name.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app restart_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+</pre></div>
+</div>
+<ul>
+<li><p>The database server restart can also be performed using start and stop commands if required:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
+SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Add new database users (with default SELECT, INSERT, UPDATE and DELETE permissions):</p>
+<ul class="simple">
+<li><p>If you have changed the server owner account name from the default “postgres”, replace this account name in the following command with your chosen name.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo -u postgres singularity run --app create_dbuser $HOME/local_enterobase_home/local_enterobase/EGP.sif -u &lt;username&gt; -p &lt;password&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Replace &lt;username&gt; and &lt;password&gt; with the required credentials.</p></li>
+<li><p>The provided username must not already be an existing database user.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="running-the-gunicorn-application">
+<h2>Running the Gunicorn Application<a class="headerlink" href="#running-the-gunicorn-application" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Set up a username and password for the system app administrator so that you can use the web interface to configure the application, register your Local EnteroBase with Central EnteroBase at Warwick (Warwick EnteroBase) and test upload files to Warwick EnteroBase.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>This enables the configured URL (the default being the localhost IP 127.0.0.1) to be used as an input into the browser to access the application configuration pages.</p></li>
+<li><p>Set up the username and password by replacing “username” and “mypassword” with your own details.</p></li>
+<li><p>If the default installation directory was changed previously for EGP.sif, replace it in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run --app set_user $HOME/local_enterobase_home/local_enterobase/EGP.sif -u &lt;username&gt; -p &lt;password&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘set_user’ script is called to set the user’s details such that they can be used to access the application.</p></li>
+</ul>
+</li>
+<li><p>-u: Identifies the following argument as a username.</p></li>
+<li><p>-p: Identifies the following argument as a password.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Please note that an error message regarding database configuration may appear when running this command, but it can be ignored at this stage. E.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[2020-11-16 09:52:13,656] INFO in __init__: Database error: &lt;class &#39;sqlalchemy.exc.OperationalError&#39;&gt;, error is (psycopg2.OperationalError) could not connect to server: Connection refused
+    Is the server running on host &quot;localhost&quot; (127.0.0.1) and accepting
+    TCP/IP connections on port 5432?
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Run the Gunicorn application.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>If the default installation directory was changed previously for EGP.sif, replace it accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p></li>
+<li><p>“egp” is the given name of the running image instance, this can be changed to a name of your choosing.</p></li>
+<li><p>The following gunicorn app running options are the set defaults, these values can be changed if desired.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity instance start $HOME/local_enterobase_home/local_enterobase/EGP.sif egp -b 0.0.0.0:8000 --timeout 300 --name &quot;local_entero&quot; --log-file=$HOME/logs/gunilog.log --bind=unix:$HOME/sock
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>-b: Defines a server socket to bind.</p>
+<ul>
+<li><p>Here, both the sockets 0.0.0.0:8000 and unix:$HOME/sock are defined to run the gunicorn app off of.</p></li>
+</ul>
+</li>
+<li><p>–timeout: Specifies the time to wait for activity from silent workers before killing and restarting them.</p>
+<ul>
+<li><p>Here, a 300 second (5 minute) waiting time is defined.</p></li>
+</ul>
+</li>
+<li><p>–name: The base process name.</p>
+<ul>
+<li><p>Here, it is named “local_entero”.</p></li>
+</ul>
+</li>
+<li><p>–log-file: The path of the log file to write errors to.</p>
+<ul>
+<li><p>Here, the default home directory and log file name are used.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Usage Tooltips</strong></p>
+<ul>
+<li><p>To ensure that the Local EnteroBase instance is running, use the following command to list all the running Singularity instances:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">instance</span> <span class="nb">list</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The output will include the running instance name “i.e. local_enterobase”, it will look something like this:</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>INSTANCE NAME</p></th>
+<th class="head"><p>PID</p></th>
+<th class="head"><p>IP</p></th>
+<th class="head"><p>IMAGE</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>egp       | 23456</p></td>
+<td></td>
+<td colspan="2"><p>/home/user/local_enterobase.sif</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>If you want to restart the system, you should stop the instance first, then run it again using the commands for applying a system configuration change below.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="redis-setup-and-usage">
+<h2>Redis Setup and Usage<a class="headerlink" href="#redis-setup-and-usage" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Create a folder and subfolders inside the home directory (by default).</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>The folders will be bound to related folders inside the container at runtime for the server to function.</p></li>
+<li><p>The following are commands to create the required directories. Example directory names (redis, redis/data, redis/temp and redis/logs) have been used that will be referenced by future commands.</p></li>
+<li><p>If different folder names are used, all ocurrences of these directory names need to be replaced with your chosen directory names accordingly in future commands.</p></li>
+<li><p>If you wish to store the redis data in a different location to the default, you can also replace these with locations of your choosing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home/redis
+mkdir $HOME/local_enterobase_home/redis/data
+mkdir $HOME/local_enterobase_home/redis/temp
+mkdir $HOME/local_enterobase_home/redis/logs
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The “data” folder is used for saving the Redis data.</p></li>
+<li><p>The “temp” folder is used by the Redis server for temporary files. If there are any pid-related errors when starting Redis such as “/var/run/redis_6379.pid exists, process is already running or crashed”, delete the “.pid” file in this directory and the problem should be resolved.</p></li>
+<li><p>The “logs” folder is used for saving the Redis server log files.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Run the Redis server.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or the Redis folders, replace them accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/redis/data:/var/redis/6379 -B $HOME/local_enterobase_home/redis/temp:/var/run/ -B $HOME/local_enterobase_home/redis/logs:/var/log/redis --app start_redis $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the respective data, temporary files and log directories are bound to store the Redis server folders and files, store temporary running files and Redis server running logs respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘start_redis’ script is called to start running the Redis server.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Usage Tooltips</strong></p>
+<ul>
+<li><p>Check if the Redis server is up and running:</p>
+<ul>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or the Redis folders, replace them accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/redis/data:/var/redis/6379 -B $HOME/local_enterobase_home/redis/temp:/var/run/ -B $HOME/local_enterobase_home/redis/logs:/var/log/redis --app ping_redis $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the respective data, temporary files and log directories are bound to store the Redis server folders and files, store temporary running files and Redis server running logs respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘ping_redis’ script is called to check if the Redis server is running.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Stop the Redis server:</p>
+<ul>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or the Redis folders, replace them accordingly in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/redis/data:/var/redis/6379 -B $HOME/local_enterobase_home/redis/temp:/var/run/ -B $HOME/local_enterobase_home/redis/logs:/var/log/redis --app stop_redis $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what each of the flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the respective data, temporary files and log directories are bound to store the Redis server folders and files, store temporary running files and Redis server running logs respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘stop_redis’ script is called to stop running the Redis server.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="configuring-etoki">
+<h2>Configuring EToKi<a class="headerlink" href="#configuring-etoki" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Create a folder inside the home directory (by default).</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>The folder will be bound to a related folder inside the container at runtime to enable the correct functionality of EToKi for Local EnteroBase.</p></li>
+<li><p>The following is a command to create the required directories. Their names have been used as defaults and will be referenced by future commands.</p></li>
+<li><p>If a different folder name is used, all ocurrences of this need to be replaced with your chosen directory name accordingly in future commands.</p></li>
+<li><p>The default installation location is $HOME/local_enterobase_home. If you wish to install it in a different location, you can also replace this with a location of your choosing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home/EToKi_externals
+mkdir $HOME/local_enterobase_home/EToKi
+mkdir $HOME/local_enterobase_home/EToKi/reads
+mkdir $HOME/local_enterobase_home/EToKi/prep_out
+mkdir $HOME/local_enterobase_home/EToKi/asm_out
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>“EToKi_externals” is used for saving external files to be used by EToKi.</p></li>
+<li><p>“EToKi” folder is used for saving files to be used by EToKi and store results of their preparation and assembly.</p></li>
+<li><p>“EToKi/reads” is used for storing read files to be prepared and assembled.</p></li>
+<li><p>“EToKi/prep_out” is used for storing the preparation results of the initial read files.</p></li>
+<li><p>“EToKi/asm_out” is used to store the assembly results of the prepared read files.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Copy the required configure data file (configure.ini) to the working directory of EToKi. $HOME/local_enterobase_home/EToKi is used by default.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>Navigate to the main directory of EToKi first before copying the configure data file.</p></li>
+<li><p>If the default installation directory was changed previously for EGP.sif, replace it in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/local_enterobase_home/EToKi
+singularity run --app cp_configure $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Download usearch and the MiniKraken2 database for EToKi to function correctly.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>If the default directory for saving external files to be used by EToKi ($HOME/local_enterobase_home/EToKi_externals) was changed previously, replace it in the installation commands for usearch and MiniKraken2 with the changed directory.</p></li>
+<li><p>Please ensure that usearch and MiniKraken2 to the same directory.</p></li>
+<li><p>The following commands downloads usearch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/local_enterobase_home/EToKi_externals
+wget https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz
+chmod 755 usearch11.0.667_i86linux32.gz
+gzip -d usearch11.0.667_i86linux32.gz
+</pre></div>
+</div>
+<ul class="simple">
+<li></li>
+</ul>
+</li>
+<li><p>The following commands downloads the MiniKraken2 database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/local_enterobase_home/EToKi_externals
+wget https://github.com/DerrickWood/kraken2/archive/v2.0.8-beta.tar.gz
+tar xf v2.0.8-beta.tar.gz
+mv kraken2-2.0.8-beta minikraken2
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Configure EToKi.</p></li>
+</ol>
+<blockquote>
+<div><ul>
+<li><p>If the name EToKi_externals has been changed, replace its occurrence in the following command by the new name.</p></li>
+<li><p>If the storage location for configure.ini has been changed, replace its path in the following command by its location.</p></li>
+<li><p>If the Kraken database has a different directory name other than the default “minikraken2” upon installation, you can leave it unchanged or change it to this/another appropriate name and replace its occurrence in the following command accordingly.</p></li>
+<li><p>If the default installation directory was changed previously for EGP.sif and/or EToki_Externals, replace them in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/EToKi/configure.ini:/code/EToKi/modules/configure.ini -B $HOME/local_enterobase_home/EToKi_externals:/code/EToKi/local_externals --app run_etoki $HOME/local_enterobase_home/local_enterobase/EGP.sif configure --usearch /code/EToKi/local_externals/usearch11.0.667_i86linux32 --link_krakenDB /code/EToKi/local_externals/minikraken2/
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what some flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the EToKi configuration file and the local externals folder storing usearch and minikraken2 are bound to enable updating the configuration paths and internally access usearch and minkraken2 respectively.</p></li>
+</ul>
+</li>
+<li><p>–app: Runs a specific script defined by the image.</p>
+<ul>
+<li><p>Here, the ‘run_etoki’ script is called to pass in commands leading to the execution of EToKi functions, in this case it is cp_configure.</p></li>
+</ul>
+</li>
+<li><p>–usearch: Used to pass the locally downloaded usearch file to the container.</p>
+<ul>
+<li><p>As /code/EToKi/local_externals is bound by the local externals folder, the internal container path that usearch is saved to can be used.</p></li>
+</ul>
+</li>
+<li><p>–link_krakenDB: Used to pass the locally downloaded Kraken database to the container.</p>
+<ul>
+<li><p>As /code/EToKi/local_externals is bound by the local externals folder, the internal container path that the database directory is saved to can be used.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Usage Tooltips</strong></p>
+<ul>
+<li><p>Preparing Read Files for Assembly:</p>
+<ul>
+<li><p>If the default installation directory was changed previously for EGP.sif, replace it in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p></li>
+<li><p>pe_example_1.fastq.gz, pe_example_2.fastq.gz and example_dir are example names for the read files to be prepared and the subdirectory in which to store their preparation results in. Replace these as required.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/EToKi/prep_out:/code/EToKi/prep_out -B $HOME/local_enterobase_home/EToKi/reads:/code/EToKi/reads --app run_etoki $HOME/local_enterobase_home/local_enterobase/EGP.sif prepare --pe /code/EToKi/reads/pe_example_1.fastq.gz,/code/EToKi/reads/pe_example_2.fastq.gz -p /code/EToKi/prep_out/example_dir/file_suffix
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what some flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the folders for storing the read files and preparation results are bound to pass the locally stored read files to the container and receive the prepared files respectively.</p></li>
+</ul>
+</li>
+<li><p>–pe: Links one or more paired-end read files to prepare.</p>
+<ul>
+<li><p>Here, 2 paired-end read files have been passed in as an example.</p></li>
+<li><p>The flag –se for passing single-end read files can also be used if these are initially present.</p></li>
+</ul>
+</li>
+<li><p>-p: Links a target path to store preparation results.</p>
+<ul>
+<li><p>Here, an example subdirectory within EToKi/prep_out has been passed in as an example, with ‘file_suffix’ being appended onto all generated filenames e.g. ‘file_suffix_L1_R1.fastq.gz’</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Assembling Prepared Read Files:</p>
+<ul>
+<li><p>If the default installation directory was changed previously for EGP.sif, replace it in the following command with the correct installation directory.</p></li>
+<li><p>If the pulled image name “EGP.sif” was changed previously, replace it in the following command with your chosen name.</p></li>
+<li><p>pe_example_1.fastq.gz, pe_example_2.fastq.gz and example_dir are example names for the resulting prepared read files from the previous step. Use the names of your resulting files accordingly.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run -B $HOME/local_enterobase_home/EToKi/asm_out:/code/EToKi/asm_out -B $HOME/local_enterobase_home/EToKi/prep_out:/code/EToKi/prep_out --app run_etoki $HOME/local_enterobase_home/local_enterobase/EGP.sif assemble --pe /code/EToKi/prep_out/pe_example_1.fastq.gz,/code/EToKi/prep_out/pe_example_2.fastq.gz --se /code/EToKi/prep_out/se_example_2.fastq.gz -p /code/EToKi/asm_out/example_dir/file_suffix
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is a brief explanation on what some flags being used mean:</p>
+<ul>
+<li><p>-B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.</p>
+<ul>
+<li><p>Here, the folders for storing the prepared read files and assmbly results are bound to pass the prepared read files stored locally from the previous step to the container and receive the assembly results respectively.</p></li>
+</ul>
+</li>
+<li><p>–pe: Links one or more paired-end read files to assemble.</p>
+<ul>
+<li><p>Here, 2 paired-end prepared read files have been passed in as an example.</p></li>
+</ul>
+</li>
+<li><p>–se: Links one or more single-end read files to prepare.</p>
+<ul>
+<li><p>Here, a singular prepared read file has been passed in as an example. This is a possible result from preparing only paired-end read files.</p></li>
+<li><p>This flag is optional as it depends on the initial read files and their preparation results.</p></li>
+</ul>
+</li>
+<li><p>-p: Links a target directory to store preparation results.</p>
+<ul>
+<li><p>Here, an example subdirectory within EToKi/prep_out has been passed in as an example, with ‘file_suffix’ being appended onto all generated filenames e.g. ‘file_suffix.result.fastq’</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="additional-notes">
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The local installation configuration file is saved in your home folder (.local_configuration_file.yml), you can edit it directly using any text editor (e.g. vim) or it can be alerted using “/update_system_configuration”  link from the web interface (it will be the default main web page if the database is not configured or not configured correctly).</p></li>
+<li><p>The application is accessible by the provided URL/IP address, set during NGINX configuration (in the nginx.conf file).</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">EToKi, PostgreSQL and Gunicorn (EGP) Container Installation</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#pulling-the-container-image">Pulling the Container Image</a></li>
+<li><a class="reference internal" href="#setting-up-and-running-postgresql-database-server">Setting Up and Running PostgreSQL Database Server</a></li>
+<li><a class="reference internal" href="#running-the-gunicorn-application">Running the Gunicorn Application</a></li>
+<li><a class="reference internal" href="#redis-setup-and-usage">Redis Setup and Usage</a></li>
+<li><a class="reference internal" href="#configuring-etoki">Configuring EToKi</a></li>
+<li><a class="reference internal" href="#additional-notes">Additional Notes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nginx.html"
+                        title="previous chapter">NGINX Web Server</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../configure/configure.html"
+                        title="next chapter">Registration and Configuration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/installation/egp.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../configure/configure.html" title="Registration and Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="NGINX Web Server"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="manual.html" >Manual Installation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

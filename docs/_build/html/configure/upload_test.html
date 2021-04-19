@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Upload Test &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Approving Your Local EnteroBase" href="approve.html" />
+    <link rel="prev" title="System Configuration" href="system_config.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="approve.html" title="Approving Your Local EnteroBase"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="system_config.html" title="System Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="configure.html" accesskey="U">Registration and Configuration</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="upload-test">
+<span id="upload-test-label"></span><h1>Upload Test<a class="headerlink" href="#upload-test" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of the upload test is to ensure that your Local EnteroBase has been correctly installed and configured.
+The test consists of downloading and assembling 2 test short-read files and verifying their results. It will also
+download and upload 100 files to check the connection speed to Central EnteroBase.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: <a class="reference external" href="https://35.197.247.144:5566/local_enterobase/display_test_token">https://35.197.247.144:5566/local_enterobase/display_test_token</a></p></li>
+<li><p>Celery task scheduler and worker processes to be initialised. These are the background processes that will assemble the test short-read files and upload their results. They can be initialised using the Singularity container with the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run --app celery_beat $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run --app celery_worker $HOME/local_enterobase_home/local_enterobase/EGP.sif
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If the Celery processes are running, please restart them before beginning the upload test.</p></li>
+<li><p>Please modify the default path/name of the container if you have changed this during installation.</p></li>
+<li><p>Celery Beat does not run as a background process so you will need to leave it running in another terminal</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="running-the-test">
+<h2>Running the Test<a class="headerlink" href="#running-the-test" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/incomplete_upload_test.png"><img alt="Incomplete Upload Test Form" src="../_images/incomplete_upload_test.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 1 - Incomplete Upload Test Form</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<ul class="simple">
+<li><p>Enter your email and your test token. Click the “start test” button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.</p>
+<ul>
+<li><p>100 test short-read files, intended for performing download and upload speed tests, are downloaded.</p></li>
+<li><p>A pair of downloaded short-read files are prepared and assembled to be uploaded to Central EnteroBase to verify the correctness of these functionalities.</p></li>
+<li><p>The resulting FASTQ file of the test assembly is uploaded to Central EnteroBase where it is matched with the stored known result, which verifies that the preparation and assembly functions are working correctly.</p></li>
+<li><p>In the final step, the MD5 checksum is extracted from each of the earlier downloaded short-read files and reuploaded with their respective file to Central EnteroBase to check the upload speed. Central EnteroBase also verifies the checksum against the stored known checksum, which checks that the files are not changing during upload.</p></li>
+</ul>
+</li>
+<li><p>If the test has successfully completed, a summary is displayed of the times taken to reupload each short-read file to Central EnteroBase, as well as the total and average times across all reuploads. Click the “continue” button to proceed to the final configuration step to acquire credentials to use Local EnteroBase.</p></li>
+<li><p>If the test fails at any step, this will be displayed with an appropriate error message and a “retry” button that will reattempt the upload test when clicked.</p></li>
+</ul>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/complete_upload_test.png"><img alt="Completed Upload Test Form" src="../_images/complete_upload_test.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 2 - Completed Upload Test Form</strong></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Upload Test</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#running-the-test">Running the Test</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="system_config.html"
+                        title="previous chapter">System Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="approve.html"
+                        title="next chapter">Approving Your Local EnteroBase</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/configure/upload_test.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="approve.html" title="Approving Your Local EnteroBase"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="system_config.html" title="System Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="configure.html" >Registration and Configuration</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
