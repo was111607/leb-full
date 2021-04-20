@@ -86,7 +86,7 @@ Note: Only the following columns are available for multi-filling: "Lab Contact",
   :align: center
   :alt: Visual Guide For Filling Multiple Rows
 
-  **Fig. 5 - Visual Guide For Adding the Collection Date**
+  **Fig. 5 - Visual Guide For Filling Multiple Rows**
 
 Pre-filling Metadata
 ====================
@@ -117,7 +117,7 @@ The template can be opened with text editors that are able to treat the template
 * You do not have to fill in every cell as this is intended to save time on the webpage where possible.
 * When filling in the template, the initial column labels and their ordering must be preserved to correctly import it back.
 
-.. figure:: ../images/fill_multi_rows.png
+.. figure:: ../images/filling_template.png
   :align: center
   :alt: Visual Guide For Opening and Filling in the Template (Ubuntu)
 
