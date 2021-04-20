@@ -14,4 +14,4 @@ Approving Your Local EnteroBase
    :align: center
    :alt: Local EnteroBase Usage Credentials Form
 
-   **Fig. 1 - Local EnteroBase Usage Credentials Form**
+   **Local EnteroBase Usage Credentials Form**

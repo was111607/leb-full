@@ -21,7 +21,7 @@ Note: The page must be refreshed to update the statuses, we intend to implement 
    :align: center
    :alt: Jobs Page
 
-   **Fig. 1 - Jobs Page**
+   **Jobs Page**
 
 Uploading
 =========

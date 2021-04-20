@@ -29,7 +29,7 @@ The "nginx.conf" file is the configuration file used by NGINX. It defines a numb
    :align: center
    :alt: Local EnteroBase Registration Form
 
-   **Fig. 1 - NGINX Configuration Form**
+   **NGINX Configuration Form**
 
 The above figure shows the form that is used to generate the "nginx.conf" file. All fields in the form are mandatory. However, most come with default values which you should not modify. The values that are unique to your installation are the "Web Server URL/IP" and "Local Enterobase Server URL/IP" values. Below are some short descriptions of the required variables:
 

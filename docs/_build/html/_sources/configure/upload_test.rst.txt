@@ -30,7 +30,7 @@ Running the Test
    :align: center
    :alt: Incomplete Upload Test Form
 
-   **Fig. 1 - Incomplete Upload Test Form**
+   **Incomplete Upload Test Form**
 
 * Enter your email (**disabled for the beta test**) and your test token. Click the "start test" button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.
 
@@ -47,4 +47,4 @@ Running the Test
   :align: center
   :alt: Completed Upload Test Form
 
-  **Fig. 2 - Completed Upload Test Form**
+  **Completed Upload Test Form**
