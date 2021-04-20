@@ -102,7 +102,7 @@ Clicking the blue "Export Template" in the grid toolbar downloads the template a
 * The grid must be empty of rows to correctly export the template file.
 * If the browser window is shrunk, you can export using the "Export Template" button which is located by clicking the blue "Data" button. This displays a drop-down menu of the template importing and exporting functions.
 
-.. figure:: ../images/export_template.png
+.. figure:: ../images/save_template.png
   :align: center
   :alt: Visual Guide For Exporting and Saving the Grid Template (Ubuntu)
 
