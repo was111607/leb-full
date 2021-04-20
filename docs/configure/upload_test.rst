@@ -10,7 +10,7 @@ download and upload 100 files to check the connection speed to Central EnteroBas
 Prerequisites
 ==============
 
-* Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: https://35.197.247.144:5566/local_enterobase/display_test_token
+* Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: https://enterobase.warwick.ac.uk/local_enterobase/display_test_token
 * Celery task scheduler and worker processes to be initialised. These are the background processes that will assemble the test short-read files and upload their results. They can be initialised using the Singularity container with the following commands:
 
   ::
@@ -33,7 +33,7 @@ Running the Test
    :align: center
    :alt: Incomplete Upload Test Form
 
-   **Fig. 1 - Incomplete Upload Test Form**
+   **Incomplete Upload Test Form**
 
 * Enter your email and your test token. Click the "start test" button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.
 
@@ -50,4 +50,4 @@ Running the Test
   :align: center
   :alt: Completed Upload Test Form
 
-  **Fig. 2 - Completed Upload Test Form**
+  **Completed Upload Test Form**

@@ -99,4 +99,4 @@ Full Configuration Test Communications
    :align: center
    :alt: Configuration Test Architecture
 
-   **Fig. 1 - Flowchart showing all communications involved in the configuration test**
+   **Flowchart showing all communications involved in the configuration test**

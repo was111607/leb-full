@@ -17,7 +17,7 @@ General Configuration
    :align: center
    :alt: General Configuration Form
 
-   **Fig. 1 - General Configuration Form**
+   **General Configuration Form**
 
 Database Selection and Configuration
 =====================================
@@ -33,7 +33,7 @@ Database Selection and Configuration
    :align: center
    :alt: Database Choice Form
 
-   **Fig. 2 - Database Choice Form**
+   **Database Choice Form**
 
 Mail Server
 ===============
@@ -51,4 +51,4 @@ A form is provided that is pre-filled with default values, which correctly confi
    :align: center
    :alt: Celery Messaging Configuration Form*
 
-   **Fig. 3 - Celery Messaging Configuration Form**
+   **Celery Messaging Configuration Form**

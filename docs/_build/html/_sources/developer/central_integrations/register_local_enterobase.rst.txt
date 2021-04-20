@@ -10,7 +10,7 @@ The Local EnteroBase registration page, available at the "local_enterobase/regis
    :align: center
    :alt: Local EnteroBase Registration Form
 
-   **Fig. 2 - Local EnteroBase Registration Form**
+   **Local EnteroBase Registration Form**
 
 The above figure shows a screenshot of what the user sees when they go to the page. Below is a list of the validations enforced by the FlaskForm used to handle the input:
 

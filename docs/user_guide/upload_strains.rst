@@ -8,7 +8,7 @@ A grid toolbar is displayed above the grid, which is a row of buttons performing
    :align: center
    :alt: Grid for Salmonella Strain Uploads with 2 Newly Added Rows
 
-   **Fig. 1 - Grid for Salmonella Strain Uploads with 2 Newly Added Rows**
+   **Grid for Salmonella Strain Uploads with 2 Newly Added Rows**
 
 Adding Rows
 ============
@@ -31,7 +31,7 @@ Clicking the cell underneath the "Read Files" column, which is annotated with a 
    :width: 65%
    :alt: Pop-up Menu For Selecting Short-read Files
 
-   **Fig. 2 - Pop-up Menu For Selecting Short-read Files**
+   **Pop-up Menu For Selecting Short-read Files**
 
 **Notes**
 
@@ -49,7 +49,7 @@ Clicking the "Click to add" cell underneath the "Source Details" column displays
    :align: center
    :alt: Visual Guide For Adding Source Details
 
-   **Fig. 3 - Visual Guide For Adding Source Details**
+   **Visual Guide For Adding Source Details**
 
 Adding Collection Date
 ======================
@@ -65,7 +65,7 @@ Clicking the cell underneath the "Collection Date" column displays a pop-up menu
   :align: center
   :alt: Visual Guide For Adding Date Details
 
-  **Fig. 4 - Visual Guide For Adding the Collection Date**
+  **Visual Guide For Adding the Collection Date**
 
 Simultaneously Filling Data across Multiple Rows
 ================================================
@@ -85,7 +85,7 @@ Note: Only the following columns are available for multi-filling: "Lab Contact",
   :align: center
   :alt: Visual Guide For Filling Multiple Rows
 
-  **Fig. 5 - Visual Guide For Adding the Collection Date**
+  **Visual Guide For Adding the Collection Date**
 
 Pre-filling Metadata
 ====================
@@ -101,11 +101,11 @@ Clicking the blue "Export Template" in the grid toolbar downloads the template a
 * The grid must be empty of rows to correctly export the template file.
 * If the browser window is shrunk, you can export using the "Export Template" button which is located by clicking the blue "Data" button. This displays a drop-down menu of the template importing and exporting functions.
 
-.. figure:: ../images/fill_multi_rows.png
+.. figure:: ../images/export_template.png
   :align: center
   :alt: Visual Guide For Exporting and Saving the Grid Template (Ubuntu)
 
-  **Fig. 6 - Visual Guide For Exporting and Saving the Grid Template (Ubuntu)**
+  **Visual Guide For Exporting and Saving the Grid Template (Ubuntu)**
 
 **Filling in the Template**
 
@@ -118,9 +118,9 @@ The template can be opened with text editors that are able to treat the template
 
 .. figure:: ../images/fill_multi_rows.png
   :align: center
-  :alt: Visual Guide For Exporting and Saving the Grid Template (Ubuntu)
+  :alt: Visual Guide For Opening and Filling in the Template (Ubuntu)
 
-  **Fig. 7 - Visual Guide For Opening and Filling in the Template (Ubuntu)**
+  **Visual Guide For Opening and Filling in the Template (Ubuntu)**
 
 **Importing the Template**
 
@@ -142,13 +142,13 @@ When the file has been uploaded, provided it is in the correct format, a blue "I
   :width: 65%
   :alt: Modal Window for Uploading a Filled Template File
 
-  **Fig. 8 - Modal Window for Uploading a Filled Template File**
+  **Modal Window for Uploading a Filled Template File**
 
 .. figure:: ../images/filled_grid.png
   :align: center
   :alt: A Grid With Cells Filled Using an Imported Template File
 
-  **Fig. 9 - A Grid With Cells Filled Using an Imported Template File**
+  **A Grid With Cells Filled Using an Imported Template File**
 
 Submitting the Metadata
 =======================

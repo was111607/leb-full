@@ -17,7 +17,7 @@ Because NGINX is running as a server, you need to make sure you allow the releva
    :align: center
    :alt: Screenshot of 502 Bad Gateway Error
 
-**Fig. 1 - NGINX 502 Bad Gateway Error**
+**NGINX 502 Bad Gateway Error**
 
 An example of allowing NGINX to run with an enabled "Uncomplicated Firewall (ufw)", which is default on most Ubunut installations, is as follows:
 
@@ -59,7 +59,7 @@ The "nginx.conf" file is the configuration file used by NGINX. It defines a numb
    :align: center
    :alt: Local EnteroBase Registration Form
 
-   **Fig. 2 - NGINX Configuration Form**
+   **NGINX Configuration Form**
 
 The above figure shows the form that is used to generate the "nginx.conf" file. All fields in the form are mandatory. However, most come with default values which you should not modify. The values that are unique to your installation are the "Web Server URL/IP" and "Local Enterobase Server URL/IP" values. Below are some short descriptions of the required variables:
 

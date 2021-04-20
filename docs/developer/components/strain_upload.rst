@@ -61,7 +61,7 @@ The Grid is defined in the 'database_home.html' file. This is the ag-grid compon
    :align: center
    :alt: AG Grid Component Definition
 
-**Fig. 1 - AG Grid Component Definition**
+**AG Grid Component Definition**
 
 Some important property bindings are as follows:
 
@@ -213,4 +213,4 @@ To conclude the strain upload page documentation, the following table has been p
    :align: center
    :alt: Column Information Summary Table
 
-**Fig. 2 - Column Information Summary Table**
+**Column Information Summary Table**

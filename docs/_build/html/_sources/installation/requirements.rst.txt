@@ -14,7 +14,7 @@ Prerequisites
    :align: center
    :alt: Central EnteroBase User Registration Form
 
-   **Fig. 1 - Central EnteroBase User Registration Form**
+   **Central EnteroBase User Registration Form**
 
 Minimum System requirements
 ============================

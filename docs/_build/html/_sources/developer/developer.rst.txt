@@ -7,7 +7,7 @@ This section provides documentation to support future developers of Local Entero
    :align: center
    :alt: Local EnteroBase Directory Structure
 
-**Fig. 1 - Local EnteroBase Directory Structure**
+**Local EnteroBase Directory Structure**
 
 **Directory Structure Descriptions**
 

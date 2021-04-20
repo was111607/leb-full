@@ -21,7 +21,7 @@ Once the prerequisites have been completed you can now fill out the form at: htt
    :align: center
    :alt: Local EnteroBase Registration Form
 
-   **Fig. 1 - Local EnteroBase Registration Form**
+   **Local EnteroBase Registration Form**
 
 The above image is a screenshot of the Local EnteroBase registration page (NOTE: you must be logged in to view it). All fields within the form are required and can be described as follows:
 

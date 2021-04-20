@@ -10,7 +10,7 @@ There is more information regarding the contents of the "nginx.conf" file availa
    :align: center
    :alt: Local EnteroBase Registration Form
 
-   **Fig. 1 - NGINX Configuration Form**
+   **NGINX Configuration Form**
 
 The above figure shows a screenshot of what the user sees when they go to the page. Below is a list of the validations enforced by the FlaskForm used to handle the input:
 
