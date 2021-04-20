@@ -8,7 +8,7 @@ A grid toolbar is displayed above the grid, which is a row of buttons performing
    :align: center
    :alt: Grid for Salmonella Strain Uploads with 2 Newly Added Rows
 
-   **Grid for Salmonella Strain Uploads with 2 Newly Added Rows**
+   **Fig. 1 - Grid for Salmonella Strain Uploads with 2 Newly Added Rows**
 
 Adding Rows
 ============
@@ -17,6 +17,7 @@ Clicking the "Add row" button adds an empty row to the grid. You can manually ad
 
 **Notes**
 
+* We have disabled inputting location data into the grid for the beta test.
 * If the browser window is shrunk, the "Add Row" button can be located by clicking the blue "Edit" button which will display a drop-down menu of grid functions.
 * It is mandatory to add data to the cells highlighted in red, otherwise the data cannot be submitted.
 * You cannot have 2 rows with the same strain name as this avoids storing potentially duplicate data.
@@ -31,7 +32,7 @@ Clicking the cell underneath the "Read Files" column, which is annotated with a 
    :width: 65%
    :alt: Pop-up Menu For Selecting Short-read Files
 
-   **Pop-up Menu For Selecting Short-read Files**
+   **Fig. 2 - Pop-up Menu For Selecting Short-read Files**
 
 **Notes**
 
@@ -49,7 +50,7 @@ Clicking the "Click to add" cell underneath the "Source Details" column displays
    :align: center
    :alt: Visual Guide For Adding Source Details
 
-   **Visual Guide For Adding Source Details**
+   **Fig. 3 - Visual Guide For Adding Source Details**
 
 Adding Collection Date
 ======================
@@ -65,7 +66,7 @@ Clicking the cell underneath the "Collection Date" column displays a pop-up menu
   :align: center
   :alt: Visual Guide For Adding Date Details
 
-  **Visual Guide For Adding the Collection Date**
+  **Fig. 4 - Visual Guide For Adding the Collection Date**
 
 Simultaneously Filling Data across Multiple Rows
 ================================================
@@ -85,7 +86,7 @@ Note: Only the following columns are available for multi-filling: "Lab Contact",
   :align: center
   :alt: Visual Guide For Filling Multiple Rows
 
-  **Visual Guide For Adding the Collection Date**
+  **Fig. 5 - Visual Guide For Adding the Collection Date**
 
 Pre-filling Metadata
 ====================
@@ -105,7 +106,7 @@ Clicking the blue "Export Template" in the grid toolbar downloads the template a
   :align: center
   :alt: Visual Guide For Exporting and Saving the Grid Template (Ubuntu)
 
-  **Visual Guide For Exporting and Saving the Grid Template (Ubuntu)**
+  **Fig. 6 - Visual Guide For Exporting and Saving the Grid Template (Ubuntu)**
 
 **Filling in the Template**
 
@@ -120,7 +121,7 @@ The template can be opened with text editors that are able to treat the template
   :align: center
   :alt: Visual Guide For Opening and Filling in the Template (Ubuntu)
 
-  **Visual Guide For Opening and Filling in the Template (Ubuntu)**
+  **Fig. 7 - Visual Guide For Opening and Filling in the Template (Ubuntu)**
 
 **Importing the Template**
 
@@ -133,6 +134,7 @@ When the file has been uploaded, provided it is in the correct format, a blue "I
 
 **Notes**
 
+* For the beta test, any filenames provided in the uploaded template file will be ignored. You must select the files through the webpage menu.
 * The grid must be empty of rows to correctly export the template file.
 * If there are any issues with the template file format, such as changes in the column order, an import error message will be displayed.
 * If the browser window is shrunk, you can import using the "Import from Text File" button which is located by clicking the blue "Data" button. This displays a drop-down menu of the template importing and exporting functions.
@@ -142,13 +144,13 @@ When the file has been uploaded, provided it is in the correct format, a blue "I
   :width: 65%
   :alt: Modal Window for Uploading a Filled Template File
 
-  **Modal Window for Uploading a Filled Template File**
+  **Fig. 8 - Modal Window for Uploading a Filled Template File**
 
 .. figure:: ../images/filled_grid.png
   :align: center
   :alt: A Grid With Cells Filled Using an Imported Template File
 
-  **A Grid With Cells Filled Using an Imported Template File**
+  **Fig. 9 - A Grid With Cells Filled Using an Imported Template File**
 
 Submitting the Metadata
 =======================

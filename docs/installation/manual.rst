@@ -1,5 +1,3 @@
-.. _manual-installation-label:
-
 Manual Installation
 -------------------
 

@@ -17,10 +17,12 @@ General Configuration
    :align: center
    :alt: General Configuration Form
 
-   **General Configuration Form**
+   **Fig. 1 - General Configuration Form**
 
 Database Selection and Configuration
 =====================================
+
+Note: To ensure that the default server is functional, selecting an existing database server to connect to as well as the option to modify the pre-filled current database server settings (set during installation) are disabled for the beta test.
 
 * The database server to be used by your Local EnteroBase can be selected at this stage, between one that is set up during installation of the Singularity container or an existing database server if you have one.
 
@@ -33,10 +35,13 @@ Database Selection and Configuration
    :align: center
    :alt: Database Choice Form
 
-   **Database Choice Form**
+   **Fig. 2 - Database Choice Form**
 
 Mail Server
 ===============
+
+Note: **The mail server is unavailable for this beta test**. The Warwick EnteroBase team will manually
+send emails as appropriate, particularly for registration and the test token to perform the upload test in the next configuration step. Feel free to skip this section.
 
 Central EnteroBase would provide updates for significant events such as completed assemblies. Details must be inputted that configures a mail server to automatically receive email updates from Central EnteroBase: the domain, port, an account name and a password.
 The form also provides options for advanced configuration such as using TLS and SSL email encryption protocols.
@@ -51,4 +56,4 @@ A form is provided that is pre-filled with default values, which correctly confi
    :align: center
    :alt: Celery Messaging Configuration Form*
 
-   **Celery Messaging Configuration Form**
+   **Fig. 3 - Celery Messaging Configuration Form**
