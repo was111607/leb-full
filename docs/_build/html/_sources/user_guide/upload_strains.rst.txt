@@ -166,13 +166,13 @@ As a result, you can attempt to amend these problems or delete the row from the 
   :width: 70%
   :alt: Displayed Message When All Rows Pass Submission
 
-  **Fig. 10 - Displayed Message When All Rows Pass Submission**
+  **Displayed Message When All Rows Pass Submission**
 
 .. figure:: ../images/strain_upload_partial_failure.png
   :align: center
   :alt: Displayed Message When a Row Fails Submission
 
-  **Fig. 11 - Displayed Message When a Row Fails Submission**
+  **Displayed Message When a Row Fails Submission**
 
 Tooltips
 ========
