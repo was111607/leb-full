@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Upload Test &#8212; Local EnteroBase (Beta)  documentation</title>
+    <title>Upload Test &#8212; Local EnteroBase Documentation  documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="system_config.html" title="System Configuration"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="configure.html" accesskey="U">Registration and Configuration</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,14 +42,14 @@
           <div class="body" role="main">
             
   <div class="section" id="upload-test">
-<h1>Upload Test<a class="headerlink" href="#upload-test" title="Permalink to this headline">¶</a></h1>
+<span id="upload-test-label"></span><h1>Upload Test<a class="headerlink" href="#upload-test" title="Permalink to this headline">¶</a></h1>
 <p>The purpose of the upload test is to ensure that your Local EnteroBase has been correctly installed and configured.
 The test consists of downloading and assembling 2 test short-read files and verifying their results. It will also
 download and upload 100 files to check the connection speed to Central EnteroBase.</p>
 <div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: <a class="reference external" href="https://35.197.247.144:5566/local_enterobase/display_test_token">https://35.197.247.144:5566/local_enterobase/display_test_token</a></p></li>
+<li><p>Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: <a class="reference external" href="https://enterobase.warwick.ac.uk/local_enterobase/display_test_token">https://enterobase.warwick.ac.uk/local_enterobase/display_test_token</a></p></li>
 <li><p>Celery task scheduler and worker processes to be initialised. These are the background processes that will assemble the test short-read files and upload their results. They can be initialised using the Singularity container with the following commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity run --app celery_beat $HOME/local_enterobase_home/local_enterobase/EGP.sif
 </pre></div>
@@ -60,6 +60,7 @@ download and upload 100 files to check the connection speed to Central EnteroBas
 <ul class="simple">
 <li><p>If the Celery processes are running, please restart them before beginning the upload test.</p></li>
 <li><p>Please modify the default path/name of the container if you have changed this during installation.</p></li>
+<li><p>Celery Beat does not run as a background process so you will need to leave it running in another terminal</p></li>
 </ul>
 </li>
 </ul>
@@ -71,7 +72,7 @@ download and upload 100 files to check the connection speed to Central EnteroBas
 <p class="caption"><span class="caption-text"><strong>Incomplete Upload Test Form</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <ul class="simple">
-<li><p>Enter your email (<strong>disabled for the beta test</strong>) and your test token. Click the “start test” button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.</p>
+<li><p>Enter your email and your test token. Click the “start test” button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.</p>
 <ul>
 <li><p>100 test short-read files, intended for performing download and upload speed tests, are downloaded.</p></li>
 <li><p>A pair of downloaded short-read files are prepared and assembled to be uploaded to Central EnteroBase to verify the correctness of these functionalities.</p></li>
@@ -143,7 +144,7 @@ download and upload 100 files to check the connection speed to Central EnteroBas
         <li class="right" >
           <a href="system_config.html" title="System Configuration"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="configure.html" >Registration and Configuration</a> &#187;</li> 
       </ul>
     </div>

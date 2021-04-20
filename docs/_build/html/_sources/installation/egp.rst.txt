@@ -16,19 +16,17 @@ Prerequisites
     LC_ALL=en_GB.UTF-8
     LANG=en_GB.UTF-8
 
-* Create a directory to store Local EnteroBase, and by extension the EGP container. The following command uses the default path "$HOME/local_enterobase_home" although you can change this to a location of your choosing.
+* The documentation assumes that Local Enterobase will be installed at the default home path: "$HOME/local_enterobase_home".
+* The container itself will be stored in a subdirectory at the default path "$HOME/local_enterobase_home/local_enterobase", which can be created using the following command:
 
   ::
 
-    mkdir $HOME/local_enterobase_home
+    mkdir $HOME/local_enterobase_home/local_enterobase
+
+* The command examples below will use these paths by default, although these can be changed if you desire a different location.
 
 Note: Please follow the installation instructions in the order presented by this document, else the installation may fail.
 
-Default Installation Directory
-===============================
-
-* The documentation assumes that Local Enterobase, and by extension the EGP container, will be installed at the default home path: "$HOME/local_enterobase_home".
-* The command examples below will use this path by default, although these can be changed if you desire a different location.
 
 Pulling the Container Image
 =============================
@@ -36,11 +34,11 @@ Pulling the Container Image
 * There is a single container image (EGP.sif) that stores the installations for EnteroBase Toolkit (EToKi), PostgreSQL and Gunicorn. This needs to be pulled from the Singularity cloud library as follows.
 * If you wish to install it in a different location from the default, you can replace this with a location of your choosing.
 * EGP.sif is the default name for the image, this can be changed by replacing it with <desired_name>.sif.
-* "0.1" is the default image file to pull, this can be changed to a different tag to pull a required image version if required.
+* "0.3" is the tag for the default (and current) container image version to pull, this can be changed to a different tag to pull the required image version.
 
   ::
 
-    singularity pull --arch amd64 $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.2
+    singularity pull --arch amd64 $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.3
 
 Setting Up and Running PostgreSQL Database Server
 =================================================
@@ -63,17 +61,71 @@ Setting Up and Running PostgreSQL Database Server
     * The "temp" folder is used by the postgres server for temporary files.
     * The "logs" folder is used for saving the database server log files.
 
-2. If the database server is being run for the **first time**, you must first initialise it.
+2. Create a postgres database server owner account (by default).
+
+  * The server owner account is called "postgres" by default and does not have a password, it is not recommended to change this as the database server may expect this account name and fail step 3 if changed.
+  * If you wish to change the server owner account name from "postgres", replace this account name in the following commands with your chosen name.
+  * By default, the postgres account has an empty password. If you wish to set a login password, remove the '--disabled-password' and '--gecos ""' from the first line (for Ubuntu / Debian) and do not perform the 'sudo passwd -d postgres' line.
+  * 2 sets of commands have been produced for the distributions that we have tested.
+
+  **Run these commands if you are using Ubuntu 18.04/20.04 or Debian 9/10**
+
+    ::
+
+      sudo adduser --disabled-password --gecos "" postgres
+      sudo passwd -d postgres
+
+    * Here is a brief explanation on what each of the flags being used mean:
+
+      * --disabled-password: Ensures the user is created without a password sign in.
+
+        * Here, the password is disabled to ensure
+
+      * --gecos: Records meta-information about the account being created e.g. phone number.
+
+        * Here, no user information is passed as it is not required for the account creation process.
+
+      * -d: Makes the user password empty.
+
+        * --disabled-password makes it not possible to switch to the user account, so it can be set to an empty string using this flag.
+
+  **Run these commands if you are using Fedora 32/33 or CentOS 7/8**
+
+    ::
+
+      sudo adduser postgres
+      sudo passwd -d postgres
+
+3. Set the created database server owner user account to own the postgres directories.
+
+  * The server owner will own the postgres/data, postgres/temp and postgres/logs directories to ensure that the server is initialised and run correctly.
+  * If the paths of the created postgres directories from step 1 are changed, replace the default locations in the following commands with your chosen paths.
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following commands with your chosen name.
+
+    ::
+
+      sudo chown postgres $HOME/local_enterobase_home/postgres
+      sudo chown postgres $HOME/local_enterobase_home/postgres/data
+      sudo chown postgres $HOME/local_enterobase_home/postgres/temp
+      sudo chown postgres $HOME/local_enterobase_home/postgres/logs
+
+
+4. If the database server is being run for the **first time**, you must first initialise it.
 
   * The data folder from step 1 (e.g. $HOME/local_enterobase_home/postgres/data) must be empty for this step to succeed.
   * If the default installation directory was changed previously for EGP.sif and/or the postgres folders, replace them accordingly in the following command with the correct installation directory.
   * If the pulled image name "EGP.sif" was changed previously, replace it in the following command with your chosen name.
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following command with your chosen name.
 
     ::
 
-      singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app init_db $HOME/local_enterobase_home/local_enterobase/EGP.sif
+      sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app init_db $HOME/local_enterobase_home/local_enterobase/EGP.sif
 
     * Here is a brief explanation on what each of the flags being used mean:
+
+      * -u: Runs a command as another system user
+
+        * Here, postgresql database server-related commands must be performed by the owner account.
 
       * -B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.
 
@@ -101,19 +153,24 @@ Setting Up and Running PostgreSQL Database Server
 
       * Please ensure that a new database cluster is to be initialised first, and empty the data folder before rerunning the original initialisation command.
 
-3. Start up the database server.
+5. Start up the database server.
 
   * "flask_password" is the default database user password for the flask app. If this is changed during the local instance configuration then this must also be changed in the command to match.
   * The default port number for the database server is 5432. If this is changed in the local configuration, then you must replace 5432 with the new port number
   * If the default installation directory was changed previously for EGP.sif and/or the postgres folders, replace them accordingly in the following command with the correct installation directory.
   * If the pulled image name "EGP.sif" was changed previously, replace it in the following command with your chosen name.
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following command with your chosen name.
   * Do not stop the database server immediately after setup as it is required to complete the installation and configuration of Local EnteroBase.
 
     ::
 
-      SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+      SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
 
     * Here is a brief explanation on what each of the flags being used mean:
+
+      * -u: Runs a command as another system user
+
+        * Here, postgresql database server-related commands must be performed by the owner account.
 
       * -B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.
 
@@ -142,49 +199,46 @@ Setting Up and Running PostgreSQL Database Server
 
 * Stop the database server:
 
-  * Note: Stopping the running instance of the Singularity image will not stop the running of the database server.
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following command with your chosen name.
+  * Stopping the running instance of the Singularity image will not stop the running of the database server.
 
     ::
 
-      SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
-
-    * Here is a brief explanation on what each of the flags being used mean:
-
-      * -B: Used to bind a directory on the local system to one inside the container to allow data to be read and written simultaneously since Singularity images are read-only otherwise.
-
-        * Here, the respective data, temporary files and log directories are bound to store the database cluster folders and files, store temporary running files and database server running logs respectively.
-
-      * --app: Runs a specific script defined by the image.
-
-        * Here, the 'stop_server' script is called to safely stop the running database server. 'start_server' is called to start the running database server.
+      SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
 
 * To apply a system configuration change, the database server and application must be restarted using the following commands:
+
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following commands with your chosen name.
 
   ::
 
     singularity instance stop egp
-    SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
-    SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+    SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
+    SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
     singularity instance start $HOME/local_enterobase_home/local_enterobase/EGP.sif egp
 
 * To apply a database configuration change, the database server must be restarted using the following command:
 
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following command with your chosen name.
+
   ::
 
-    SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/postgres/data:/usr/local/pgsql/data -B $HOME/postgres/temp:/var/run/postgresql/ -B $HOME/postgres/logs:/usr/local/pgsql/logs --app restart_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+    SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app restart_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
 
   * The database server restart can also be performed using start and stop commands if required:
 
     ::
 
-      SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
-      SINGULARITYENV_POSTGRES_PASSWORD=flask_password singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
+      SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app stop_server $HOME/local_enterobase_home/local_enterobase/EGP.sif
+      SINGULARITYENV_POSTGRES_PASSWORD=flask_password sudo -u postgres singularity run -B $HOME/local_enterobase_home/postgres/data:/usr/local/pgsql/data -B $HOME/local_enterobase_home/postgres/temp:/var/run/postgresql/ -B $HOME/local_enterobase_home/postgres/logs:/usr/local/pgsql/logs --app start_server $HOME/local_enterobase_home/local_enterobase/EGP.sif -p 5432
 
 * Add new database users (with default SELECT, INSERT, UPDATE and DELETE permissions):
 
+  * If you have changed the server owner account name from the default "postgres", replace this account name in the following command with your chosen name.
+
   ::
 
-    singularity run --app create_dbuser $HOME/local_enterobase_home/local_enterobase/EGP.sif -u <username> -p <password>
+    sudo -u postgres singularity run --app create_dbuser $HOME/local_enterobase_home/local_enterobase/EGP.sif -u <username> -p <password>
 
   * Replace <username> and <password> with the required credentials.
   * The provided username must not already be an existing database user.
@@ -384,7 +438,7 @@ Configuring EToKi
       cd $HOME/local_enterobase_home/EToKi
       singularity run --app cp_configure $HOME/local_enterobase_home/local_enterobase/EGP.sif
 
-3. Download usearch and the MiniKraken2 database for EToKi to function correctly. **(Not required for the beta test)**.
+3. Download usearch and the MiniKraken2 database for EToKi to function correctly.
 
   * If the default directory for saving external files to be used by EToKi ($HOME/local_enterobase_home/EToKi_externals) was changed previously, replace it in the installation commands for usearch and MiniKraken2 with the changed directory.
   * Please ensure that usearch and MiniKraken2 to the same directory.
@@ -408,7 +462,7 @@ Configuring EToKi
       tar xf v2.0.8-beta.tar.gz
       mv kraken2-2.0.8-beta minikraken2
 
-4. Configure EToKi. **(Not required for the beta test)**.
+4. Configure EToKi.
 
   * If the name EToKi_externals has been changed, replace its occurrence in the following command by the new name.
   * If the storage location for configure.ini has been changed, replace its path in the following command by its location.

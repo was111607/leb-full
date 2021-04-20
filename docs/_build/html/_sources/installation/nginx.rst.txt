@@ -8,7 +8,12 @@ NGINX acts as a reverse-proxy and load balancer for Local EnteroBase. It will se
 Prerequisites
 =============
 
-Please ensure that Docker is installed. The instructions to install Docker can be found here: :ref:`docker-installation-label`
+* Please ensure that Docker is installed. The instructions to install Docker can be found here: :ref:`docker-installation-label`
+* Create a directory to store Local EnteroBase, and by extension the EGP container. The following command uses the default path "$HOME/local_enterobase_home" although you can change this to a location of your choosing.
+
+  ::
+
+    mkdir $HOME/local_enterobase_home
 
 Installing the Image
 =====================
@@ -34,7 +39,7 @@ To run the container, the user first needs to set up the sub-folder in their own
 
   ::
 
-    sudo docker run --rm -v $HOME/nginx:/home/nginx_user/:z localenterobase/nginx:1.0 setup
+    sudo docker run --rm -v $HOME/local_enterobase_home/nginx/:/home/nginx_user/:z localenterobase/nginx:1.0 setup
 
 * NOTE: The above command will create the folder in the home directory in the local machine. If you wish to install it in a specific location change $HOME to the directory you wish to set up the nginx files in.
 
@@ -54,39 +59,39 @@ To run the container, the user first needs to set up the sub-folder in their own
 * NOTE: Because the folders are created through Docker, the folder and all its contents are owned by root. You should change the owner to a non-root user on your system. This can be done by running:
   ::
 
-    sudo chown -R <user> $HOME/nginx
+    sudo chown -R <user> $HOME/local_enterobase_home/nginx
 
-* Before proceeding any further, make sure you have downloaded your custom nginx.conf file from the main enterobase website https://35.246.24.128:5566/local_enterobase/nginx_config
+* Before proceeding any further, make sure you have downloaded your custom nginx.conf file from the main enterobase website https://enterobase.warwick.ac.uk/local_enterobase/nginx_config
 * After you have downloaded your nginx.conf file please replace the one initialised from the setup with it, located in the $HOME/nginx directory.
   ::
 
-	mv /path/to/downloaded/nginx.conf $HOME/nginx/nginx.conf
+	mv /path/to/downloaded/nginx.conf $HOME/local_enterobase_home/nginx/nginx.conf
 
-* If you wish you can use the default conf if you replace the 'replaced_by_your_server_uri' with your server ip, but it is strongly recommended to use the one downloaded when setting up your account with enterobase.
+* If you wish, you can use the default "nginx.conf" file if you replace the 'replaced_by_your_server_uri' with your server IP, but it is strongly recommended to use the one downloaded when setting up your account with enterobase.
   ::
 
-    vi $HOME/nginx/nginx.conf
+    vi $HOME/local_enterobase_home/nginx/nginx.conf
 
-* You will need to provide a valid ssl certificate which should be saved inside the certs folder inside the user's home folder set up in the step above.
-* In case your server does not have a valid ssl certificate, you can temporarily create a self-signed certificate using the following link. Please rename the created certificate and key so that they match those stored in the above directory structure:
+* You will need to provide a valid SSL certificate which should be saved inside the "certs" folder inside the user's home folder set up in the step above.
+* In case your server does not have a valid SSL certificate, you can temporarily create a self-signed certificate using the following link. Please rename the created certificate and key so that they match those stored in the above directory structure, replacing the existing files:
 
   * https://linuxize.com/post/creating-a-self-signed-ssl-certificate/
 
-* Alternatively, you can use the default certs inside the docker container (no modification is needed).
-* This should be temporary, as it is important to get a valid ssl certificate from a trusted Certificate Authority.
+* Alternatively, you can use the default existing certificate and key files within the docker container (no modification is needed).
+* This should be temporary, as it is important to get a valid SSL certificate from a trusted Certificate Authority.
 
 
 * Use the following command to validate the configuration of the server. Change the 'nginx.conf' if there is any error message.
 
   ::
 
-    sudo docker run --rm -p 80:80 -p 443:443 -v $HOME/nginx:/home/nginx_user/ --name nginx_local_enterobase localenterobase/nginx:1.0 test
+    sudo docker run --rm -p 80:80 -p 443:443 -v $HOME/local_enterobase_home/nginx:/home/nginx_user/ --name nginx_local_enterobase localenterobase/nginx:1.0 test
 
 * Use the following command to start the NGINX server:
 
   ::
 
-    sudo docker run --rm -d -p 80:80 -p 443:443 -v $HOME/nginx:/home/nginx_user/ --name nginx_local_enterobase localenterobase/nginx:1.0 run
+    sudo docker run --rm -d -p 80:80 -p 443:443 -v $HOME/local_enterobase_home/nginx:/home/nginx_user/ --name nginx_local_enterobase localenterobase/nginx:1.0 run
 
 * The instance name is nginx_local_enterobase
 

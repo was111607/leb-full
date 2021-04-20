@@ -11,7 +11,7 @@ Running a Pipeline
 
 The pipeline should only be executed when modifications to the python codebase or anything affecting it have been made. (E.g. don’t run it just for documentation PRs). This is because there is a limited amount of build time per month (currently 50 minutes), so it is important not to waste it.
 
-.. figure:: ../images/pipelines.jpg
+.. figure:: ../../images/pipelines.jpg
    :alt: Local EnteroBase Pipeline Demo 
 
 To execute the pipeline, click the pipelines tab on bitbucket on the left hand side of the screen. On this page click ‘run pipeline’ in the top right hand side. Select the branch you wish to run the pipeline on, then select the pipeline ‘custom: pr-build’ and hit run. The pipeline should now be executing.
