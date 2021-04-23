@@ -91,7 +91,7 @@ The second image is built using **"EGP.def"** recipe file
       <script-functionality>
       deactivate
 
-  * <env-name> represents one of 'etoki-env', 'gunicorn-env' or 'postgres-env'.
+  * <env-name> represents one of 'etoki-env' or 'gunicorn-env'.
   * All scripts run using #!/bin/sh, so '.' is the equivalent of 'source' in #!/bin/bash which reads and executes the contents at a provided filepath.
   * deactivate ensures other scripts can successfully run within their respetive virtual environment.
 
