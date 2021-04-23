@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation &#8212; Local EnteroBase  documentation</title>
+    <title>EToKi, PostgreSQL and Gunicorn (EGP) Container Installation &#8212; Local EnteroBase (Beta)  documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="nginx.html" title="NGINX Image"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="developer.html" accesskey="U">Developing Local EnteroBase</a> &#187;</li> 
       </ul>
     </div>  
@@ -119,16 +119,16 @@ to work with, retaining the original functionalities, instead of multiple images
 </div>
 </li>
 </ul>
-<p>** Virtual Environments **</p>
+<p><strong>Virtual Environments</strong></p>
 <ul>
 <li><p>All individual %appinstall and %apprun scripts for each of EToKi, Gunicorn and PostgreSQL are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.</p></li>
 <li><p>Each script begins with the corresponding virtual environment being activated and concludes with their deativation as follows.</p>
-<dl class="simple">
-<dt>::</dt><dd><p>. /venvs/&lt;env-name&gt;/bin/activate
-&lt;running the script functionality&gt;
-deactivate</p>
-</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%&lt;</span><span class="n">script</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span>
+  <span class="o">.</span> <span class="o">/</span><span class="n">venvs</span><span class="o">/&lt;</span><span class="n">env</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+  <span class="o">&lt;</span><span class="n">script</span><span class="o">-</span><span class="n">functionality</span><span class="o">&gt;</span>
+  <span class="n">deactivate</span>
+</pre></div>
+</div>
 <ul class="simple">
 <li><p>&lt;env-name&gt; represents one of ‘etoki-env’, ‘gunicorn-env’ or ‘postgres-env’.</p></li>
 <li><p>All scripts run using #!/bin/sh, so ‘.’ is the equivalent of ‘source’ in #!/bin/bash which reads and executes the contents at a provided filepath.</p></li>
@@ -633,7 +633,7 @@ Would you like to push it to the keystore? [Y,n] Y
         <li class="right" >
           <a href="nginx.html" title="NGINX Image"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="developer.html" >Developing Local EnteroBase</a> &#187;</li> 
       </ul>
     </div>

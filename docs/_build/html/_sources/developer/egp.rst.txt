@@ -79,15 +79,17 @@ The second image is built using **"EGP.def"** recipe file
       git clone https://bitbucket.org/enterobase/local_enterobase.git
       mv local_enterobase /var/www/
 
-** Virtual Environments **
+**Virtual Environments**
 
 * All individual %appinstall and %apprun scripts for each of EToKi, Gunicorn and PostgreSQL are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.
 * Each script begins with the corresponding virtual environment being activated and concludes with their deativation as follows.
 
   ::
-    . /venvs/<env-name>/bin/activate
-    <running the script functionality>
-    deactivate
+
+    %<script-name>
+      . /venvs/<env-name>/bin/activate
+      <script-functionality>
+      deactivate
 
   * <env-name> represents one of 'etoki-env', 'gunicorn-env' or 'postgres-env'.
   * All scripts run using #!/bin/sh, so '.' is the equivalent of 'source' in #!/bin/bash which reads and executes the contents at a provided filepath.

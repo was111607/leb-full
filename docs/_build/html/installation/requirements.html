@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Installation Requirements &#8212; Local EnteroBase Documentation  documentation</title>
+    <title>Installation Requirements &#8212; Local EnteroBase (Beta)  documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -16,7 +16,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="NGINX Prerequisites" href="nginx_prerequisites.html" />
+    <link rel="next" title="NGINX Prerequisite Resources" href="nginx_prerequisites.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -26,12 +26,12 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="nginx_prerequisites.html" title="NGINX Prerequisites"
+          <a href="nginx_prerequisites.html" title="NGINX Prerequisite Resources"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="install.html" accesskey="U">Installation</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,8 +49,8 @@
 <li><p>A server to host Local EnteroBase that meets the minimum system requirements below</p></li>
 <li><p>A valid URL or IP address to connect to the server from</p></li>
 <li><p>‘sudo’ privileges to the server</p></li>
-<li><p>You must have an account with Central EnteroBase, you can register at: <a class="reference external" href="https://enterobase.warwick.ac.uk/auth/register">https://enterobase.warwick.ac.uk/auth/register</a>.</p></li>
-<li><p>You must be logged into the account that you would like to be the administrator of your Local EnteroBase. This account will be regarded by the Warwick EnteroBase team as the point of contact for your Local EnteroBase. This login can be performed at: <a class="reference external" href="https://enterobase.warwick.ac.uk/auth/login">https://enterobase.warwick.ac.uk/auth/login</a>.</p></li>
+<li><p>You must have an account with the beta version of Central EnteroBase, since this is a different server to the regular Central EnteroBase (<a class="reference external" href="https://enterobase.warwick.ac.uk">https://enterobase.warwick.ac.uk</a>), you must register a new account at: <a class="reference external" href="https://35.246.24.128:5566/auth/register">https://35.246.24.128:5566/auth/register</a>. (NOTE: this account will only exist for the duration of the beta test)</p></li>
+<li><p>You must be logged into the account that you would like to be the administrator of your Local EnteroBase. This account will be regarded by the Warwick EnteroBase team as the point of contact for your Local EnteroBase. This login can be performed at: <a class="reference external" href="https://35.246.24.128:5566/auth/login">https://35.246.24.128:5566/auth/login</a>.</p></li>
 </ul>
 <div class="figure align-center" id="id1">
 <img alt="Central EnteroBase User Registration Form" src="../_images/central_enterobase_user.png" />
@@ -61,13 +61,17 @@
 <h2>Minimum System requirements<a class="headerlink" href="#minimum-system-requirements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>4 CPU Cores</p></li>
-<li><p>32GB <strong>AVAILABLE</strong> RAM</p>
+<li><p>32GB RAM</p>
 <ul>
-<li><p>Your system may allocate some RAM for other mandatory processes. So we recommend that your system has enough RAM to accommodate this e.g. 34GB RAM total.</p></li>
+<li><p>Ideally your system RAM should be slightly more as systems may dedicate a small portion of RAM to other processes</p></li>
 </ul>
 </li>
 <li><p>40GB Free Storage Space</p></li>
 </ul>
+</div>
+<div class="section" id="automatic-vs-manual-installation">
+<h2>Automatic vs Manual Installation<a class="headerlink" href="#automatic-vs-manual-installation" title="Permalink to this headline">¶</a></h2>
+<p>There are two available options to install Local EnteroBase. Manually, or using an installation script. The script has been tested on the following distributions: Ubuntu 18.04, Ubuntu 20.04, Fedora 32, Fedora 33, CentOS 7, CentOS 8, Debian 9, and Debian 10. The automatic installer is simpler to get started with but if you are not using any of the listed distributions, please refer to the manual installation instructions. if you run into any issues, please refer to the manual installation documentation, or contact the beta testing team.</p>
 </div>
 <div class="section" id="additional-information">
 <h2>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
@@ -88,6 +92,7 @@
 <li><a class="reference internal" href="#">Installation Requirements</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#minimum-system-requirements">Minimum System requirements</a></li>
+<li><a class="reference internal" href="#automatic-vs-manual-installation">Automatic vs Manual Installation</a></li>
 <li><a class="reference internal" href="#additional-information">Additional Information</a></li>
 </ul>
 </li>
@@ -98,7 +103,7 @@
                         title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="nginx_prerequisites.html"
-                        title="next chapter">NGINX Prerequisites</a></p>
+                        title="next chapter">NGINX Prerequisite Resources</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -127,12 +132,12 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="nginx_prerequisites.html" title="NGINX Prerequisites"
+          <a href="nginx_prerequisites.html" title="NGINX Prerequisite Resources"
              >next</a> |</li>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li> 
       </ul>
     </div>

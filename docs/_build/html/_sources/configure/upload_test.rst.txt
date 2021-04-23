@@ -1,5 +1,3 @@
-.. _upload-test-label:
-
 Upload Test
 -----------------
 
@@ -10,7 +8,7 @@ download and upload 100 files to check the connection speed to Central EnteroBas
 Prerequisites
 ==============
 
-* Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: https://enterobase.warwick.ac.uk/local_enterobase/display_test_token
+* Test token on hand, it was emailed by Central EnteroBase when registering your Local EnteroBase. You can also find it here: https://35.197.247.144:5566/local_enterobase/display_test_token
 * Celery task scheduler and worker processes to be initialised. These are the background processes that will assemble the test short-read files and upload their results. They can be initialised using the Singularity container with the following commands:
 
   ::
@@ -23,7 +21,6 @@ Prerequisites
 
   * If the Celery processes are running, please restart them before beginning the upload test.
   * Please modify the default path/name of the container if you have changed this during installation.
-  * Celery Beat does not run as a background process so you will need to leave it running in another terminal
 
 Running the Test
 =================
@@ -35,7 +32,7 @@ Running the Test
 
    **Incomplete Upload Test Form**
 
-* Enter your email and your test token. Click the "start test" button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.
+* Enter your email (**disabled for the beta test**) and your test token. Click the "start test" button to begin the test, it will automatically complete to a successful or erroneous state. Each step of the test displays an estimated time to complete, although the actual times will also vary depending on your geographical location.
 
   * 100 test short-read files, intended for performing download and upload speed tests, are downloaded.
   * A pair of downloaded short-read files are prepared and assembled to be uploaded to Central EnteroBase to verify the correctness of these functionalities.
