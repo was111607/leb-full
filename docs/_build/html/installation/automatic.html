@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Automatic Installation &#8212; Local EnteroBase Documentation  documentation</title>
+    <title>Automatic Installation &#8212; Local EnteroBase (Beta)  documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Manual Installation" href="manual.html" />
-    <link rel="prev" title="NGINX Prerequisites" href="nginx_prerequisites.html" /> 
+    <link rel="prev" title="NGINX Prerequisite Resources" href="nginx_prerequisites.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,9 +29,9 @@
           <a href="manual.html" title="Manual Installation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="nginx_prerequisites.html" title="NGINX Prerequisites"
+          <a href="nginx_prerequisites.html" title="NGINX Prerequisite Resources"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="install.html" accesskey="U">Installation</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,9 +42,9 @@
           <div class="body" role="main">
             
   <div class="section" id="automatic-installation">
-<span id="automatic-installation-label"></span><h1>Automatic Installation<a class="headerlink" href="#automatic-installation" title="Permalink to this headline">¶</a></h1>
+<h1>Automatic Installation<a class="headerlink" href="#automatic-installation" title="Permalink to this headline">¶</a></h1>
 <p>The automatic installation script can be downloaded using the following command:</p>
-<p><code class="docutils literal notranslate"><span class="pre">wget</span> <span class="pre">https://bitbucket.org/enterobase/local_enterobase/raw/2e0b881c8bbf0f92d22fea55045e8b5f4197a28f/installer/local_enterobase_installer.sh</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">wget</span> <span class="pre">https://bitbucket.org/enterobase/local_enterobase/raw/3166a403a3b6ebf9d0bb7a1feb672d190ac6ab0a/installer/local_enterobase_installer.sh</span></code></p>
 <p>The script will automatically download, configure and run the Docker Image (NGINX), and Singularity image (PostgreSQL, Gunicorn and Local EnteroBase) and their dependencies packages.</p>
 <p>During the installation the user will be asked to:</p>
 <ul class="simple">
@@ -52,27 +52,7 @@
 <li><p>Set a username and password for Local EnteroBase.</p></li>
 </ul>
 <p>Then system components will be configured using the default parameters and should run without any issue.</p>
-<div class="section" id="running-the-installer">
-<h2>Running the Installer<a class="headerlink" href="#running-the-installer" title="Permalink to this headline">¶</a></h2>
-<p>The auto installer script can be run using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">local_enterobase_installer</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-<p>Remember, if you created your own certs in section <a class="reference internal" href="nginx_prerequisites.html#nginx-prerequisites-label"><span class="std std-ref">NGINX Prerequisites</span></a>, you need to copy them into “$HOME/nginx/certs” and restart the server before continuing.</p>
-</div>
-<div class="section" id="generated-scripts">
-<h2>Generated Scripts<a class="headerlink" href="#generated-scripts" title="Permalink to this headline">¶</a></h2>
-<p>The auto installer generates a set of scripts to help manage the containers and functions.</p>
-<ul class="simple">
-<li><p><strong>$HOME/local_enterobase_home/nginx/test_run_nginx.sh:</strong> validate the nginx.conf file</p></li>
-<li><p><strong>$HOME/local_enterobase_home/nginx/run_nginx.sh:</strong> run the nginx docker container</p></li>
-<li><p><strong>$HOME/local_enterobase_home/local_enterobase/restart_local_enterobase.sh:</strong> restart the singularity container and gunicorn</p></li>
-<li><p><strong>$HOME/local_enterobase_home/postgres/run_postgres.sh:</strong> restart the postgres server</p></li>
-<li><p><strong>$HOME/local_enterobase_home/run_all.sh:</strong> run all of the scripts above</p></li>
-</ul>
-</div>
-<div class="section" id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<p><strong>Notes</strong></p>
 <ul class="simple">
 <li><p>Automatic installation has only been tested on newly created VMs that have not previously installed Singularity, Docker, PostgreSQL or Redis on them. As a result, you may experience issues during installation if your system has previously installed any of the previous softwares. Please contact us if you experience any issues.</p></li>
 <li><p>Fedora and CentOS 8 may require a system restart to complete the installation. The script will automatically reboot the server in this event, then restart the script automatically once signed back in. A restart occurs if:</p>
@@ -88,7 +68,6 @@
 <a class="reference internal image-reference" href="../_images/automatic_installation_script.png"><img alt="Automatic installation workflow" src="../_images/automatic_installation_script.png" style="width: 400px;" /></a>
 </div>
 </div>
-</div>
 
 
           </div>
@@ -96,19 +75,9 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Automatic Installation</a><ul>
-<li><a class="reference internal" href="#running-the-installer">Running the Installer</a></li>
-<li><a class="reference internal" href="#generated-scripts">Generated Scripts</a></li>
-<li><a class="reference internal" href="#notes">Notes</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="nginx_prerequisites.html"
-                        title="previous chapter">NGINX Prerequisites</a></p>
+                        title="previous chapter">NGINX Prerequisite Resources</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="manual.html"
                         title="next chapter">Manual Installation</a></p>
@@ -143,9 +112,9 @@
           <a href="manual.html" title="Manual Installation"
              >next</a> |</li>
         <li class="right" >
-          <a href="nginx_prerequisites.html" title="NGINX Prerequisites"
+          <a href="nginx_prerequisites.html" title="NGINX Prerequisite Resources"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="install.html" >Installation</a> &#187;</li> 
       </ul>
     </div>

@@ -7,6 +7,9 @@ This webpage allows viewing of all jobs that have been produced for the current 
 * Processing - The job is currently being processed.
 * Completed - The job has been processed.
 * Failed - Processing of the job has failed.
+
+  * **Note:** We intend for the job to be able to be re-generated, although this is currently non-functional in the beta version.
+
 * Uploaded - The job results have been submitted to Central EnteroBase.
 * Upload Failed - An attempt to submit the job results to Central EnteroBase has failed, the job can be re-uploaded by the user.
 

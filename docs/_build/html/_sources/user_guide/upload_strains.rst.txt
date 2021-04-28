@@ -17,6 +17,7 @@ Clicking the "Add row" button adds an empty row to the grid. You can manually ad
 
 **Notes**
 
+* We have disabled inputting location data into the grid for the beta test.
 * If the browser window is shrunk, the "Add Row" button can be located by clicking the blue "Edit" button which will display a drop-down menu of grid functions.
 * It is mandatory to add data to the cells highlighted in red, otherwise the data cannot be submitted.
 * You cannot have 2 rows with the same strain name as this avoids storing potentially duplicate data.
@@ -133,6 +134,7 @@ When the file has been uploaded, provided it is in the correct format, a blue "I
 
 **Notes**
 
+* For the beta test, any filenames provided in the uploaded template file will be ignored. You must select the files through the webpage menu.
 * The grid must be empty of rows to correctly export the template file.
 * If there are any issues with the template file format, such as changes in the column order, an import error message will be displayed.
 * If the browser window is shrunk, you can import using the "Import from Text File" button which is located by clicking the blue "Data" button. This displays a drop-down menu of the template importing and exporting functions.
