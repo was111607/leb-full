@@ -27,12 +27,6 @@ Prerequisites
 
 Note: Please follow the installation instructions in the order presented by this document, else the installation may fail.
 
-Default Installation Directory
-===============================
-
-* The documentation assumes that Local Enterobase, and by extension the EGP container, will be installed at the default home path: "$HOME/local_enterobase_home".
-* The command examples below will use this path by default, although these can be changed if you desire a different location.
-
 Pulling the Container Image
 =============================
 
