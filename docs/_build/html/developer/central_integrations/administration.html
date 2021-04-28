@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Administration &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="OAuth2 Server" href="oauth2_server.html" />
+    <link rel="prev" title="Register Local EnteroBase" href="register_local_enterobase.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="oauth2_server.html" title="OAuth2 Server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="register_local_enterobase.html" title="Register Local EnteroBase"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="integrations_in_central_enterobase.html" accesskey="U">Integrations in Central EnteroBase</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="administration">
+<span id="administration-label"></span><h1>Administration<a class="headerlink" href="#administration" title="Permalink to this headline">¶</a></h1>
+<p>In order for a Local EnteroBase instance to be accepted by Central EnteroBase, a Central EnteroBase administrator needs to approve the registration request. This is done through the “/admin” endpoint of Central EnteroBase. The code associated with the developments shown in this section are located in the “entero/admin” directory of the repository.</p>
+<div class="section" id="viewing-and-approving-local-enterobase-registration-requests">
+<h2>Viewing and Approving Local EnteroBase Registration Requests<a class="headerlink" href="#viewing-and-approving-local-enterobase-registration-requests" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/admin_local_enterobase_requests.png"><img alt="Screenshot of /admin/localenterobaseclientrequest/ endpoint" src="../../_images/admin_local_enterobase_requests.png" style="width: 400px;" /></a>
+</div>
+<p><strong>Administrator Page for Local EnteroBase Requests</strong></p>
+<p>The above image shows the grid available at the “/admin/localenterobaseclientrequest” endpoint, which serves as a report of all current Local EnteroBase requests. As soon as a user submits a request to register a Local EnteroBase instance (shown in the dev docs here: <a class="reference internal" href="register_local_enterobase.html#register-local-enterobase-label"><span class="std std-ref">Register Local EnteroBase</span></a>, and in the user docs here: .. <a class="reference internal" href="../../configure/register.html#local-enterobase-registration-label"><span class="std std-ref">Registration</span></a>), their details are added to this grid. The grid is implemented in the same style as all other admin grids in Central EnteroBase, using the sqla ModelView in the “flask_admin” library. The attributes in the grid are a subset of the attributes from the LocalEnterobaseClientRequest model in the database. All code related to this page can be found in the “entero/admin/views.py” file.</p>
+<p>In the image there are two attributes highlighted by a red box. The box labelled “1” is a link to resend the test token to a user’s email address. The box labelled “2” is a link to the dashboard of that Local Enterobase request.</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/local_enterobase_request_dashboard.png"><img alt="Screenshot of /admin/localenterobaseclientrequest/local_enterobase_client endpoint" src="../../_images/local_enterobase_request_dashboard.png" style="width: 400px;" /></a>
+</div>
+<p><strong>Local EnteroBase Request Dashboard</strong></p>
+<p>The above image shows the page that is displayed when a Central EnteroBase administrator clicks on the “Dashboard” link in the red box labelled “2” in Fig. 1. This page is available at the “admin/local_enterobase_client/&lt;name-of-local-enterobase-instance&gt;”. The right-hand side shows a form of the user details of the person who has requested the Local EnteroBase instance. The left-hand side shows a form of the Local EnteroBase request details. The first four fields are those filled out by the requester in the Local EnteroBase registration form (shown in the dev docs here: <a class="reference internal" href="register_local_enterobase.html#register-local-enterobase-label"><span class="std std-ref">Register Local EnteroBase</span></a>, and in the user docs here: .. <a class="reference internal" href="../../configure/register.html#local-enterobase-registration-label"><span class="std std-ref">Registration</span></a>). The latter four fields are filled in by the system, and their relevance is as follows:</p>
+<ul class="simple">
+<li><p><strong>Current Status</strong>: equivalent to “current_status” in the LocalEnterobaseClientRequest SQLAlchemy model. This value is set to “Requested” because it is a Local EnteroBase client <em>request</em>. Stored and retrieved from the LocalEnterobaseClientTestResults model.</p></li>
+<li><p><strong>Test Status</strong>: either “Pending” or “Completed”, depending on whether the administrator has attempted the configuration test.</p></li>
+<li><p><strong>Avg Test Upload Time (s)</strong>: only present if the test status is “Completed”. Shows the average time taken to upload the test upload files, in seconds. Stored and retrieved from the LocalEnterobaseClientTestResults model.</p></li>
+<li><p><strong>Avg Test Assembly Time (s)</strong>: also only present if the test status is “Completed”. Shows the average time taken to assembly the test assembly files, in seconds. Stored and retrieved from the LocalEnterobaseClientTestResults model.</p></li>
+</ul>
+<p>The administrator can “Approve” or “Deny” Local EnteroBase requests from this page.</p>
+<ul class="simple">
+<li><p>If a request is approved, it is deleted from the LocalEnterobaseClientRequest model and added to the LocalEnterobaseClient model. A client id and client secret is also generated and sent to the Local EnteroBase requester (the admin) via email. The Local EnteroBase instance can then access Central EnteroBase using OAuth.</p></li>
+<li><p>If a request is denied, the “Current Status” is set to “Denied”, however, the instance can still be approved by an admin later on.</p></li>
+</ul>
+</div>
+<div class="section" id="viewing-and-managing-local-enterobase-clients">
+<h2>Viewing and Managing Local EnteroBase Clients<a class="headerlink" href="#viewing-and-managing-local-enterobase-clients" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/admin_local_enterobase.png"><img alt="Screenshot of /admin/localenterobaseclient/ endpoint" src="../../_images/admin_local_enterobase.png" style="width: 400px;" /></a>
+</div>
+<p><strong>Administrator Page for Local EnteroBase Clients</strong></p>
+<p>The above image shows the grid available at the “/admin/localenterobaseclient” endpoint, which serves as a report of all current Local EnteroBase clients. The attributes in the grid are a subset of the attributes from the LocalEnterobaseClient model in the database. All code related to this page can be found in the “entero/admin/views.py” file.</p>
+<p>In the image there is an attribute highlighted by a red box which contains a link to the dashboard of that Local Enterobase client.</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/local_enterobase_dashboard.png"><img alt="Screenshot of /admin/localenterobaseclient/local_enterobase_client endpoint" src="../../_images/local_enterobase_dashboard.png" style="width: 400px;" /></a>
+</div>
+<p><strong>Local EnteroBase Client Dashboard</strong></p>
+<p>The above image shows the page that is displayed when a Central EnteroBase administrator clicks on the “Dashboard” link in the red box in Fig. 3. This page is available at the “admin/local_enterobase_client/&lt;name-of-local-enterobase-instance&gt;”. The right-hand side shows a form of the user details of the admin of the Local EnteroBase instance. The left-hand side shows a form of the Local EnteroBase request details. The first four fields are those filled out by the requester in the Local EnteroBase registration form (shown in the dev docs here: <a class="reference internal" href="register_local_enterobase.html#register-local-enterobase-label"><span class="std std-ref">Register Local EnteroBase</span></a>, and in the user docs here: .. <a class="reference internal" href="../../configure/register.html#local-enterobase-registration-label"><span class="std std-ref">Registration</span></a>). The last field, “Current Status”, shows whether the Local EnteroBase instance is currently “Approved” or “Denied”. If the instance is “Approved”, the Local EnteroBase instance can function as normal. If it is “Denied”, the OAuth communications are blocked.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Administration</a><ul>
+<li><a class="reference internal" href="#viewing-and-approving-local-enterobase-registration-requests">Viewing and Approving Local EnteroBase Registration Requests</a></li>
+<li><a class="reference internal" href="#viewing-and-managing-local-enterobase-clients">Viewing and Managing Local EnteroBase Clients</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="register_local_enterobase.html"
+                        title="previous chapter">Register Local EnteroBase</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="oauth2_server.html"
+                        title="next chapter">OAuth2 Server</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/central_integrations/administration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="oauth2_server.html" title="OAuth2 Server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="register_local_enterobase.html" title="Register Local EnteroBase"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="integrations_in_central_enterobase.html" >Integrations in Central EnteroBase</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Register Local EnteroBase &#8212; Local EnteroBase  documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="NGINX Configuration Page" href="nginx_config.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="nginx_config.html" title="NGINX Configuration Page"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="integrations_in_central_enterobase.html" accesskey="U">Integrations in Central EnteroBase</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="register-local-enterobase">
+<h1>Register Local EnteroBase<a class="headerlink" href="#register-local-enterobase" title="Permalink to this headline">¶</a></h1>
+<p>The Local EnteroBase registration page, available at the “local_enterobase/register” endpoint, is designed to allow the installer to register their Local EnteroBase instance with Central EnteroBase to perform the upload test and get OAuth credentials. To read more about how the page looks from the point of view of the user, please take a look at the following page in the installation documentation: <a class="reference internal" href="../configure/register.html#local-enterobase-registration-label"><span class="std std-ref">Registration</span></a>. All code relating to this page is available in the “entero/local_enterobase” directory of the Central EnteroBase repository.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/local_enterobase_registration_screenshot1.png"><img alt="Local EnteroBase Registration Form" src="../_images/local_enterobase_registration_screenshot1.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text"><strong>Fig. 2 - Local EnteroBase Registration Form</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>The above figure shows a screenshot of what the user sees when they go to the page. Below is a list of the validations enforced by the FlaskForm used to handle the input:</p>
+<ol class="arabic simple">
+<li><p>Local EnteroBase Name: check if unique (no other instance with the same name) and between 1 and 64 characters.</p></li>
+<li><p>External URL: check if unique (no other instance with the same URL) and valid URL or IP with “https”.</p></li>
+<li><p>Description &amp; Justification: check if between 0 and 400 characters.</p></li>
+<li><p>Central EnteroBase Username of Local EnteroBase Admin: check if unique (admin has no other Local EnteroBase instances) and user is logged in as admin.</p></li>
+</ol>
+<p>Once a user has completed this form, a test token is generated for them and displayed in a notification as well as sent to their email address. The test token is used when the user performs the upload test upon installing Local EnteroBase (see  <a class="reference internal" href="../configure/upload_test.html#upload-test-label"><span class="std std-ref">Upload Test</span></a>). Their details are stored in an SQLAlchemy model called “LocalEnterobaseClientRequest”, this is where the record of their registration remains until their instance has been approved.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nginx_config.html"
+                        title="previous chapter">NGINX Configuration Page</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developer/register_local_enterobase.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="nginx_config.html" title="NGINX Configuration Page"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="integrations_in_central_enterobase.html" >Integrations in Central EnteroBase</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+NGINX Image
+------------
+
+Required Software
+=================
+
+* Please make sure Docker is installed. Reference this doc to get set up if necessary: :ref:`docker-installation-label`
+
+Required files and folders
+==========================
+
+In "local_enterobase/Docker_Images/NGINX" sub-folder
+
+* image file: Dockerfile
+* Interact with the container: docker-entrypoint.sh
+* Default settings for nginx: **nginx.conf**
+* temporary ssl certificate: **"certs" folder**
+
+
+Content of the image file: Dockerfile
+=====================================
+
+* The first line in the Dockerfile pulls the base docker nginx image, fixed at the version 1.15.8 to avoid any compatability issues by setting it to latest.
+
+  ::
+
+    FROM nginx:1.15.8
+
+* The next 3 COPY commands are used to load in a default nginx.conf file, as well as a "certs" folder which contains temporary ssl certificates to a sub-folder inside the container. Finally it copies in the docker-entrypoint.sh script to allow multiple ways to interact with the image.
+
+  ::
+
+    COPY certs/ var/www/certs
+    COPY nginx.conf /tmp/var/www/nginx.conf
+    COPY docker-entrpoint.sh /usr/local/bin
+
+* The RUN command is then used to create a symlink to the entrypoint script so it can be used to interact with the container.
+
+  ::
+
+    RUN ln -s /usr/local/bin/docker-entrypoint.sh 
+
+* The final line contains the ENTRYPOINT command which takes in the arg "docker-entrypoint.sh". By using ENTRYPOINT, any args passed in when executing docker run will be fed to the docker-entrypoint.sh script.
+
+  ::
+
+    ENTRYPOINT ["docker-entrypoint.sh"]
+
+Content of the docker-entrypoint.sh script
+==========================================
+
+* The docker-entrypoint.sh script is setup so the user only needs to submit one of three arguments. It has been designed to setup the local directory structure which the user is able to modify to suit their needs. The test and run commands have to be used after the structure is set up as it relies on the correct directory structure and files being in place for Nginx to run correctly.
+
+* There are three args which can be passed in when interacting with the container: *setup, test, and run.* 
+* **setup**
+
+  * This is used to set up the directory structure on the local machine so the user is able to configure their settings appropriately. 
+  * When running this command it is important the volume is mounted correctly between the local machine and docker container. The local container can be anywhere the user wants but the docker path should be /home/nginx_user/nginx.
+
+* **test**
+
+  * This command should be ran after the setup commannd. It's important to mount the folder set up using the setup command. It is used to verify the nginx.conf file does not contain any syntax errors.
+
+* **run**
+
+  * This command should be ran after the setup command. It's important to mount the folder set up using the setup command. It is used to run the Nginx server.
+
+Build NGINX Image
+=================
+
+To build the image, you need to run docker build and point to the directory storing the Dockerfile. You can also optionally tag the image to give it a more specific name (This is highly recommended). This is important when trying To upload it to Docker Hub under the localenterobase account you need to name it "localenterobase/nginx:<version_number>". Please note that the text before the '/' is the account name.
+
+* Use the following command to build the image:
+
+  ::
+
+      $ sudo docker build -t localenterobase/nginx:1.0 /path/to/Dockerfile
+
+* The build command is used to instruct Docker to build an image.
+
+  * -t: give the image a name.
+  * /path/to/Dockerfile: points to directory Dockerfile is in.
+
+Pushing NGINX Image
+===================
+
+To push the image to Docker Hub you are first required to log into a Docker account. If you are a developer working on this project and need access to the Docker account, please contact a developer on the team.
+
+* To log in to a Docker account use the following command:
+
+  ::
+
+    $ sudo docker login
+
+* To push the image use the following command:
+
+  ::
+
+    $ sudo docker push localenterobase/nginx:1.0
+
+
+Please note that this was developed on Ubuntu 20.04, and tested on Ubuntu 20.04, and Debian 9.

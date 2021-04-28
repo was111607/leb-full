@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Strain Upload &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Job Viewer" href="job_viewer.html" />
+    <link rel="prev" title="Configuration Test" href="configuration_test.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="job_viewer.html" title="Job Viewer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration_test.html" title="Configuration Test"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" accesskey="U">Application Components</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="strain-upload">
+<span id="strain-upload-label"></span><h1>Strain Upload<a class="headerlink" href="#strain-upload" title="Permalink to this headline">¶</a></h1>
+<p>This is the page where the user will submit their strain metadata and upload their
+read files. A grid interface has been created which has been built using ag-grid-vue
+(<a class="reference external" href="https://www.ag-grid.com/vue-grid/getting-started/">Vue Grid: Get Started with AG Grid</a>).
+Various other Javascript libraries have also been used:</p>
+<ul class="simple">
+<li><p><strong>Papaparse</strong> (<a class="reference external" href="https://www.papaparse.com/">Papa Parse - Powerful CSV Parser for JavaScript</a>) - parses the tab-delimited text file when importing metadata.</p></li>
+<li><p><strong>MomentJS</strong> (<a class="reference external" href="https://momentjs.com/">Moment.js | Home</a>) - creates date objects when validating the user’s input.</p></li>
+<li><p><strong>Vue Leaflet</strong> (<a class="reference external" href="https://vue2-leaflet.netlify.app/">Vue Leaflet</a>) - displays the openstreetmap through which locations can be selected.</p></li>
+</ul>
+<div class="section" id="javascript-files-directory-structure">
+<h2>JavaScript Files Directory Structure<a class="headerlink" href="#javascript-files-directory-structure" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the main database_home.js javascript file, the Vue components found under the folders
+‘cellEditors’ and ‘cellRenderers’ have been created and imported. These are used to create custom cell
+editors and for displaying the contents of certain fields.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">js</span>
+<span class="o">|--</span> <span class="n">database_home</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|--</span> <span class="n">cellEditors</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">dateEditor</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">locationEditor</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">readFilesEditor</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">sourceEditor</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|--</span> <span class="n">cellRenderers</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">collectionDayRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">collectionMonthRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">dateRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">locationRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">readFileRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">readFilesRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">selectRenderer</span><span class="o">.</span><span class="n">js</span>
+<span class="o">|</span> <span class="o">|--</span> <span class="n">sourceRenderer</span><span class="o">.</span><span class="n">js</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="data-received-from-the-back-end">
+<h2>Data Received From the Back-end<a class="headerlink" href="#data-received-from-the-back-end" title="Permalink to this headline">¶</a></h2>
+<p>When rendering the strain upload page, the following important data is parsed from the back-end:
+Columns - the column information needed to set up the grid correctly for the chosen database (TODO: presently, this information is data taken from the ‘strain_metadata_for_local_enterobase’ JSON file.).
+Database information - to display the chosen database name used when submitting the strain data so that the back-end knows which database to store it in.</p>
+</div>
+<div class="section" id="the-grid-component">
+<h2>The Grid Component<a class="headerlink" href="#the-grid-component" title="Permalink to this headline">¶</a></h2>
+<p>The grid has broken down into several key elements.</p>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>The Grid is defined in the ‘database_home.html’ file. This is the ag-grid component definition. Various configuration settings are defined through property bindings and events are handled through event bindings.</p>
+<div class="figure align-center">
+<img alt="AG Grid Component Definition" src="../../_images/ag_grid_component_definition.png" />
+</div>
+<p><strong>AG Grid Component Definition</strong></p>
+<p>Some important property bindings are as follows:</p>
+<ul class="simple">
+<li><p>row-data - the list of rows, which will be empty for our grid.</p></li>
+<li><p>column-defs - defines the columns and the various properties that each one will have.</p></li>
+<li><p>row-selection - this will allow rows to be selected by clicking on them.</p></li>
+<li><p>framework-components - this will register the cell editor and renderer components.</p></li>
+<li><p>context - sets the context object to allow us to communicate between parent (grid component) and child components (cell editors and renderers).</p></li>
+</ul>
+<p>Some important event bindings are as follows:</p>
+<ul class="simple">
+<li><p>grid-ready - calls the ‘onGridReady’ function once the grid has been initialised. This is required in order to access the Grid API (both gridApi and columnApi) which are only available after the gridReady event has been fired. We also use this event to resize the column headings so that the grid is neatly displayed.</p></li>
+<li><p>cell-context-menu - calls the ‘onCellRightClick’ function whenever the user right-clicks a cell in the grid. This function will display the context menu if there are rows that are currently selected.</p></li>
+<li><p>selection-changed - calls the ‘onRowSelectionChange’ function whenever the row selection is changed (ie. rows are deselected or new ones selected). This function will update the variable that stores the number of rows that are currently selected. This variable is used throughout the page, for example, disabling the ‘delete rows’ button and also not displaying the right-click, context menu if there no selected rows.</p></li>
+<li><p>cell-value-changed - calls the ‘onCellValueChanged’ function whenever the user updates the contents of a cell. This function updates the undo and redo buttons.</p></li>
+</ul>
+</div>
+<div class="section" id="creating-the-column-definitions">
+<h3>Creating the Column Definitions<a class="headerlink" href="#creating-the-column-definitions" title="Permalink to this headline">¶</a></h3>
+<p>The VueJS beforeMount life cycle hook (which is called right before the mounting begins) is used to define some of the aforementioned configuration properties (such as the list of frameworkComponents). One of the most important actions that are performed here is the creation of the column definitions through the use of the ‘getColumns’ function. A column is defined using various properties, the list of which can be found here (<a class="reference external" href="https://www.ag-grid.com/javascript-grid/column-properties/">JavaScript Grid: Column Properties</a>).</p>
+<p>The first two columns that are defined are an ID column which displays the id of each row, and a checkbox column that provides a means for selecting multiple columns. These two columns are pinned to the left side of the grid.</p>
+<p>Next, we loop over the list of column information that was received from the back-end and for each one define the column to be created in the ag-grid component with the appropriate properties. For each one, a default definition is created which defines the field and header name as well as sets them to be resizable and editable. It’s important to set lockVisible to true to prevent the user from being able to remove columns by dragging them outside of the grid.</p>
+<p>We now apply various properties depending on the column type and name. For example, if the column is required indicated by (column.validator being equal to ‘requiredFieldValidator’), we define a ‘cellClassRule’ function. This function will display the cell with a red background if its contents are empty or undefined. For some of the cell editor columns, separate cellClassRule functions need to be defined. For example, for the read file editor column, the cellClassRule observes the two columns that store the read file objects. If one or more of these read file objects are missing, we display the read file editor cell with a red background.</p>
+<p>Another two important properties that we need to apply are ‘cellRenderer’ and ‘cellEditor’. These are assigned with their corresponding Vue components and these are used for the read files, source details, collection date and location columns, where complex user input beyond simple text input is required.</p>
+<p>For these complex fields, we also create expandable column groups. These consist of the main column that is used to get the user’s input. The subsequent children columns, which by default are collapsed, are read-only (indicated by the grey background). These values are editable through the main input column. For example, for the read files group, the main column opens a pop-up editor where the user selects two read files. The children columns are ‘file1’ and ‘file2’ and display the chosen files. These columns that display the two files are read-only and can be changed through the main pop-up editor.</p>
+</div>
+<div class="section" id="cell-editors">
+<h3>Cell Editors<a class="headerlink" href="#cell-editors" title="Permalink to this headline">¶</a></h3>
+<p>An important aspect of the grid that helps improve the usability and ease of data entry, is the use of custom written cell-editors. These are required for complex fields such as the read files editor where inputs beyond simple text are required. The cell editors are VueJS components that are imported and used when the user enters editing mode on the columns on which they have been registered on.</p>
+<p>Cell editors have been created for the following complex columns:</p>
+<ul class="simple">
+<li><p>Read file editor - a ‘double-click to add’ column which opens a popup editor where the user selects the two read files via file inputs.</p></li>
+<li><p>Source editor - a ‘double-click to add’ column which opens a popup editor where the user first queries the source details, and an API is used to predict the source niche and type.</p></li>
+<li><p>Collection date editor - a column with the ‘calendar icon’ which is primarily a text input field but also offers a calendar widget that is opened on pressing the calendar icon.</p></li>
+<li><p>Location editor - a ‘double click to add’ column which opens a popup editor where the OpenStreetMaps slippy map will be displayed using leaflet.</p></li>
+</ul>
+<p>The code for each of these can be found in the /js/cellEditors folder.</p>
+<p>For information regarding the operation of these components, please observe the ‘Cell Renderer Component’ on the following webpage: <a class="reference external" href="https://www.ag-grid.com/vue-grid/component-cell-editor/#cell-renderer-component-1">Vue Grid: Cell Editors</a>. This provides an overview of the interface that these Vue components must follow.</p>
+<p>Here are some of the important functions that need to be implemented:</p>
+<ul class="simple">
+<li><p>isCancelAfterEnd() - this is one of the most crucial functions used in the collection date editor to perform input validation checks. This function gets called once when editing is finished (enter pressed or save button pressed etc.). In the case where the validation checks fail e.g. invalid date format, we return true, and the result of the edit will be ignored.</p></li>
+<li><p>getValue() - this returns the value of cell editing from the Vue component to the grid. It is the final function that is called (if editing has not been cancelled). For each editor, we must set the values of their associated read-only columns. For example, when the user has finished selecting the read files, the read file 1 and read file 2 columns are populated with the chosen read file objects.</p></li>
+<li><p>isPopup() - for the popup editors (read files, source and location) we need to return true from this function to ensure that the editor will appear in a popup.</p></li>
+</ul>
+<div class="section" id="collection-date-cell-editor-example">
+<h4>Collection Date Cell Editor Example<a class="headerlink" href="#collection-date-cell-editor-example" title="Permalink to this headline">¶</a></h4>
+<p>To help further explain the operations of the cell editor components, I will go over the collection date cell editor, the file for which can be found in ‘js/cellEditors/dateEditor.js’. When the component is created, we use the setInitialState function to set the component value to that of the cell contents. This is accessed through params.value. Once the user has entered their input and finished the editing (pressing enter or clicking outside of the editor), the isCancelAfterEnd function is called. Returning true from this function will mean that the result of the editing is ignored. We check that the format of the provided date and return true if the format is invalid thus not saving the user’s input and returning from the cell editor component. If the date is valid, we must save it. This is done through the getValue function which is subsequently called. We return this value to the grid and also set the read-only collection year, month and day columns.</p>
+</div>
+</div>
+<div class="section" id="cell-renderers">
+<h3>Cell Renderers<a class="headerlink" href="#cell-renderers" title="Permalink to this headline">¶</a></h3>
+<p>Custom cell-renderers (<a class="reference external" href="https://www.ag-grid.com/vue-grid/component-cell-renderer/">Vue Grid: Cell Renderer</a>) have been written to allow for more complex HTML to be displayed within the cells of certain columns, as opposed to displaying simple text. These components consist of a template that will contain the HTML for displaying, for example, an icon next to some text. The beforeMount life cycle hook is then used to retrieve the cell contents and display the appropriate information.</p>
+<p>Cell renderers have been made for each of the columns that have cell editors. The code for each of these can be found in the /js/cellRenderers folder. For the read files, source details and location, a plus symbol is displayed, with a message such as “double-click to add” or “double-click to edit” to inform the user how to interact with the cells. Other feedback is also provided through these. For example, for the read files column, if only 1 file is provided, a message saying that 2 read files are required will be displayed.</p>
+<p>For the collection date editor column, a cell renderer has been made that displays the calendar icon next to the chosen date. Cell renderers have also been made for two of the read-only columns that are part of the collection date group - collection day and collection month. For collection day, we display the day along with its ordinal indicator (e.g. 1st, 2nd). For collection month, we display the month name.</p>
+</div>
+<div class="section" id="row-sorting-and-column-filtering">
+<h3>Row Sorting and Column Filtering<a class="headerlink" href="#row-sorting-and-column-filtering" title="Permalink to this headline">¶</a></h3>
+<p>Row sorting and Column filtering have been enabled on all columns except the read files editor column as this is only used to select the read files and populate the two read-only read file columns. Row sorting is performed by clicking on the column headers, toggling between the different sorting modes. Column filtering is performed by hovering on the column headings and pressing the filter button that will appear on the right.</p>
+<p>To allow for sorting of the date column, where a range of valid input formats is allowed, a custom date comparator has been defined on the date editor column definition. This can be found in the ‘dateComparator’ function. MomentJS is used to create date objects upon which comparisons can be made.</p>
+</div>
+</div>
+<div class="section" id="unique-strain-names-and-read-files">
+<h2>Unique Strain Names and Read Files<a class="headerlink" href="#unique-strain-names-and-read-files" title="Permalink to this headline">¶</a></h2>
+<p>A requirement from the client was that the strain name and read files are unique throughout the grid. To ensure this, two dictionaries are created where their key represents the strain name or read file and their value, the row id in which they are used in. Whenever a new input in either of these columns is made, a check is made to see if the entered value is present as one of the keys in these dictionaries. If it is, it means that the strain name/read file has already been used. The input will be rejected and a notification will be displayed informing the user of the row id (obtained from the value of the key in the dictionary) where the duplicate data can be found.</p>
+<p>Whenever the user edits a cell in these columns, we must update the dictionary keys. For the strain name, this is handled using a ‘valueSetter’ function (<a class="reference external" href="https://www.ag-grid.com/vue-grid/value-setters/">Vue Grid: Value Setters</a>). For the read files, this is handled in the custom read file editor component through the user of the context object (<a class="reference external" href="https://www.ag-grid.com/vue-grid/context/">Vue Grid: Context</a>). This allows the cell editor component to access and make changes to the read file dictionary variable stored in the parent grid component. The update to the dictionary keys is also performed when we remove rows from the grid.</p>
+</div>
+<div class="section" id="metadata-import-export">
+<h2>Metadata Import/Export<a class="headerlink" href="#metadata-import-export" title="Permalink to this headline">¶</a></h2>
+<p>A large part of the development of the metadata text file import/export functionality has been completed. Some aspects could be improved on in future development which is discussed.</p>
+<div class="section" id="exporting-the-template-file">
+<h3>Exporting The Template File<a class="headerlink" href="#exporting-the-template-file" title="Permalink to this headline">¶</a></h3>
+<p>The ‘exportTextFileTemplate’ function is used to generate the template text file. This function uses the ag-grid ‘exportDataAsCsv’ (<a class="reference external" href="https://www.ag-grid.com/javascript-grid/export/">JavaScript Grid: Export</a>) to generate the file. Important parameters are set for this export, namely removing column headings from the export and setting the column separator to “t” as the file must be tab-delimited. In addition to this, we do not wish to export every column in the grid, for example, the complex column editors. ‘getExportColumnIds’ is used to get the export column ids.</p>
+<p>TODO: Presently, the grid must be empty to create the text file template, otherwise, all the rows present in the group at the time of export will also be written to the file.</p>
+</div>
+<div class="section" id="importing-a-metadata-text-file">
+<h3>Importing a Metadata Text File<a class="headerlink" href="#importing-a-metadata-text-file" title="Permalink to this headline">¶</a></h3>
+<p>A dropzone around the grid has been defined. Dragging a file on top of the grid will open the text file import modal upon which the file can be dropped on. Only ‘.txt’ files will be accepted. A file explorer upload window can also be used by pressing the cloud icon. The function ‘importMetaDataFile’ handles the import process. To parse the text file, the Papaparse JavaScript library has been used. The text file input is streamed by defining a callback function. The first row in the file must be the header row. This row is checked to ensure all the headers match up against the expected headers. If these do not match, the text file is not of the correct format i.e. an additional column has been added, or the column headers have changed. In this case, parsing is aborted and the appropriate error message is shown. Otherwise, parsing continues. For each subsequent row, we check that there is at least one field that has been filled in. If there is, we store the row, otherwise, we discard it. This prevents the grid from being filled with empty rows.</p>
+<p>With the parsing complete, we now have to populate the grid with the metadata. This is performed in the ‘addFileDataToGrid’ function. Creating a row involves defining a dictionary where the keys correspond to the column ids. The column ids are retrieved using the ‘getExportColumnIds’ function. As the file is of the correct format, these will match up with the column headings. We loop over each of the parsed rows and create the row dictionaries. For some of the column headings, extra processing is required to ensure that the entered data is valid.</p>
+<div class="section" id="specific-column-import-validation-checks">
+<h4>Specific Column Import Validation Checks<a class="headerlink" href="#specific-column-import-validation-checks" title="Permalink to this headline">¶</a></h4>
+<p>As touched upon, some columns require extra handling before being saved into the grid. For the ‘Collection Date’ column, we check the date in a similar process as in the Collection Date cell editor. If it is valid, we need to populate the read-only columns collection_year, collection_month and collection_day. If it is not valid, we do not set the date. The cell will appear red in the grid, informing the user that an issue with their entered value has occurred.</p>
+<p>For the strain name, we need to check each input against the dictionary of unique strain names. If matching keys are found, we discard the name and as with invalid dates, these cells will show up as red in the grid. If the strain name has not been used, we add it to the row data and store the name as a key in the dictionary. We must first add the row to the grid in order to get the row id that will be the value of this key.</p>
+<p>TODO - Presently any read file information entered in the text file will be ignored when imported into the grid. The user must use the read file editor to select these files. Future development would be to store the filenames in the grid and when it comes to uploading the read files, have the user select a folder in which these files could be found.</p>
+</div>
+</div>
+</div>
+<div class="section" id="submitting-the-strain-data">
+<h2>Submitting the Strain Data<a class="headerlink" href="#submitting-the-strain-data" title="Permalink to this headline">¶</a></h2>
+<p>When the user presses the “Submit” button, two processes are carried out. We first check that all the required fields have been provided. If all rows pass this validation check</p>
+<div class="section" id="checking-required-columns">
+<h3>Checking Required Columns<a class="headerlink" href="#checking-required-columns" title="Permalink to this headline">¶</a></h3>
+<p>To make a request to the back-end to submit the strain data, all the required columns must be filled in. The function ‘checkRequiredColumns’ is used to check if each row to ensure this condition is met. This function returns an object containing a list of row ids where required fields are missing, a list of the data for each row and a list of readFiles. For each row, we first check if all the required column keys are present. If all the keys are present, it could be the case that the user entered a value but later cleared it. Therefore we need to check that all the fields are non-empty. If there are some non-empty fields, or if some of the keys were missing, we store the row id and do not save any of the row data or read files. If the row passed the required fields validation check, we store the read file objects in the read files array. We now need to do some processing on the row data and modify the read files column to be the name of the read file as opposed to the file object itself. This is required for how the back-end handles the read file upload process. Having done this, we store the row in the list of row data.</p>
+<p>Having performed the check over the rows, we check if there were any returned row ids indicating rows that are missing required fields. If there are, strain data submission is cancelled and we display a message informing the user which row ids they need to complete (or a general message if there are more than 10). We also flash the cells in these rows to provide extra feedback.</p>
+<p>Otherwise, we send the list of row data and the list of read files to the back-end where the read file upload process will begin.</p>
+</div>
+<div class="section" id="uploading-the-read-files">
+<h3>Uploading the Read Files<a class="headerlink" href="#uploading-the-read-files" title="Permalink to this headline">¶</a></h3>
+<p>On submission of the data, the strain upload process will start and a modal window will appear where a circular progress component will be displayed along with a message telling the user that the strains are being uploaded. This modal is not dismissible and the user must remain on the page until all strains are uploaded.</p>
+<p>During this process, before uploading the read files for a row, the back-end will check that the read files have not already been used by the user in a previous assembly to prevent duplicate assemblies from occurring. If this is the case, this row will be skipped and not be uploaded. On completion, the back-end will send a list of all the strain names that could not be uploaded because of this. This list is named ‘invalid’. Several front-end outcomes could now occur.</p>
+<ul class="simple">
+<li><p>The length of the ‘invalid’ response list will be empty, thus all strains were uploaded successfully. A success message will be shown and all the strains in the grid will be removed (using the ‘clearAllRows’ method) as they have been successfully uploaded and the assembly jobs queued.</p></li>
+<li><p>The length of the ‘invalid’ response list is not empty, thus some strains could not be uploaded. An error message will be displayed informing the user of this along with the list of strain names and their row ids. The grid contents will then be updated through the use of the ‘updateRowsAfterUpload’ method. This method takes the list of strain names. It then loops over each row and only deletes the row if the strain name is not in this list. This, therefore, updates the grid so that only the rows in which the upload failed remain and the successfully uploaded strains removed.</p></li>
+<li><p>An error is caught aborting the upload process. A general error message is displayed.</p></li>
+</ul>
+<p>For each of these cases, having received a response from the back-end, indicating that the upload process has finished, a close button will appear on the bottom right of the modal. This will allow the user to dismiss the modal window and return to the grid to make the required changes to any rows that could not be uploaded.</p>
+</div>
+<div class="section" id="column-information-summary-table">
+<h3>Column Information Summary Table<a class="headerlink" href="#column-information-summary-table" title="Permalink to this headline">¶</a></h3>
+<p>To conclude the strain upload page documentation, the following table has been provided which summarises columns of the grid, the validation checks that are carried out and which ones allow column filling through the context menu.</p>
+<div class="figure align-center">
+<img alt="Column Information Summary Table" src="../../_images/strain_upload_column_information.png" />
+</div>
+<p><strong>Column Information Summary Table</strong></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Strain Upload</a><ul>
+<li><a class="reference internal" href="#javascript-files-directory-structure">JavaScript Files Directory Structure</a></li>
+<li><a class="reference internal" href="#data-received-from-the-back-end">Data Received From the Back-end</a></li>
+<li><a class="reference internal" href="#the-grid-component">The Grid Component</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#creating-the-column-definitions">Creating the Column Definitions</a></li>
+<li><a class="reference internal" href="#cell-editors">Cell Editors</a><ul>
+<li><a class="reference internal" href="#collection-date-cell-editor-example">Collection Date Cell Editor Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cell-renderers">Cell Renderers</a></li>
+<li><a class="reference internal" href="#row-sorting-and-column-filtering">Row Sorting and Column Filtering</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#unique-strain-names-and-read-files">Unique Strain Names and Read Files</a></li>
+<li><a class="reference internal" href="#metadata-import-export">Metadata Import/Export</a><ul>
+<li><a class="reference internal" href="#exporting-the-template-file">Exporting The Template File</a></li>
+<li><a class="reference internal" href="#importing-a-metadata-text-file">Importing a Metadata Text File</a><ul>
+<li><a class="reference internal" href="#specific-column-import-validation-checks">Specific Column Import Validation Checks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#submitting-the-strain-data">Submitting the Strain Data</a><ul>
+<li><a class="reference internal" href="#checking-required-columns">Checking Required Columns</a></li>
+<li><a class="reference internal" href="#uploading-the-read-files">Uploading the Read Files</a></li>
+<li><a class="reference internal" href="#column-information-summary-table">Column Information Summary Table</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="configuration_test.html"
+                        title="previous chapter">Configuration Test</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="job_viewer.html"
+                        title="next chapter">Job Viewer</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/components/strain_upload.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="job_viewer.html" title="Job Viewer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration_test.html" title="Configuration Test"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" >Application Components</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
