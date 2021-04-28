@@ -16,11 +16,14 @@ Prerequisites
     LC_ALL=en_GB.UTF-8
     LANG=en_GB.UTF-8
 
-* Create a directory to store Local EnteroBase, and by extension the EGP container. The following command uses the default path "$HOME/local_enterobase_home" although you can change this to a location of your choosing.
+* The documentation assumes that Local Enterobase will be installed at the default home path: "$HOME/local_enterobase_home".
+* The container itself will be stored in a subdirectory at the default path "$HOME/local_enterobase_home/local_enterobase", which can be created using the following command:
 
   ::
 
-    mkdir $HOME/local_enterobase_home
+    mkdir $HOME/local_enterobase_home/local_enterobase
+
+* The command examples below will use these paths by default, although these can be changed if you desire a different location.
 
 Note: Please follow the installation instructions in the order presented by this document, else the installation may fail.
 
@@ -36,7 +39,7 @@ Pulling the Container Image
 * There is a single container image (EGP.sif) that stores the installations for EnteroBase Toolkit (EToKi), PostgreSQL and Gunicorn. This needs to be pulled from the Singularity cloud library as follows.
 * If you wish to install it in a different location from the default, you can replace this with a location of your choosing.
 * EGP.sif is the default name for the image, this can be changed by replacing it with <desired_name>.sif.
-* "0.1" is the default image file to pull, this can be changed to a different tag to pull a required image version if required.
+* "0.2" is the beta test image file to pull, this can be changed to a different tag to pull a required image version if required.
 
   ::
 

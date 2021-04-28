@@ -59,11 +59,13 @@
 </pre></div>
 </div>
 </li>
-<li><p>Create a directory to store Local EnteroBase, and by extension the EGP container. The following command uses the default path “$HOME/local_enterobase_home” although you can change this to a location of your choosing.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home
+<li><p>The documentation assumes that Local Enterobase will be installed at the default home path: “$HOME/local_enterobase_home”.</p></li>
+<li><p>The container itself will be stored in a subdirectory at the default path “$HOME/local_enterobase_home/local_enterobase”, which can be created using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/local_enterobase_home/local_enterobase
 </pre></div>
 </div>
 </li>
+<li><p>The command examples below will use these paths by default, although these can be changed if you desire a different location.</p></li>
 </ul>
 <p>Note: Please follow the installation instructions in the order presented by this document, else the installation may fail.</p>
 </div>
@@ -80,7 +82,7 @@
 <li><p>There is a single container image (EGP.sif) that stores the installations for EnteroBase Toolkit (EToKi), PostgreSQL and Gunicorn. This needs to be pulled from the Singularity cloud library as follows.</p></li>
 <li><p>If you wish to install it in a different location from the default, you can replace this with a location of your choosing.</p></li>
 <li><p>EGP.sif is the default name for the image, this can be changed by replacing it with &lt;desired_name&gt;.sif.</p></li>
-<li><p>“0.1” is the default image file to pull, this can be changed to a different tag to pull a required image version if required.</p>
+<li><p>“0.2” is the beta test image file to pull, this can be changed to a different tag to pull a required image version if required.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>singularity pull --arch amd64 $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.2
 </pre></div>
 </div>
