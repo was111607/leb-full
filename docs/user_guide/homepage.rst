@@ -67,8 +67,3 @@ News & Updates
 ===============
 
 This page displays significant recent changes or developments for Local EnteroBase.
-
-Beta Test documentation
-========================
-
-An easily accessible link to the documentation website for the Local EnteroBase beta test can be found in the footer of the homepage and all other webpages, opening the website in a new tab if clicked.

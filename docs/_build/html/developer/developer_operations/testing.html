@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Testing &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Bitbucket Pipelines" href="pipeline.html" />
+    <link rel="prev" title="Developer Environment" href="developer_environment.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="developer_environment.html" title="Developer Environment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" accesskey="U">Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="testing">
+<h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="running-tests">
+<h2>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>To run the unit tests use the following command in the root directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest -m &quot;not singularity&quot; tests/unit
+</pre></div>
+</div>
+</div></blockquote>
+<p>If a connection to a test server for Central EnteroBase can’t be reached use:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest -m &quot;not singularity and not centralEnterobase&quot; tests/unit
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="functional-tests">
+<h3>Functional Tests<a class="headerlink" href="#functional-tests" title="Permalink to this headline">¶</a></h3>
+<p>To run the functional tests use the following command in the root directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest -m &quot;not singularity&quot; tests/functional
+</pre></div>
+</div>
+</div></blockquote>
+<p>If a connection to a test server for Central EnteroBase can’t be reached use:</p>
+<blockquote>
+<div><p>$ python3 -m pytest -m “not singularity and not centralEnterobase” tests/functional</p>
+</div></blockquote>
+</div>
+<div class="section" id="running-functional-and-unit-tests">
+<h3>Running Functional and Unit Tests<a class="headerlink" href="#running-functional-and-unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>To run the functional tests with the unit tests use the following command in the root directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest -m &quot;not singularity&quot; tests/unit test/functional
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="integration-tests">
+<h3>Integration Tests<a class="headerlink" href="#integration-tests" title="Permalink to this headline">¶</a></h3>
+<p>Integration tests require you to be in the container to run and a valid connection
+to a test central enterobase server:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest test/integration
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="linting-code">
+<h3>Linting Code<a class="headerlink" href="#linting-code" title="Permalink to this headline">¶</a></h3>
+<p>To run the linter run the following command in the route directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ flake8
+</pre></div>
+</div>
+</div></blockquote>
+<p>Use black as the standard code formatter:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ black &lt;filename&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="running-assembly-tests">
+<h2>Running Assembly Tests<a class="headerlink" href="#running-assembly-tests" title="Permalink to this headline">¶</a></h2>
+<p>Assembly tests require a bit more setup to do. There is all the prerequisite
+of having a powerful enough system to generate the assembled files correctly
+(Alternatively have the assembled files ready and comment out the generation
+for testing purposes). It will be helpful to either have two terminals up at
+once or to use tmux. You will also have needed to setup local enterobase on
+your system first.</p>
+<p>All assembly tests need to be run within the singularity shell as the EToKi
+environment is only accessible within the container. All tests that are required
+to be performed inside the container are marked with the singularity marker.</p>
+<p>To run assembly tests using celery, a celery worker will also need to be set up.</p>
+<p>The pipeline has been setup to ignore all singularity tests as it currently does
+not have the capabilities to test it properly.</p>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>To be able to perform the tests you need to perform the following steps:</p>
+<div class="section" id="terminal-1">
+<h3>Terminal 1<a class="headerlink" href="#terminal-1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ singularity shell -B /path/to/local_enterobase/dev/repo:/var/www/local_enterobase ~/local_enterobase_home/local_enterobase/EGP.sif
+$ <span class="nb">cd</span> /var/www/local_enterobase
+$ <span class="nb">source</span> /venvs/gunicorn-env/bin/activate
+$ vim manage.py
+</pre></div>
+</div>
+</div></blockquote>
+<p>Set STAGING = ‘testing’ in manage.py</p>
+</div>
+<div class="section" id="terminal-2">
+<h3>Terminal 2<a class="headerlink" href="#terminal-2" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ singularity shell -B /path/to/local_enterobase/dev/repo:/var/www/local_enterobase ~/local_enterobase_home/local_enterobase/EGP.sif
+$ <span class="nb">cd</span> /var/www/local_enterobase
+$ <span class="nb">source</span> /venvs/gunicorn-env/bin/activate
+$ celery -A  manage worker  --loglevel<span class="o">=</span>debug --pidfile<span class="o">=</span><span class="nv">$HOME</span>/celerybeat_myapp_2.pid
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id1">
+<h3>Terminal 1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest -m “not fileIO”
+$ python3 -m pytest -m “fileIO”
+</pre></div>
+</div>
+</div></blockquote>
+<p>Note: the fileIO tests will delete the short reads and assembled files so please
+use with caution</p>
+</div>
+</div>
+<div class="section" id="test-driven-development">
+<h2>Test-Driven Development<a class="headerlink" href="#test-driven-development" title="Permalink to this headline">¶</a></h2>
+<p>Test-Driven Development (TDD) is a style of programming which intertwines coding, testing (unit tests) and design (refactoring). When working on this project a TDD approach should be taken. The steps are as follows:</p>
+<ul class="simple">
+<li><p>write a ‘single’ unit test to describe an aspect of the program</p></li>
+<li><p>run the test, which should fail as the functionality has not been implemented yet</p></li>
+<li><p>write ‘just enough’ code to make the test pass, as simple as possible</p></li>
+<li><p>refactor the code so it passes all tests, contains no duplication, is minimal, and separates each area appropriately</p></li>
+<li><p>repeat, accumulating unit tests over time</p></li>
+</ul>
+<p>Avoid writing too many tests at once, try and focus on one test at a time, and make them narrow and fine-grained. There is also no need to write tests for trivial code (e.g. accessors)</p>
+</div>
+<div class="section" id="pytest">
+<h2>Pytest<a class="headerlink" href="#pytest" title="Permalink to this headline">¶</a></h2>
+<p>Pytest is the testing library used in this project. The pytest-flask library is also used to make setting up the test environment easier using pre-built fixtures.</p>
+</div>
+<div class="section" id="code-coverage">
+<h2>Code Coverage<a class="headerlink" href="#code-coverage" title="Permalink to this headline">¶</a></h2>
+<p>The aim is to have at least 80% code coverage with good unit tests. It is important not to pursue code coverage for the sake of code coverage.
+To check the code coverage, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m pytest  --cov=local_entero/ tests/integration/ tests/unit/ tests/functional/
+</pre></div>
+</div>
+<p>You should get a similar table output to the command line:</p>
+<div class="figure align-default">
+<img alt="Code Coverage" src="../../_images/code_coverage.png" />
+</div>
+</div>
+<div class="section" id="writing-unit-tests">
+<h2>Writing Unit Tests<a class="headerlink" href="#writing-unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>Unit tests should be done to make sure code logic behaves as expected. All tests build off of the conftest.py file which contains a set of fixtures to create a FlaskClient for testing purposes. The client param should be used when testing other than when testing the config, in which cass the app param should be used.</p>
+<p>When writing tests make sure to start the function name with “test” to make it discoverable to pytest.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">local_entero</span>
+<span class="kn">from</span> <span class="nn">local_entero</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">local_entero</span> <span class="kn">import</span> <span class="n">mail</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+<span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">test_mail_can_be_sent_individual</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">mail</span><span class="o">.</span><span class="n">record_messages</span><span class="p">()</span> <span class="k">as</span> <span class="n">outbox</span><span class="p">:</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+            <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+            <span class="n">recipients</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dummy@email.com&quot;</span><span class="p">],</span>
+            <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;dummy@sender.com&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outbox</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">outbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">subject</span> <span class="o">==</span> <span class="s2">&quot;testing&quot;</span>
+</pre></div>
+</div>
+<p>Above is an example of a unit test to check mail can be sent correctly. It makes use of components defined in the codebase to make sure they are defined correctly and are able to send out some mail. If it successfully does so the outbox should now contain one email.</p>
+<p>Further example tests can be found in the tests/unit/ folder.</p>
+</div>
+<div class="section" id="writing-functional-tests">
+<h2>Writing Functional Tests<a class="headerlink" href="#writing-functional-tests" title="Permalink to this headline">¶</a></h2>
+<p>Functional tests should be done to make sure web pages behave as expected. Again, this uses the conftest.py file fixtures.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="k">def</span> <span class="nf">test_home_page</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GIVEN a Flask application</span>
+<span class="sd">    WHEN the &#39;/&#39; page is requested (GET)</span>
+<span class="sd">    THEN check the response is valid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="k">assert</span> <span class="sa">b</span><span class="s1">&#39;Local EnteroBase&#39;</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+<p>The above example makes sure the home page loads correctly by testing the response to see if it contains the expected data and returns status code 200 (OK).</p>
+<p>Further examples of functional tests can be seen in the tests/functional/ folder.</p>
+</div>
+<div class="section" id="writing-integration-tests">
+<h2>Writing Integration Tests<a class="headerlink" href="#writing-integration-tests" title="Permalink to this headline">¶</a></h2>
+<p>Integration tests should be written to tests multiple componenets are interacting together correctly. They can also be useful if some components do not make sense to test individually for a unit tests, e.g. sending a request to central enterobase to say it’s finished the upload test without having performed the upload test as this would always fail.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">singularity</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">assembly</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">centralEnterobase</span>
+<span class="k">def</span> <span class="nf">test_assembly_test_integration</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;test_token&quot;</span><span class="p">:</span> <span class="s2">&quot;CpDUJCmZpO2J7Ii7GVcU5UUk&quot;</span><span class="p">}</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;config.download_assembly_test_files&quot;</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span>
+    <span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;config.run_assembly_test&quot;</span><span class="p">),</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>The above example performs an integration test for the assembly upload test. It has multiple markers allowing more granularity when performing tests. It makes calls to all the separate components necessary to perform the assembly file upload test.</p>
+</div>
+<div class="section" id="markers">
+<h2>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h2>
+<p>Markers allow you to group tests together. These are the markers currently used in the codebase:</p>
+<ul class="simple">
+<li><p>celery: mark a test as celery tests</p></li>
+<li><p>assembly: mark a test as an assembly test w/o celery</p></li>
+<li><p>fileIO: mark a test as making changes to the fileIO</p></li>
+<li><p>singularity: mark a test as singularity only so its not run in pipeline</p></li>
+<li><p>auth: mark a test as relating to authorisation (oauth)</p></li>
+<li><p>centralEnterobase: mark a test for needing to communicate with central enterobase</p></li>
+</ul>
+<p>If you would like to add another marker, add it to pytest.ini</p>
+</div>
+<div class="section" id="creating-markers">
+<h2>Creating Markers<a class="headerlink" href="#creating-markers" title="Permalink to this headline">¶</a></h2>
+<p>Markers are a useful tool in separating tests that interact with different components. For example, a marker has been made for tests that interact with celery workers, for tests that interact with Central Enterobase, fileIO, and so on. Any custom markers should be defined within pytest.ini.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Testing</a><ul>
+<li><a class="reference internal" href="#running-tests">Running Tests</a><ul>
+<li><a class="reference internal" href="#unit-tests">Unit Tests</a></li>
+<li><a class="reference internal" href="#functional-tests">Functional Tests</a></li>
+<li><a class="reference internal" href="#running-functional-and-unit-tests">Running Functional and Unit Tests</a></li>
+<li><a class="reference internal" href="#integration-tests">Integration Tests</a></li>
+<li><a class="reference internal" href="#linting-code">Linting Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-assembly-tests">Running Assembly Tests</a></li>
+<li><a class="reference internal" href="#setup">Setup</a><ul>
+<li><a class="reference internal" href="#terminal-1">Terminal 1</a></li>
+<li><a class="reference internal" href="#terminal-2">Terminal 2</a></li>
+<li><a class="reference internal" href="#id1">Terminal 1</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#test-driven-development">Test-Driven Development</a></li>
+<li><a class="reference internal" href="#pytest">Pytest</a></li>
+<li><a class="reference internal" href="#code-coverage">Code Coverage</a></li>
+<li><a class="reference internal" href="#writing-unit-tests">Writing Unit Tests</a></li>
+<li><a class="reference internal" href="#writing-functional-tests">Writing Functional Tests</a></li>
+<li><a class="reference internal" href="#writing-integration-tests">Writing Integration Tests</a></li>
+<li><a class="reference internal" href="#markers">Markers</a></li>
+<li><a class="reference internal" href="#creating-markers">Creating Markers</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="developer_environment.html"
+                        title="previous chapter">Developer Environment</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pipeline.html"
+                        title="next chapter">Bitbucket Pipelines</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/developer_operations/testing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="pipeline.html" title="Bitbucket Pipelines"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="developer_environment.html" title="Developer Environment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" >Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -2,7 +2,7 @@
 
 Singularity Installation
 -------------------------
-Firstly, the user needs to install the Singularity software using the following steps described in “https://sylabs.io/guides/3.5/user-guide/quick_start.html”.
+Firstly, the user needs to install the Singularity software, the following steps use the official documentaton: “https://sylabs.io/guides/3.5/user-guide/quick_start.html”.
 
 Note: Some installations require the user to have sudo privileges. If you do not have any, please ask your system administrator to install them for you.
 
@@ -53,7 +53,6 @@ Download Singularity From a Release
 
     export VERSION=3.5.2 && wget  https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
     tar -xzf singularity-${VERSION}.tar.gz
-    cd singularity
 
 Compile the Singularity Source Code
 ====================================
@@ -62,6 +61,7 @@ Compile the Singularity Source Code
 
   ::
 
+    cd singularity
     ./mconfig
     make -C builddir
     sudo make -C builddir install
