@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bitbucket Pipelines &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Testing" href="testing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="testing.html" title="Testing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" accesskey="U">Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="bitbucket-pipelines">
+<h1>Bitbucket Pipelines<a class="headerlink" href="#bitbucket-pipelines" title="Permalink to this headline">¶</a></h1>
+<p>Bitbucket pipelines is an integrated CI/CD solution provided by Atlassian for your Bitbucket repositories. Local Enterobase makes use of this to have a CI pipeline to ensure the repository is passing all the necessary tests as well as linting the code so it conforms to a set standard. Bitbucket Pipelines work by creating Docker Images to run the project on.</p>
+<p>The pipeline in this project has been set up to evaluate the python code for local enterobase. The pipeline is defined in a bitbucket-pipelines.yml file located in the root of the directory. It is currently defined as follows:</p>
+<div class="section" id="running-a-pipeline">
+<h2>Running a Pipeline<a class="headerlink" href="#running-a-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>The pipeline should only be executed when modifications to the python codebase or anything affecting it have been made. (E.g. don’t run it just for documentation PRs). This is because there is a limited amount of build time per month (currently 50 minutes), so it is important not to waste it.</p>
+<div class="figure align-default">
+<img alt="Local EnteroBase Pipeline Demo" src="../../_images/pipelines.jpg" />
+</div>
+<p>To execute the pipeline, click the pipelines tab on bitbucket on the left hand side of the screen. On this page click ‘run pipeline’ in the top right hand side. Select the branch you wish to run the pipeline on, then select the pipeline ‘custom: pr-build’ and hit run. The pipeline should now be executing.</p>
+</div>
+<div class="section" id="pipeline-definition">
+<h2>Pipeline Definition<a class="headerlink" href="#pipeline-definition" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-XML notranslate"><div class="highlight"><pre><span></span>image: python:3.7.2
+
+pipelines:
+ custom:
+   pr-build:
+     - parallel:
+       - step:
+           name: Test
+           caches:
+             - pip
+           script:
+             - if [ -f requirements.txt ]; then pip  install -r requirements.txt; fi
+             - pip install pytest
+             - pip install pytest-flask
+             - python3 -m pytest -m &quot;not singularity&quot; -v tests/* --junitxml=test-reports/report.xml
+           services:
+             - postgres
+       - step:
+           name: Lint code
+           script:
+             # Enforce style consistency across Python projects https://flake8.pycqa.org/en/latest/manpage.html
+             - pip install flake8
+             - flake8 . --extend-exclude=dist,build --show-source --statistics
+
+definitions:
+ services:
+   postgres:
+     image: postgres
+     variables:
+       POSTGRES_DB: &#39;local_database_test&#39;
+       POSTGRES_USER: &#39;postgres&#39;
+       POSTGRES_PASSWORD: &#39;password&#39;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>pipelines</strong>: pipeline definition</p></li>
+<li><p><strong>custom</strong>: this is used to define a manual pipeline. This has been done to prevent the pipeline running on every commit and wasting credits as there are only 50 minutes of build time available per month for free.</p></li>
+<li><p><strong>pr-build</strong>: name of the pipeline</p></li>
+<li><p><strong>parallel</strong>: used to run multiple steps simultaneously</p></li>
+<li><p><strong>step</strong>: stage in pipeline</p></li>
+<li><p><strong>caches</strong>: used to store state so packages don’t have to be redownloaded each time pipeline is run</p></li>
+<li><p><strong>script</strong>: shell instructions</p></li>
+<li><p><strong>definitions</strong>: used to define services</p></li>
+<li><p><strong>services</strong>: used to define other images needed during testing</p></li>
+<li><p><strong>postgres</strong>: name of service</p></li>
+<li><p><strong>image</strong>: name of Docker image</p></li>
+<li><p><strong>variables</strong>: set of env variables to use in the service</p></li>
+</ul>
+<p>NOTE: The service variables have been defined to be compatible with the current structure of local_entero/. Do not change this unless you have good reason to.</p>
+</div>
+<div class="section" id="modifying-the-pipeline">
+<h2>Modifying the Pipeline<a class="headerlink" href="#modifying-the-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>If you do wish to modify the pipeline, use this link to validate your yaml file: <a class="reference external" href="https://bitbucket-pipelines.prod.public.atl-paas.net/validator">https://bitbucket-pipelines.prod.public.atl-paas.net/validator</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Bitbucket Pipelines</a><ul>
+<li><a class="reference internal" href="#running-a-pipeline">Running a Pipeline</a></li>
+<li><a class="reference internal" href="#pipeline-definition">Pipeline Definition</a></li>
+<li><a class="reference internal" href="#modifying-the-pipeline">Modifying the Pipeline</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="testing.html"
+                        title="previous chapter">Testing</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/developer_operations/pipeline.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="testing.html" title="Testing"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="developer_operations.html" >Developer Operations</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

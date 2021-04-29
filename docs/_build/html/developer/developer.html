@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Developing Local EnteroBase &#8212; Local EnteroBase (Beta)  documentation</title>
+    <title>Developing Local EnteroBase &#8212; Local EnteroBase Documentation  documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -16,8 +16,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="NGINX Image" href="nginx.html" />
-    <link rel="prev" title="Feedback Forms" href="../forms/forms.html" /> 
+    <link rel="next" title="Application Components" href="components/components.html" />
+    <link rel="prev" title="Viewing Jobs" href="../user_guide/jobs.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,12 +26,12 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="nginx.html" title="NGINX Image"
+          <a href="components/components.html" title="Application Components"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../forms/forms.html" title="Feedback Forms"
+          <a href="../user_guide/jobs.html" title="Viewing Jobs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -42,46 +42,87 @@
             
   <div class="section" id="developing-local-enterobase">
 <h1>Developing Local EnteroBase<a class="headerlink" href="#developing-local-enterobase" title="Permalink to this headline">¶</a></h1>
-<p>This section provides the documentation that we have produced to support developers working on Local EnteroBase.</p>
-<p>The following figure illustrates the Local EnteroBase folder structure, all the images definition files are saved in the Singularity_Images sub-folder</p>
-<div class="figure align-default" id="id1">
-<a class="reference internal image-reference" href="../_images/sing_folders_3.png"><img alt="Local EnteroBase folder Structure" src="../_images/sing_folders_3.png" style="width: 300px;" /></a>
-<p class="caption"><span class="caption-text"><strong>Local EnteroBase folder structure</strong></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p>This section provides documentation to support future developers of Local EnteroBase.</p>
+<div class="figure align-center">
+<img alt="Local EnteroBase Directory Structure" src="../_images/folder_structure.png" />
 </div>
+<p><strong>Local EnteroBase Directory Structure</strong></p>
+<p><strong>Directory Structure Descriptions</strong></p>
+<ul class="simple">
+<li><p><strong>Docker_Images</strong> - stores the Docker container and related files such as certs, configuration etc.</p></li>
+<li><p><strong>docs</strong> - where the development documentation is found.</p></li>
+<li><p><strong>installer</strong> - where the automatic installation script and information is found.</p></li>
+<li><dl class="simple">
+<dt><strong>local_entero</strong> - the Local EnteroBase flask application code and files.</dt><dd><ul>
+<li><p><strong>app_test</strong> - stores JSON Warwick EnteroBase request files (in the child directory <strong>Warwick_EnteroBase_requests_data</strong>).</p></li>
+<li><p><strong>auth</strong> - contains the authorisation routes and utility methods.</p></li>
+<li><p><strong>configuration</strong> - contains the configuration routes and utility methods.</p></li>
+<li><p><strong>Databases</strong> - contains the database models and utility methods.</p></li>
+<li><p><strong>forms</strong> - contains form related methods, such as validation checks for the configuration steps.</p></li>
+<li><p><strong>jobs</strong> - contains the job routes and utility methods.</p></li>
+<li><p><strong>resources</strong> - contains resources such as a list of countries and continents.</p></li>
+<li><p><strong>routes</strong> - contains the application routes and utility methods.</p></li>
+<li><p><strong>static</strong> - contains all the static files (files that aren’t server-generated, but must be sent to the browser when requested) such as JavaScript, images etc.</p></li>
+<li><p><strong>tasks</strong> - contains all the celery tasks for performing assemblies.</p></li>
+<li><p><strong>templates</strong> - stores the HTML template files.</p></li>
+<li><p><strong>utils</strong> - contains various utility methods.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> - the main function for the flask app, containing the initialisation code and builds the routes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><strong>Singularity_Images</strong> - stores the parent and child recipe files (in the child directory <strong>EGP</strong>) for the unified EToKi, Gunicorn and PostgreSQL container.</p></li>
+<li><dl class="simple">
+<dt><strong>tests</strong></dt><dd><ul>
+<li><p><strong>functional</strong> - contains the functional tests that have been written.</p></li>
+<li><p><strong>integration</strong> - contains the integration tests that have been written.</p></li>
+<li><p><strong>test_reads</strong> - contains the short read files for testing the assembly functions.</p></li>
+<li><p><strong>unit</strong> - contains the unit tests that have been written.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> - contains the test setup and teardown code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_data.py</span></code> - contains test data to populate the database with.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> -  the files/folders that git will ignore in the project.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.local_configuration_file.yml</span></code> - contains configuration settings for Local EnteroBase.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitbucket-pipelines.yml</span></code> - the pipeline instructions for CI.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_assembly_requirements.sh</span></code> - script to check system meets minimum requirements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.py</span></code> - contains the config settings for the flask app. Distinguishes between development/testing/production.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manage.py</span></code> - contains the manager functions of the application.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - stores configuration settings for building and installing the project system (PEP 518).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code> - stores configuration settings for performing system testing using Pytest.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> - stores metadata regarding Local EnteroBase.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirement_check.py</span></code> - script to check system meets minimum requirements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> - specifies the python libraries and their version numbers that are required to run the application.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="nginx.html">NGINX Image</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#required-software">Required Software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#required-files-and-folders">Required files and folders</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#content-of-the-image-file-dockerfile">Content of the image file: Dockerfile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#content-of-the-docker-entrypoint-sh-script">Content of the docker-entrypoint.sh script</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#build-nginx-image">Build NGINX Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nginx.html#pushing-nginx-image">Pushing NGINX Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components/components.html">Application Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="components/front-end_technologies.html">Front-End Technologies Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/configuration_steps.html">Configuration Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/configuration_test.html">Configuration Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/strain_upload.html">Strain Upload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/job_viewer.html">Job Viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="components/future_developments.html">Future Developments</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="egp.html">EToKi, PostgreSQL and Gunicorn (EGP) Container Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="egp.html#required-files-and-folders">Required files and folders</a></li>
-<li class="toctree-l2"><a class="reference internal" href="egp.html#content-of-the-recipe-files">Content of the recipe files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="egp.html#building-the-base-and-application-images">Building the base and application images</a></li>
-<li class="toctree-l2"><a class="reference internal" href="egp.html#pushing-the-container-image">Pushing the container image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers/containers.html">Containers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="containers/nginx.html">NGINX Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers/egp.html">EToKi, PostgreSQL and Gunicorn (EGP) Container</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Bitbucket Pipelines</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pipeline.html#running-a-pipeline">Running a Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pipeline.html#pipeline-definition">Pipeline Definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pipeline.html#modifying-the-pipeline">Modifying the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="central_integrations/integrations_in_central_enterobase.html">Integrations in Central EnteroBase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/nginx_config.html">NGINX Configuration Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/register_local_enterobase.html">Register Local EnteroBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/administration.html">Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="central_integrations/oauth2_server.html">OAuth2 Server</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#running-tests">Running Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#running-assembly-tests">Running Assembly Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#test-driven-development">Test-Driven Development</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#pytest">Pytest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#code-coverage">Code Coverage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#writing-unit-tests">Writing Unit Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#writing-functional-tests">Writing Functional Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#writing-integration-tests">Writing Integration Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#creating-markers">Creating Markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_operations/developer_operations.html">Developer Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer_operations/developer_environment.html">Developer Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_operations/testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_operations/pipeline.html">Bitbucket Pipelines</a></li>
 </ul>
 </li>
 </ul>
@@ -95,11 +136,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../forms/forms.html"
-                        title="previous chapter">Feedback Forms</a></p>
+  <p class="topless"><a href="../user_guide/jobs.html"
+                        title="previous chapter">Viewing Jobs</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="nginx.html"
-                        title="next chapter">NGINX Image</a></p>
+  <p class="topless"><a href="components/components.html"
+                        title="next chapter">Application Components</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -128,12 +169,12 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="nginx.html" title="NGINX Image"
+          <a href="components/components.html" title="Application Components"
              >next</a> |</li>
         <li class="right" >
-          <a href="../forms/forms.html" title="Feedback Forms"
+          <a href="../user_guide/jobs.html" title="Viewing Jobs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase (Beta)  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Front-End Technologies Overview &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Configuration Steps" href="configuration_steps.html" />
+    <link rel="prev" title="Application Components" href="components.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="configuration_steps.html" title="Configuration Steps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="components.html" title="Application Components"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" accesskey="U">Application Components</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="front-end-technologies-overview">
+<h1>Front-End Technologies Overview<a class="headerlink" href="#front-end-technologies-overview" title="Permalink to this headline">¶</a></h1>
+<p>The frontend of Local EnteroBase has been developed using the VueJS Javascript framework accompanied
+by the Vuetify CSS Framework. VueJS has been combined with Flask by serving it alongside
+the app and importing Vue into the Jinja templates. This means that the codebase follows
+the familiar Flask project layout but now incorporates the reactive benefits of Vue.</p>
+<div class="section" id="vuejs">
+<h2>VueJS<a class="headerlink" href="#vuejs" title="Permalink to this headline">¶</a></h2>
+<p>For each HTML page, a corresponding JavaScript file containing the Vue instance for the
+page is required. These JavaScript files can be found in the /static/js folder of the repo.
+These files match against the HTML template files (found in the templates folder) that they
+are used in, by having the same name.</p>
+<p>Information regarding the Vue instance can be found <a class="reference external" href="https://vuejs.org/v2/guide/instance.html">here</a>.
+For each Vue instance, we need to change the default delimiters from ‘{{‘, ‘}}’ to ‘[[‘, ‘]]’
+so that they do not clash with the ‘{{‘, ‘}}’ delimiters that are used by Jinja. We need to
+provide the Vue instance with an existing DOM element to mount on. For this, we use the top-level
+div that has an id=”app”. We use the directive ‘v-cloak’ provided by Vue on this div. This is used
+to hide un-compiled Vue delimiters ([[,]]) bindings until the Vue instance is ready. By adding a
+CSS style we ensure that all elements contained within this div are not displayed. When the Vue
+instance finishes compilation the directive will be removed and the page will be shown.</p>
+</div>
+<div class="section" id="vuetify">
+<h2>Vuetify<a class="headerlink" href="#vuetify" title="Permalink to this headline">¶</a></h2>
+<p>Vuetify has been incorporated in a similar manner as seen in the “Usage with CDN” section of the
+“Get started with Vuetify documentation” (<a class="reference external" href="https://vuetifyjs.com/en/getting-started/installation/#usage-with-cdn">https://vuetifyjs.com/en/getting-started/installation/#usage-with-cdn</a>).
+Information regarding the Vuetify markup can be found here: <a class="reference external" href="https://vuetifyjs.com/en/components/application/">https://vuetifyjs.com/en/components/application/</a>.
+As can be seen in the base template files in the repo, the key property, ‘app’, is required in each HTML file.
+This serves as the mount point for many of Vuetify’s components and functionality. The second important element
+is ‘main’. This acts as a semantic replacement for the main HTML element and is the root of each of the pages content.</p>
+<p>Vuetify offers great documentation through their website (<a class="reference external" href="https://vuetifyjs.com/en/">https://vuetifyjs.com/en/</a>)
+and has code examples showcasing many of the UI components that have been used throughout Local EnteroBase.</p>
+</div>
+<div class="section" id="app-structure">
+<h2>App Structure<a class="headerlink" href="#app-structure" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned, the codebase follows that of a standard Flask project layout with the HTML files found under
+the templates folder and JavaScript files in the static/js folder. The HTML pages and their corresponding
+Javascript files share the same names.</p>
+<p>Template inheritance offered by Jinja has been used to allow for common components that are found across
+multiple pages to be defined in a single HTML template file that children templates can extend.</p>
+<p>The HTML templates for the configuration pages used in Local EnteroBase extend the ‘configuration_base.html’ template</p>
+<p>The HTML templates for the main pages of the application (e.g. home, database_home, job_viewer) extend
+the ‘home_base.html’ template.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Front-End Technologies Overview</a><ul>
+<li><a class="reference internal" href="#vuejs">VueJS</a></li>
+<li><a class="reference internal" href="#vuetify">Vuetify</a></li>
+<li><a class="reference internal" href="#app-structure">App Structure</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="components.html"
+                        title="previous chapter">Application Components</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="configuration_steps.html"
+                        title="next chapter">Configuration Steps</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/components/front-end_technologies.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="configuration_steps.html" title="Configuration Steps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="components.html" title="Application Components"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" >Application Components</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

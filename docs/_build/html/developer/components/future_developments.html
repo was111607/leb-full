@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Future Developments &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Containers" href="../containers/containers.html" />
+    <link rel="prev" title="Job Viewer" href="job_viewer.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../containers/containers.html" title="Containers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="job_viewer.html" title="Job Viewer"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" accesskey="U">Application Components</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="future-developments">
+<h1>Future Developments<a class="headerlink" href="#future-developments" title="Permalink to this headline">¶</a></h1>
+<p>Suggested future developments for the application components have been summarised below.</p>
+<div class="section" id="strain-upload">
+<h2>Strain Upload<a class="headerlink" href="#strain-upload" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Obtain the grid column information from the back-end as opposed to using the ‘strain_metadata_for_local_enterobase’ JSON file.</p></li>
+<li><dl class="simple">
+<dt>Extension to the metadata text file import functionality.</dt><dd><ul>
+<li><p>Presently any read file information entered in the text file, will be ignored when imported into the grid.</p></li>
+<li><p>Perhaps one could store the filenames in the grid and when it comes to uploading the read files, have the user select a folder in which these files could be found.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Create a custom text file template export function that does not use ag-grid’s export method so that the grid does not have to be empty to create the template file.</p></li>
+</ul>
+</div>
+<div class="section" id="job-viewer">
+<h2>Job Viewer<a class="headerlink" href="#job-viewer" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add notifications for job status change.</p></li>
+<li><p>Potentially use web sockets to provide instant updates when on the page without a hanging request.</p></li>
+<li><p>Add button to upload all.</p></li>
+<li><p>Add button to retry failed assembly.</p></li>
+<li><p>This would involve setting the status to ‘Received’ so the celery beat worker.</p></li>
+</ul>
+</div>
+<div class="section" id="configuration-test">
+<h2>Configuration Test<a class="headerlink" href="#configuration-test" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Investigate whether websockets are beneficial for this process instead of polling.</p></li>
+</ul>
+</div>
+<div class="section" id="other-improvements">
+<h2>Other Improvements<a class="headerlink" href="#other-improvements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Create a script in the auto-installer to start/stop celery worker and celery beat.</p></li>
+<li><p>Make the celery beat run as a daemon process so it can run in the background (<a class="reference external" href="https://stackoverflow.com/questions/28105364/how-to-run-celery-beat-as-daemon">https://stackoverflow.com/questions/28105364/how-to-run-celery-beat-as-daemon</a>).</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Future Developments</a><ul>
+<li><a class="reference internal" href="#strain-upload">Strain Upload</a></li>
+<li><a class="reference internal" href="#job-viewer">Job Viewer</a></li>
+<li><a class="reference internal" href="#configuration-test">Configuration Test</a></li>
+<li><a class="reference internal" href="#other-improvements">Other Improvements</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="job_viewer.html"
+                        title="previous chapter">Job Viewer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../containers/containers.html"
+                        title="next chapter">Containers</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/components/future_developments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../containers/containers.html" title="Containers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="job_viewer.html" title="Job Viewer"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" >Application Components</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

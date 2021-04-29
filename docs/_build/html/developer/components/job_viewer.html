@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Job Viewer &#8212; Local EnteroBase Documentation  documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Future Developments" href="future_developments.html" />
+    <link rel="prev" title="Strain Upload" href="strain_upload.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="future_developments.html" title="Future Developments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="strain_upload.html" title="Strain Upload"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" accesskey="U">Application Components</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="job-viewer">
+<h1>Job Viewer<a class="headerlink" href="#job-viewer" title="Permalink to this headline">¶</a></h1>
+<p>This page is used to view the user’s jobs. It is built using a vuetify data-table.
+This allows for sorting and basic filtering. Either AG Grid or creating separate.
+filtering components is necessary to provide better filtering options if desired.</p>
+<p>There are currently no live updates on the page itself. The Celery workers run the
+process in the background and are triggered by the Celery worker. The status is checked
+when the page is loaded. Buttons are only displayed when the assembly has completed
+successfully.</p>
+<div class="section" id="upload-files">
+<h2>Upload Files<a class="headerlink" href="#upload-files" title="Permalink to this headline">¶</a></h2>
+<p>The upload files button send the result .fasta and .fastq files to Central EnteroBase.</p>
+</div>
+<div class="section" id="download-files">
+<h2>Download Files<a class="headerlink" href="#download-files" title="Permalink to this headline">¶</a></h2>
+<p>The download files button creates a .zip of completed job results and allows the
+zip to be downloaded to the user’s system.</p>
+</div>
+<div class="section" id="files-and-functions">
+<h2>Files and Functions<a class="headerlink" href="#files-and-functions" title="Permalink to this headline">¶</a></h2>
+<p>The back-end endpoints are located in:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>$PROJECT_ROOT/local_entero/manage_jobs/views.py</dt><dd><ul>
+<li><p>job_viewer(): render template</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The front-end components are located in:</p>
+<ul class="simple">
+<li><p>$PROJECT_ROOT/local_entero/templates/job_viewer.html</p></li>
+<li><dl class="simple">
+<dt>$PROJECT_ROOT/local_entero/static/js/job_viewer.js</dt><dd><ul>
+<li><p>uploadStrain(row, item): upload strain to Central EnteroBase</p></li>
+<li><p>downloadStrain(row, item): download strain to local system</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Job Viewer</a><ul>
+<li><a class="reference internal" href="#upload-files">Upload Files</a></li>
+<li><a class="reference internal" href="#download-files">Download Files</a></li>
+<li><a class="reference internal" href="#files-and-functions">Files and Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="strain_upload.html"
+                        title="previous chapter">Strain Upload</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="future_developments.html"
+                        title="next chapter">Future Developments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developer/components/job_viewer.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="future_developments.html" title="Future Developments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="strain_upload.html" title="Strain Upload"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Local EnteroBase Documentation  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../developer.html" >Developing Local EnteroBase</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="components.html" >Application Components</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Local EnteroBase Developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
