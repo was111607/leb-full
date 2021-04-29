@@ -1,12 +1,12 @@
 User Guide
-----------
+--------------------------
 
-This section will cover the main local EnteroBase functions
+This section covers the current available Local EnteroBase Functions. Please ensure that you complete the "Registration and Configuration" section
+before using the functions described in this user guide.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   active_databases
-   upload_single_strains
-   upload_muliple_strains
-   assembly_jobs_status
+   homepage
+   submit_strains
+   jobs

@@ -25,7 +25,7 @@ sys.path.insert(0, path)
 sys.path.append(os.path.abspath(os.path.join(path, "..")))
 
 
-project = "Local EnteroBase Documentation"
+project = "Local EnteroBase (Beta)"
 copyright = "2020, Local EnteroBase Developers"
 author = "H. Fallows, H. Hall, J. Hankins, B. Makwana, W. Sewell"
 

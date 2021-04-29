@@ -18,26 +18,6 @@ If a connection to a test server for Central EnteroBase can't be reached use:
     
     $ python3 -m pytest -m "not singularity and not centralEnterobase" tests/unit
 
-Functional Tests
-'''''''''''''''''
-To run the functional tests use the following command in the root directory:
-
-  ::
-
-    $ python3 -m pytest -m "not singularity" tests/functional
-
-If a connection to a test server for Central EnteroBase can't be reached use:
-
-    $ python3 -m pytest -m "not singularity and not centralEnterobase" tests/functional
-
-Running Functional and Unit Tests
-'''''''''''''''''''''''''''''''''
-To run the functional tests with the unit tests use the following command in the root directory:
-
-  ::
-
-    $ python3 -m pytest -m "not singularity" tests/unit test/functional
-
 Integration Tests
 ''''''''''''''''''
 Integration tests require you to be in the container to run and a valid connection
@@ -80,8 +60,7 @@ The pipeline has been setup to ignore all singularity tests as it currently does
 not have the capabilities to test it properly.
 
 Setup
------
-
+``````
 To be able to perform the tests you need to perform the following steps:
 
 Terminal 1
@@ -136,17 +115,16 @@ Pytest is the testing library used in this project. The pytest-flask library is 
 
 Code Coverage
 -------------
-
-The aim is to have at least 80% code coverage with good unit tests. It is important not to pursue code coverage for the sake of code coverage.
+The aim is to have at least 80% code coverage with good unit tests. It is important not to pursue code coverage for the sake of code coverage. 
 To check the code coverage, run the following command:
 ::
     
-  $ python3 -m pytest  --cov=local_entero/ tests/integration/ tests/unit/ tests/functional/
+  $ python -m pytest --cov=. tests/
 
 You should get a similar table output to the command line:
 
-.. figure:: ../../images/code_coverage.png
-   :alt: Code Coverage
+.. figure:: ../images/code_coverage.png
+   :alt: Code Coverage 
 
 Writing Unit Tests
 ------------------
@@ -225,21 +203,6 @@ Example:
 The above example performs an integration test for the assembly upload test. It has multiple markers allowing more granularity when performing tests. It makes calls to all the separate components necessary to perform the assembly file upload test.
 
 
-Markers
---------
-Markers allow you to group tests together. These are the markers currently used in the codebase:
-
-- celery: mark a test as celery tests
-- assembly: mark a test as an assembly test w/o celery
-- fileIO: mark a test as making changes to the fileIO
-- singularity: mark a test as singularity only so its not run in pipeline
-- auth: mark a test as relating to authorisation (oauth)
-- centralEnterobase: mark a test for needing to communicate with central enterobase
-
-If you would like to add another marker, add it to pytest.ini
-
-
 Creating Markers
 ----------------
 Markers are a useful tool in separating tests that interact with different components. For example, a marker has been made for tests that interact with celery workers, for tests that interact with Central Enterobase, fileIO, and so on. Any custom markers should be defined within pytest.ini.
-

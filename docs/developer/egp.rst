@@ -1,4 +1,4 @@
-EToKi, PostgreSQL and Gunicorn (EGP) Container
+EToKi, PostgreSQL and Gunicorn (EGP) Container Installation
 ------------------------------------------------------------
 
 Firstly, the user needs to follow the previous instructions within the sections for installing/running Singularity and the NGINX web server.
@@ -81,8 +81,8 @@ The second image is built using **"EGP.def"** recipe file
 
 **Virtual Environments**
 
-* All individual %appinstall and %apprun scripts for EToKi, Gunicorn and Redis are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.
-* Each script begins with the corresponding virtual environment being activated and concludes with their deactivation as follows:
+* All individual %appinstall and %apprun scripts for each of EToKi, Gunicorn and PostgreSQL are executed within their respective component virtual environments to mitigate conflicting dependencies between their functionalities.
+* Each script begins with the corresponding virtual environment being activated and concludes with their deativation as follows.
 
   ::
 
@@ -93,7 +93,7 @@ The second image is built using **"EGP.def"** recipe file
 
   * <env-name> represents one of 'etoki-env' or 'gunicorn-env'.
   * All scripts run using #!/bin/sh, so '.' is the equivalent of 'source' in #!/bin/bash which reads and executes the contents at a provided filepath.
-  * 'deactivate' ensures other scripts can successfully run within their respetive virtual environment.
+  * deactivate ensures other scripts can successfully run within their respetive virtual environment.
 
 **EToKi Recipe Section**
 
@@ -208,9 +208,10 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun init_db
+      . /venvs/postgres-env/bin/activate
       [ "$(ls -A /usr/local/pgsql/data)" ] && EMPTY_DIR=false || EMPTY_DIR=true
       if [ "$EMPTY_DIR" = true ]; then
-        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data initdb
+        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -U postgres initdb
         /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log start -o '"$@"'
         /usr/local/pgsql/bin/psql -c "CREATE USER flask_user WITH PASSWORD 'flask_password';"
         /usr/local/pgsql/bin/psql -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO flask_user;"
@@ -220,17 +221,7 @@ The second image is built using **"EGP.def"** recipe file
         echo "Database cluster initialisation failed"
         echo "Database cluster seems to have been previously initialised since the data directory is non-empty"
       fi
-
-* This checks the database server status by attempting to connect to the server, with a silent return value that can be outputted using the command "echo $?"".
-* The value is 0 is the server is running and accepting connections normally.
-* The value is 1 is the server is running but rejecting connections (e.g. during startup).
-* The value is 2 if there is no response to the connection attempt, meaning that the server is not running.
-* The value is 3 if there was no attempt to connect to the server (e.g. due to invalid parameters).
-
-  ::
-
-    %apprun check_server_status
-      /usr/local/pgsql/bin/pg_isready -q
+      deactivate
 
 * This instructs the database server to start and run in the background using the pg_ctl wrapper from PostgreSQL.
 * The user's directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user's home directory.
@@ -239,12 +230,9 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun start_server
-      /usr/local/pgsql/bin/pg_isready -q
-      if [ "$?" = "2" ]; then
-        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log start -o '"$@"' &
-      else
-        echo "Server is already running"
-      fi
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log start -o '"$@"' &
+      deactivate
 
 * This instructs the running database server to stop using the pg_ctl wrapper from PostgreSQL.
 * The user's directories storing the database data and logs must be bound to /usr/local/pgsql/data and /usr/local/pgsql/logs/server.log respectively when running the command within the terminal so that the files are copied to the user's home directory.
@@ -252,12 +240,9 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun stop_server
-      /usr/local/pgsql/bin/pg_isready -q
-      if [ "$?" != "2" ]; then
-        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log stop
-      else
-        echo "Server is already stopped"
-      fi
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log stop
+      deactivate
 
 * This instructs the running database server to restart using the pg_ctl wrapper from PostgreSQL.
 * This function may be required in the event a configuration change must be applied.
@@ -267,12 +252,9 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun restart_server
-      /usr/local/pgsql/bin/pg_isready -q
-      if [ "$?" != "2" ]; then
-        /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log restart -o '"$@"' &
-      else
-        echo "Server is already stopped"
-      fi
+      . /venvs/postgres-env/bin/activate
+      /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l /usr/local/pgsql/logs/server.log restart -o '"$@"' &
+      deactivate
 
 * This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to create an additional database user with default select, insert, update and delete permissions.
 * This script can only be run whilst the database server is running.
@@ -285,6 +267,7 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun create_dbuser
+      . /venvs/postgres-env/bin/activate
       usage () { echo "Required input flags and arguments:";
                  echo "-u <username>";
                  echo "-p <new password to set>";
@@ -315,6 +298,7 @@ The second image is built using **"EGP.def"** recipe file
         echo "User already exists, no changes have been made"
         exit 0
       fi
+      deactivate
 
 * This entrypoint passes in a user-inputted username and password, performs checks on their inputs and runs PostgreSQL to change an existing database user's password.
 * This script can only be run whilst the database server is running.
@@ -327,6 +311,7 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun change_dbuser_password
+      . /venvs/postgres-env/bin/activate
       usage () { echo "Required input flags and arguments:";
                  echo "-u <username>";
                  echo "-p <new password to set>";
@@ -355,6 +340,7 @@ The second image is built using **"EGP.def"** recipe file
         echo "User does not exist, no changes have been made"
         exit 0
       fi
+      deactivate
 
 * This entrypoint passes in a user input of a database user to modify, then locates and passes in a database username, password and running port from the configuration file .local_configuration_file.yml to update user's credentials and server running port.
 * This script can only be run whilst the database server is running.
@@ -365,6 +351,7 @@ The second image is built using **"EGP.def"** recipe file
   ::
 
     %apprun set_from_config
+      . /venvs/postgres-env/bin/activate
       usage () { echo "Required input flags and arguments:";
                  echo "-u <username to modify>";
                  exit 1;
@@ -391,6 +378,7 @@ The second image is built using **"EGP.def"** recipe file
       else
         usage
       fi
+      deactivate
 
 **Redis Section**
 
@@ -543,11 +531,11 @@ After successful signing, the image can be pushed to the cloud library.
 * EGP.sif is the default name for the unified application image, this can be changed if required.
 * The following command will push an image.
 * If the default build directory was changed previously for EGP_base.sif and EGP.sif, replace it in the following command with the correct installation directory.
-* "example_tag" is the tag for the image container which the users will download when pulling the image. This should be changed, so the associated image is pulled using the new tag.
+* "0.1" Is the default image tag for which the users will download as they will reference this when pulling the image. This can be changed, with the associated image pulled using the new tag.
 
   ::
 
-    singularity push $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:example_tag
+    singularity push $HOME/local_enterobase_home/local_enterobase/EGP.sif library://enterobase/default/egp:0.1
 
 The access token may occasionally expire after a particular time period. Before signing and pushing new containers, it is required to generate another token and key by following the above steps up to and including pasting the new access token at the prompt.
 
