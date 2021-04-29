@@ -126,7 +126,7 @@ The template can be opened with text editors that are able to treat the template
 
 You can upload the filled template file in 2 ways:
 
-* Clicking the blue "Import Data" function in the grid toolbar, where a popup modal window is displayed. Clicking the cloud icon opens up your file explorer where you can select the template file to upload.
+* Clicking the blue "Import Data" function in the grid toolbar, where a popup modal window is displayed. Clicking the file upload icon opens up your file explorer where you can select the template file to upload.
 * Dragging the file from your file explorer to the grid, where the popup modal window automatically displays. Dropping the file within the window will select it for upload.
 
 When the file has been uploaded, provided it is in the correct format, a blue "Import to Grid" button appears that will import the data to the grid when clicked, creating rows of the provided strain metadata automatically.
